@@ -156,11 +156,11 @@ const report = {
     warning: 'This score measures observable technical and structural signals. It must not be described as a linguistic or human quality score.',
   },
   summary,
-  scoreMovement: { improved: wins, regressed: losses, unchanged: ties, compared: deltas.length },
+  scoreDirection: { scoreIncreased: wins, scoreDecreased: losses, unchanged: ties, compared: deltas.length },
   byLanguage,
   byCategory,
-  largestImprovements: [...rows].sort((a,b)=>(b.delta.operationalScore ?? -Infinity)-(a.delta.operationalScore ?? -Infinity)).slice(0,30),
-  largestRegressions: [...rows].sort((a,b)=>(a.delta.operationalScore ?? Infinity)-(b.delta.operationalScore ?? Infinity)).slice(0,30),
+  largestScoreIncreases: [...rows].sort((a,b)=>(b.delta.operationalScore ?? -Infinity)-(a.delta.operationalScore ?? -Infinity)).slice(0,30),
+  largestScoreDecreases: [...rows].sort((a,b)=>(a.delta.operationalScore ?? Infinity)-(b.delta.operationalScore ?? Infinity)).slice(0,30),
   largestCrossSeedOverlapIncreases: [...rows]
     .sort((a,b)=>(b.crossSeedOverlapDelta ?? -Infinity)-(a.crossSeedOverlapDelta ?? -Infinity)).slice(0,30),
   scenarios: rows,
@@ -171,7 +171,7 @@ const fmt = n => n == null ? 'n/a' : n.toFixed(2);
 const lines = [
   '# NameForge — paired before/after quality comparison','',
   `- Matched scenarios: **${rows.length}**`,
-  `- Improved / regressed / unchanged: **${wins} / ${losses} / ${ties}**`,
+  `- Score increased / decreased / unchanged: **${wins} / ${losses} / ${ties}**`,
   `- Before commit: **${before.gitCommit || 'recorded in workflow metadata'}**`,
   `- After commit: **${after.gitCommit || 'recorded in workflow metadata'}**`,'',
   '> The operational score is not a naturalness score. It excludes semantics, idiom, grammar, morphology and cultural suitability. Human review remains necessary.','',
@@ -206,11 +206,11 @@ const lines = [
   '| Category | Scenarios | Before | After | Δ |','|---|---:|---:|---:|---:|',
   ...byCategory.map(x=>`| ${x.category} | ${x.scenarios} | ${fmt(x.before)} | ${fmt(x.after)} | ${fmt(x.delta)} |`),
   '',
-  '## Largest regressions','',
-  ...report.largestRegressions.slice(0,15).map(x=>`- ${x.generatorId} / ${x.language}: ${fmt(x.delta.operationalScore)} points`),
+  '## Largest score decreases (not linguistic verdicts)','',
+  ...report.largestScoreDecreases.slice(0,15).map(x=>`- ${x.generatorId} / ${x.language}: ${fmt(x.delta.operationalScore)} points`),
   '',
   '## Limits','',
   'A higher operational score does not prove that generated names sound natural or make sense. The 840-name human-review queue and qualified language reviewers are still required for those judgments.',
 ];
 await writeFile(path.join(outputDir,'comparison.md'), lines.join('\n'));
-console.log(JSON.stringify({matchedScenarios:rows.length,scoreMovement:report.scoreMovement,summary,files:[path.join(outputDir,'comparison.json'),path.join(outputDir,'comparison.md')]},null,2));
+console.log(JSON.stringify({matchedScenarios:rows.length,scoreDirection:report.scoreDirection,summary,files:[path.join(outputDir,'comparison.json'),path.join(outputDir,'comparison.md')]},null,2));
