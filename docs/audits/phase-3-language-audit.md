@@ -251,3 +251,54 @@ Commit registre candidat : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/32a77
 Correction des métadonnées du candidat : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/53f60248c838a4ea9bcf6b9cc411ac2a3732e0da
 
 **À ne pas confondre :** les deux premières analyses phonétiques sont des outils de segmentation, pas des modèles complets de prononciation. Aucune des dix banques de prénoms n'est encore importée ou approuvée. La relecture des 840 échantillons et l'audit de 6 552 scénarios après stabilisation restent obligatoires.
+
+
+## 15. Revalidation des 6 552 scénarios après les correctifs — 2026-10-31
+
+Le workflow **Generator quality baseline** a été relancé après les modifications linguistiques et le correctif du faux signal de doublons sur les scénarios sans sortie : [exécution 41234701224](https://github.com/hhkskkkdjwbf-bot/NFV2/actions/runs/41234701224).
+
+Résultats de l'artefact de cette exécution :
+
+- **6 552 scénarios** exécutés (234 générateurs × 28 langues).
+- **232 992 noms** produits au total.
+- **0 chaîne vide** parmi les sorties effectivement produites.
+- **0 signal automatique de qualité** après correction du contrôle qui classait à tort les lots vides comme fortement dupliqués.
+- **10 scénarios baby_name** renvoient volontairement zéro prénom : `ja`, `ko`, `zh`, `ru`, `hi`, `th`, `el`, `he`, `uk`, `bn`. Ce comportement est le garde-fou attendu tant que des banques natives attestées ne sont pas disponibles ; il ne s'agit pas d'une couverture fonctionnelle complète.
+- **840 exemples** sont disponibles dans la file de relecture, soit 30 par langue.
+
+Les six champs de revue humaine (`naturalness_1_5`, `category_fit_1_5`, `language_fit_1_5`, `readability_1_5`, `offensive_or_cultural_issue`, `reviewer_notes`) sont toujours entièrement non renseignés. Le résultat « zéro signal automatique » n'est donc ni une note de naturalité ni une validation par locuteur natif.
+
+Le contrôle d'unicité a aussi été corrigé : un scénario qui ne produit aucun nom ne doit pas être qualifié de « doublons » puisque son lot est vide. Correctif : [a48ec171](https://github.com/hhkskkkdjwbf-bot/NFV2/commit/a48ec171e36e808ce5569594281bb725f115fda9).
+
+## 16. Validation CI et déploiement — 2026-10-31
+
+Le commit de tête vérifié sur `main` est `f285bb0f0f80ded3bab01f5b8308f5aad20f749d`. Le workflow [Deploy NameForge to GitHub Pages, run 41234795551](https://github.com/hhkskkkdjwbf-bot/NFV2/actions/runs/41234795551) est terminé avec succès.
+
+Étapes vérifiées comme réussies :
+
+- installation des dépendances ;
+- installation de Chromium ;
+- vérification TypeScript ;
+- tests de régression ;
+- build GitHub Pages ;
+- tests navigateur Playwright ;
+- audit Lighthouse ;
+- publication de l'artefact Pages ;
+- déploiement GitHub Pages ;
+- audit Lighthouse post-déploiement du site publié.
+
+Artefacts de cette exécution : rapport Lighthouse en direct (`nameforge-live-lighthouse`), artefact Pages (`github-pages`) et rapports de qualité (`nameforge-quality-reports`).
+
+Cette réussite valide le pipeline technique et le déploiement à ce commit. Elle ne remplace pas la validation linguistique humaine, l'intégration de phonologies complètes ou les banques de prénoms autorisées.
+
+## 17. État consolidé des cinq objectifs
+
+| Objectif | État au 2026-10-31 | Ce qui manque pour le déclarer terminé |
+|---|---|---|
+| 1. Unités phonétiques et orthographiques par langue | **Partiel** : profils orthographiques et segmentation graphémique pour dix écritures non latines ; analyse mora japonaise et décomposition des blocs Hangul coréens. | Modèles phonologiques complets et validés pour chaque langue, y compris tons, syllabes, phonèmes, prosodie et prononciations de référence ; extension aux 28 langues. |
+| 2. Grammaires natives au-delà du français | **Partiel** : primitives testées pour harmonie vocalique turque et accord adjectival espagnol ; les règles françaises sont isolées du reste des langues. | Annoter les racines et suffixes, intégrer les règles aux générateurs concernés, couvrir les systèmes grammaticaux propres aux autres langues et tester les exceptions. |
+| 3. Dix banques de prénoms autorisées et vérifiables | **Non terminé** : aucun nouveau prénom importé ; Onomaverse reste une piste désactivée en raison d'une portée de licence/conditions d'utilisation non résolue. Les dix scénarios concernés échouent de façon sûre plutôt que d'afficher des prénoms latins non attestés. | Identifier une source par langue, vérifier les droits de collecte, redistribution et attribution, vérifier l'écriture native et les formes attestées, publier la provenance et faire valider les listes. |
+| 4. Relecture par des personnes compétentes | **En attente** : 840 échantillons préparés (30 × 28 langues), aucune évaluation humaine renseignée. | Recruter des relecteurs compétents, collecter leurs notes et commentaires, traiter les désaccords et conserver la trace du sign-off. |
+| 5. Refaire les 6 552 scénarios | **Exécuté** : 6 552 scénarios, 232 992 noms, 0 sortie vide parmi les sorties émises, 0 signal automatique après correction. Dix scénarios de prénoms sont volontairement sans résultat. | Rejouer après chaque intégration importante ; compléter par la revue humaine et des contrôles linguistiques/culturels, qui ne sont pas couverts par le succès CI. |
+
+**Conclusion :** l'objectif 5 a été exécuté et le pipeline de déploiement est vert. Les objectifs 1 et 2 ont une base technique partielle. Les objectifs 3 et 4 ne sont pas terminés. NameForge ne doit pas être présenté comme validé linguistiquement dans 28 langues tant que les sources, les modèles natifs et les relectures ne sont pas finalisés.
