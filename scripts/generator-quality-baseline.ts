@@ -150,7 +150,7 @@ async function main() {
       const crossSeedOverlapRate = perBatchUniqueCount ? 1 - unique.size / perBatchUniqueCount : 0;
       const signals: string[] = [];
       if (empty) signals.push('empty_output');
-      if (1 - withinBatchUniqueRate >= 0.15) signals.push('high_within_batch_duplicate_rate');
+      if (names.length > 0 && 1 - withinBatchUniqueRate >= 0.15) signals.push('high_within_batch_duplicate_rate');
       if (names.length && withinBatchUniqueRate < 0.65) signals.push('low_within_batch_diversity');
       if (scriptChecks && mismatchCount / scriptChecks >= 0.2) signals.push('possible_script_mismatch');
       const category = (generator as any).category || 'unknown';
