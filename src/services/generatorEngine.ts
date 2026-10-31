@@ -13,6 +13,7 @@ import { addGenerationHistory } from './storage';
 import { GENERATORS_METADATA } from '../data/generators';
 import { ATTESTED_BABY_NAMES, LOCALIZED_BABY_NAMES } from '../data/attestedBabyNames';
 import { getPhraseBank } from '../data/phraseBanks';
+import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from './linguisticRules';
 
 const RECENT_NAMES_KEY = 'nameforge_recent_names';
 const RECENT_LIMIT = 120;
@@ -395,17 +396,18 @@ export function combineParts(p: string, s: string): string {
 function generatePhoneticHarmony(
   d: SubcategoryData,
   length: LengthOption,
-  genLang: GenLanguageCode
+  genLang: GenLanguageCode,
+  useLanguageRoots = genLang !== 'auto'
 ): string {
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
-  // An explicit language must control the linguistic roots, not just influence them randomly.
+  // Explicit language roots are selected only after the generator-family policy allows them.
   // "auto" keeps the generator's category-specific vocabulary.
   const prefixes =
-    genLang !== 'auto' && langRules.prefixes.length > 0
+    useLanguageRoots && langRules.prefixes.length > 0
       ? langRules.prefixes
       : d.prefixes;
   const suffixes =
-    genLang !== 'auto' && langRules.suffixes.length > 0
+    useLanguageRoots && langRules.suffixes.length > 0
       ? langRules.suffixes
       : d.suffixes;
 
@@ -437,12 +439,13 @@ function generatePhoneticHarmony(
 function generateNeologism(
   d: SubcategoryData,
   length: LengthOption,
-  genLang: GenLanguageCode
+  genLang: GenLanguageCode,
+  useLanguageRoots = genLang !== 'auto'
 ): string {
   // Only use single standalone words without spaces or apostrophes
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
-  const sourcePrefixes = genLang !== 'auto' && langRules.prefixes.length ? langRules.prefixes : d.prefixes;
-  const sourceSuffixes = genLang !== 'auto' && langRules.suffixes.length ? langRules.suffixes : d.suffixes;
+  const sourcePrefixes = useLanguageRoots && langRules.prefixes.length ? langRules.prefixes : d.prefixes;
+  const sourceSuffixes = useLanguageRoots && langRules.suffixes.length ? langRules.suffixes : d.suffixes;
   const singleWords = [...sourcePrefixes, ...sourceSuffixes].filter(
     (w) => !w.includes(' ') && !w.includes("'") && !w.includes('’') && w.length >= 2
   );
@@ -450,7 +453,7 @@ function generateNeologism(
     const w1 = randomItem(singleWords) || 'Nova';
     const w2 = randomItem(singleWords) || 'Velo';
     if (w1.toLowerCase() === w2.toLowerCase()) {
-      return generatePhoneticHarmony(d, length, genLang);
+      return generatePhoneticHarmony(d, length, genLang, useLanguageRoots);
     }
     const cut1 = Math.max(2, Math.min(w1.length - 1, Math.floor(w1.length * 0.6)));
     const cut2 = Math.max(1, Math.min(w2.length - 2, Math.floor(w2.length * 0.4)));
@@ -461,7 +464,7 @@ function generateNeologism(
       return combined;
     }
   }
-  return generatePhoneticHarmony(d, length, genLang);
+  return generatePhoneticHarmony(d, length, genLang, useLanguageRoots);
 }
 
 /**
@@ -469,13 +472,14 @@ function generateNeologism(
  */
 function generatePortmanteauBlend(
   d: SubcategoryData,
-  genLang: GenLanguageCode
+  genLang: GenLanguageCode,
+  useLanguageRoots = genLang !== 'auto'
 ): string {
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
-  const rootsA = genLang !== 'auto' && langRules.prefixes.length
+  const rootsA = useLanguageRoots && langRules.prefixes.length
     ? langRules.prefixes
     : (d.prefixes.length > 0 ? d.prefixes : ['Nova', 'Kaly', 'Velo', 'Aero', 'Zeta', 'Sol']);
-  const rootsB = genLang !== 'auto' && langRules.suffixes.length
+  const rootsB = useLanguageRoots && langRules.suffixes.length
     ? langRules.suffixes
     : (d.suffixes.length > 0 ? d.suffixes : ['tech', 'flow', 'is', 'ora', 'craft', 'wave']);
 
@@ -502,7 +506,8 @@ function generatePortmanteauBlend(
 function generateSymbolicEvocative(
   generatorId: GeneratorId,
   d: SubcategoryData,
-  genLang: GenLanguageCode
+  genLang: GenLanguageCode,
+  useLanguageRoots = genLang !== 'auto'
 ): string {
   const symbolicMap: Record<string, string[]> = {
     brand: ['Aura', 'Lumi', 'Pure', 'Vesta', 'Sol', 'Verve', 'Cael', 'Nobil'],
@@ -517,11 +522,11 @@ function generateSymbolicEvocative(
   };
 
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
-  const pool = genLang !== 'auto' && langRules.prefixes.length
+  const pool = useLanguageRoots && langRules.prefixes.length
     ? langRules.prefixes
     : (symbolicMap[generatorId] || d.prefixes);
   const root = randomItem(pool) || 'Nova';
-  const suffixPool = genLang !== 'auto' && langRules.suffixes.length
+  const suffixPool = useLanguageRoots && langRules.suffixes.length
     ? langRules.suffixes
     : (d.suffixes.length > 0 ? d.suffixes : ['is', 'or', 'ex', 'ix', 'um', 'ia']);
   const suffix = randomItem(suffixPool) || 'is';
@@ -532,10 +537,10 @@ function generateSymbolicEvocative(
 /**
  * Strategy 5: Punchy Minimal (Compact, 1-2 sharp syllables)
  */
-function generatePunchyMinimal(d: SubcategoryData, genLang: GenLanguageCode = 'auto'): string {
+function generatePunchyMinimal(d: SubcategoryData, genLang: GenLanguageCode = 'auto', useLanguageRoots = genLang !== 'auto'): string {
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
-  const prefixes = genLang !== 'auto' && langRules.prefixes.length ? langRules.prefixes : d.prefixes;
-  const suffixes = genLang !== 'auto' && langRules.suffixes.length ? langRules.suffixes : d.suffixes;
+  const prefixes = useLanguageRoots && langRules.prefixes.length ? langRules.prefixes : d.prefixes;
+  const suffixes = useLanguageRoots && langRules.suffixes.length ? langRules.suffixes : d.suffixes;
   const p = (randomItem(prefixes) as string) || 'Vex';
   const s = (randomItem(suffixes) as string) || 'o';
 
@@ -549,8 +554,8 @@ function generatePunchyMinimal(d: SubcategoryData, genLang: GenLanguageCode = 'a
     return cleanWord(p + s.toLowerCase());
   }
 
-  const shortP = d.prefixes.find((x) => x.length <= 4 && !x.includes(' ') && !x.includes("'")) || p.slice(0, 3);
-  const shortS = d.suffixes.find((x) => x.length <= 3 && !x.includes(' ') && !x.includes("'")) || s.slice(0, 2);
+  const shortP = prefixes.find((x) => x.length <= 4 && !x.includes(' ') && !x.includes("'")) || p.slice(0, 3);
+  const shortS = suffixes.find((x) => x.length <= 3 && !x.includes(' ') && !x.includes("'")) || s.slice(0, 2);
   return cleanWord(cap(shortP + shortS.toLowerCase()));
 }
 
@@ -869,6 +874,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   const resolved = resolveStyleData(targetGenerator, targetStyle, SUBCATEGORIES_DATA);
   const meta = GENERATORS_METADATA[targetGenerator];
   const categoryFamily = meta?.category || 'creative';
+  const linguisticPolicy = getFamilyLinguisticPolicy(categoryFamily, targetGenerator, genLanguage);
   const isFantasyOrLore = categoryFamily === 'fantasy';
 
   const out: GeneratedName[] = [];
@@ -1039,24 +1045,13 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   // =========================================================================
   // STANDARD PROCEDURAL & LINGUISTIC PIPELINE
   // =========================================================================
-  const strategies: GenerationStrategy[] = [
-    'phonetic_harmony',
-    'neologism',
-    'portmanteau_blend',
-    'symbolic_evocative',
-    'punchy_minimal',
-    'epic_compound',
-  ];
-
-  // Datasets made of real whole words (first names, surnames, star names, nouns) must never be
-  // chopped into syllables: neologism / portmanteau / punchy strategies would produce gibberish.
-  // When a generation language is chosen, names are built from that language's own roots, so the
-  // generator's (French) phrase vocabulary must not decide how names are assembled.
+  // Family policy controls construction strategies, titles, gender morphology and token handling.
+  const strategies: GenerationStrategy[] = linguisticPolicy.strategies;
   const explicitLanguageRules = genLanguage !== 'auto' ? LANGUAGE_PHONETICS[genLanguage] : undefined;
-  // Sentence-like generators (slogans, titles) are meaningless when rebuilt from name roots.
-  const isSentenceLikeGenerator = ['slogan', 'book', 'novel_series', 'song_title', 'album_title', 'blog_name', 'newsletter', 'podcast', 'tactical_operation', 'restaurant', 'coffee_shop', 'tavern', 'band_name', 'videogame', 'youtube', 'shop', 'guild', 'bakery', 'hotel_name'].includes(targetGenerator);
-  const usesLanguageRoots =
-    !isSentenceLikeGenerator && Boolean(explicitLanguageRules && explicitLanguageRules.prefixes.length > 0);
+  const usesLanguageRoots = Boolean(explicitLanguageRules && explicitLanguageRules.prefixes.length > 0);
+  const keywordScriptsMatch = !cleanKw || genLanguage === 'auto' ||
+    (isKeywordCompatibleWithLanguage(cleanKw, genLanguage) &&
+      getScriptsInText(cleanKw).every((script) => getLanguageScriptProfile(genLanguage).scripts.includes(script)));
   const vocabulary = usesLanguageRoots
     ? [...explicitLanguageRules!.prefixes, ...explicitLanguageRules!.suffixes]
     : [...resolved.prefixes, ...resolved.suffixes];
@@ -1070,7 +1065,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   const hasComplexScript = vocabulary.some((w) => /[\p{M}\p{Lo}]|[^\u0000-\u024F\u1E00-\u1EFF]/u.test(w));
   const isWholeWordVocabulary =
     vocabulary.length > 0 &&
-    (hasComplexScript || wholeWordCount / vocabulary.length >= 0.5 || averageVocabularyLength >= 4.4);
+    (linguisticPolicy.preferWholeWords || hasComplexScript || wholeWordCount / vocabulary.length >= 0.5 || averageVocabularyLength >= 4.4);
 
   let candidatePool: ScoredCandidate[] = [];
   let attempts = 0;
@@ -1088,11 +1083,18 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     let baseName = '';
 
     if (cleanKw) {
-      const mode = activeRandom();
-      const suf = randomItem(resolved.suffixes) || '';
-      const pref = randomItem(resolved.prefixes) || '';
-      const titleW = randomItem(resolved.titles) || '';
       const kwCap = cleanKw.charAt(0).toUpperCase() + cleanKw.slice(1);
+      // Latin transliterations are accepted as input but are never mixed with native-script affixes.
+      if (!keywordScriptsMatch) {
+        baseName = kwCap;
+      } else {
+      const mode = activeRandom();
+      const keywordPrefixes = usesLanguageRoots ? explicitLanguageRules!.prefixes : resolved.prefixes;
+      const keywordSuffixes = usesLanguageRoots ? explicitLanguageRules!.suffixes : resolved.suffixes;
+      const keywordTitles = linguisticPolicy.allowLocalizedTitles ? LANGUAGE_PHONETICS[genLanguage]?.titleWords || [] : (genLanguage === 'auto' ? resolved.titles : []);
+      const suf = randomItem(keywordSuffixes) || '';
+      const pref = randomItem(keywordPrefixes) || '';
+      const titleW = randomItem(keywordTitles || []) || '';
 
       if (mode < 0.35 && suf) {
         baseName = combineParts(kwCap, suf);
@@ -1101,7 +1103,8 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       } else if (titleW && activeRandom() < 0.5) {
         baseName = combineParts(kwCap, titleW);
       } else {
-        baseName = `${kwCap} ${suf || 'Tech'}`;
+        baseName = `${kwCap} ${suf || ''}`.trim();
+      }
       }
     } else {
       const isPhrasal =
@@ -1117,23 +1120,23 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       } else {
         switch (strategy) {
           case 'phonetic_harmony':
-            baseName = generatePhoneticHarmony(resolved, length, genLanguage);
+            baseName = generatePhoneticHarmony(resolved, length, genLanguage, usesLanguageRoots);
             break;
           case 'neologism':
-            baseName = generateNeologism(resolved, length, genLanguage);
+            baseName = generateNeologism(resolved, length, genLanguage, usesLanguageRoots);
             break;
           case 'portmanteau_blend':
-            baseName = generatePortmanteauBlend(resolved, genLanguage);
+            baseName = generatePortmanteauBlend(resolved, genLanguage, usesLanguageRoots);
             break;
           case 'symbolic_evocative':
-            baseName = generateSymbolicEvocative(targetGenerator, resolved, genLanguage);
+            baseName = generateSymbolicEvocative(targetGenerator, resolved, genLanguage, usesLanguageRoots);
             break;
           case 'punchy_minimal':
-            baseName = generatePunchyMinimal(resolved, genLanguage);
+            baseName = generatePunchyMinimal(resolved, genLanguage, usesLanguageRoots);
             break;
           case 'epic_compound': {
-            const part1 = generatePhoneticHarmony(resolved, 'short', genLanguage);
-            const part2 = generatePhoneticHarmony(resolved, 'short', genLanguage);
+            const part1 = generatePhoneticHarmony(resolved, 'short', genLanguage, usesLanguageRoots);
+            const part2 = generatePhoneticHarmony(resolved, 'short', genLanguage, usesLanguageRoots);
             if (part1.includes(' ') || part2.includes(' ')) {
               baseName = part1;
             } else {
@@ -1149,12 +1152,12 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
 
     // Apply Format
     let formattedName = baseName;
-    if (format === 'full') {
-      const surname = generatePhoneticHarmony(resolved, 'medium', genLanguage);
+    if (format === 'full' && keywordScriptsMatch) {
+      const surname = generatePhoneticHarmony(resolved, 'medium', genLanguage, usesLanguageRoots);
       if (surname.toLowerCase() !== baseName.toLowerCase()) {
         formattedName = combineParts(baseName, surname);
       }
-    } else if (format === 'group') {
+    } else if (format === 'group' && keywordScriptsMatch) {
       const localizedGroups = genLanguage !== 'auto' ? GROUP_WORDS[genLanguage] : undefined;
       const defaultGroups = localizedGroups
         ? categoryFamily === 'business'
@@ -1172,25 +1175,24 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
           ? ['Ordre', 'Clan', 'Guilde', 'Cercle', 'Légion', 'Maison']
           : ['Collectif', 'Studio', 'Club', 'Troupe', 'Cercle', 'Équipe'];
 
-      const g =
-        (randomItem(resolved.groupTypes || defaultGroups) as string) ||
-        defaultGroups[0];
-      formattedName = `${g} ${baseName}`;
-    } else if (format === 'compound') {
+      const groupPool = genLanguage !== 'auto' && localizedGroups
+        ? defaultGroups
+        : genLanguage === 'auto' ? (resolved.groupTypes || defaultGroups) : [];
+      const g = (randomItem(groupPool) as string) || '';
+      formattedName = g ? `${g} ${baseName}` : baseName;
+    } else if (format === 'compound' && keywordScriptsMatch) {
       if (!baseName.includes(' ')) {
-        const secondary = generatePunchyMinimal(resolved);
+        const secondary = generatePunchyMinimal(resolved, genLanguage, usesLanguageRoots);
         formattedName = combineParts(baseName, secondary);
       }
-    } else {
+    } else if (keywordScriptsMatch) {
       // Prefer titles written for the selected language. Category-level title
       // banks are not consistently localized and can otherwise inject French
       // words into Korean, Russian, and other explicitly localized results.
       const langRules = LANGUAGE_PHONETICS[genLanguage] || LANGUAGE_PHONETICS.auto;
-      const localizedTitles =
-        genLanguage !== 'auto' ? langRules.titleWords : [];
-      const categoryTitles = resolved.titles || [];
-      const titlesPool =
-        localizedTitles.length > 0 ? localizedTitles : categoryTitles;
+      const localizedTitles = linguisticPolicy.allowLocalizedTitles && genLanguage !== 'auto' ? langRules.titleWords : [];
+      const categoryTitles = genLanguage === 'auto' ? (resolved.titles || []) : [];
+      const titlesPool = localizedTitles.length > 0 ? localizedTitles : categoryTitles;
 
       if (titlesPool.length > 0 && activeRandom() < 0.28) {
         const title = (randomItem(titlesPool) as string) || '';
@@ -1198,20 +1200,17 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
           formattedName = combineParts(baseName, title);
         }
       } else if (isFantasyOrLore && !baseName.includes(' ') && activeRandom() < 0.22) {
-        const fallbackTitles =
-          genLanguage === 'auto'
-            ? ['le Brave', 'l’Ancien', 'le Juste', 'le Gardien']
-            : localizedTitles.length > 0
-              ? localizedTitles
-              : ['the Brave', 'the Ancient', 'the Silent', 'the Just', 'the Guardian'];
-        const title = (randomItem(fallbackTitles) as string) || 'the Brave';
-        formattedName = combineParts(baseName, title);
+        const fallbackTitles = genLanguage === 'auto'
+          ? ['le Brave', 'l’Ancien', 'le Juste', 'le Gardien']
+          : localizedTitles;
+        const title = (randomItem(fallbackTitles) as string) || '';
+        if (title) formattedName = combineParts(baseName, title);
       }
     }
 
     // Latin-script gender suffix rules must not append Latin letters to CJK, Arabic,
     // Cyrillic, Devanagari, Thai, Greek, or Hebrew names.
-    const usesNonLatinGenderRules = ['ja', 'ar', 'ko', 'zh', 'ru', 'hi', 'th', 'el', 'he'].includes(genLanguage);
+    const usesNonLatinGenderRules = !linguisticPolicy.allowGenderMorphology;
     // Gender adaptations
     if (!usesNonLatinGenderRules && gender === 'female' && !formattedName.includes(' ')) {
       if (resolved.femaleStarts && resolved.femaleStarts.length > 0 && activeRandom() < 0.4) {
