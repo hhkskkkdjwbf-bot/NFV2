@@ -142,7 +142,7 @@ const LANGUAGE_PHONETICS: Record<
   ja: {
     prefixes: ['カイ', 'シン', 'リュウ', 'ソラ', 'レン', 'ハル', 'アキ', 'タカ', 'ユキ', 'カゼ', 'キラ', 'ハナ', 'ミオ'],
     suffixes: ['マル', 'ト', 'ヤ', 'シ', 'ゼン', 'ジン', 'ナリ', 'ロ', 'ソラ', 'カ', 'キ', 'コ', 'スケ'],
-    titleWords: ['Mamoru', 'Kage no Senshi', 'Tsuki no Kishi', 'Yoru no Kage', 'Hoshi no Tabibito'],
+    titleWords: ['勇者', '守護者', '影の剣士', '月の騎士', '星の旅人'],
     vowels: ['a', 'i', 'u', 'e', 'o'],
     consonants: ['k', 's', 't', 'n', 'h', 'm', 'y', 'r', 'w'],
   },
