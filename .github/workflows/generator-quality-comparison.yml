@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/compare-generator-quality.mjs'
+      - 'scripts/generator-quality-baseline.ts'
       - '.github/workflows/generator-quality-comparison.yml'
   workflow_dispatch:
 
