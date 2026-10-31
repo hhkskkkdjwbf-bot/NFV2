@@ -15,6 +15,7 @@ on:
       - 'scripts/generator-quality-baseline.ts'
       - 'scripts/generator-quality-deep-dive.ts'
       - 'scripts/build-linguistic-review.ts'
+      - 'reports/generator-quality/**'
       - 'scripts/linguistic-audit.py'
       - 'docs/LINGUISTIC-PIPELINE.md'
       - 'package.json'
