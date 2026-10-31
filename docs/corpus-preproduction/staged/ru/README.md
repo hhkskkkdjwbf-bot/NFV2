@@ -7,7 +7,7 @@
 - Native-script records: **1,551**
 - Distinct native spellings: **1,548**
 - Source gender rows: **809 male / 742 female**
-- Records with source short forms: **1,537**
+- Records with source short forms: **1537**
 - Records with international forms: **362**
 
 Native Cyrillic spellings are preserved separately from source short forms and international forms. International forms are not automatically labelled as transliterations because the upstream column does not make that claim. Homographs remain separate source records where source IDs or gender differ. Popularity ranks are not converted to birth counts.
