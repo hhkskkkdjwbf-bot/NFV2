@@ -57,16 +57,24 @@ def build_outputs(input_path: Path):
               len({r["displayName"] for r in records}))
     if counts != (1551, 809, 742, 1548): raise ValueError(f"Pinned source audit mismatch: {counts}")
     jsonl = ("\n".join(json.dumps(r, ensure_ascii=False, separators=(",", ":")) for r in records) + "\n").encode("utf-8")
-    report = ("# Russian NEN preproduction conversion\n\n"
-      "- Source: [NEN names dataset](https://github.com/mdanina/nen-imena-dataset)\n"
-      "- Pinned revision: " + SOURCE_RELEASE + "\n"
-      "- Raw source SHA-256: " + digest + "\n"
-      "- Licence: CC BY 4.0; required online attribution: [Данные: НЭН — сервис «Имена»](https://n-e-n.ru/imena/)\n"
-      "- Native-script records: 1,551; distinct spellings: 1,548\n"
-      "- Source gender rows: 809 male / 742 female\n"
-      "- Human linguistic review: pending\n\n"
-      "Native Cyrillic spellings remain separate from short forms and international forms. International forms are not relabelled as transliterations because the upstream column does not make that claim. Homographs remain separate where source IDs or gender differ. Popularity ranks are not converted to birth counts.\n\n"
-      "**Preproduction only. Not connected to public NameForge generators.**\n").encode("utf-8")
+    short_forms = sum(bool(r["sourceShortForms"]) for r in records)
+    international_forms = sum(bool(r["sourceInternationalForms"]) for r in records)
+    report = f"""# Russian NEN preproduction conversion
+
+- Source: [NEN names dataset](https://github.com/mdanina/nen-imena-dataset)
+- Pinned revision: `{SOURCE_RELEASE}`
+- Raw source SHA-256: `{digest}`
+- Licence: CC BY 4.0; required online attribution: [Данные: НЭН — сервис «Имена»](https://n-e-n.ru/imena/)
+- Native-script records: **{len(records):,}**
+- Distinct native spellings: **{counts[3]:,}**
+- Source gender rows: **{counts[1]} male / {counts[2]} female**
+- Records with source short forms: **{short_forms}**
+- Records with international forms: **{international_forms}**
+
+Native Cyrillic spellings are preserved separately from source short forms and international forms. International forms are not automatically labelled as transliterations because the upstream column does not make that claim. Homographs remain separate source records where source IDs or gender differ. Popularity ranks are not converted to birth counts.
+
+**Human linguistic review is pending. This is preproduction only and is not connected to any public NameForge generator.**
+""".encode("utf-8")
     return jsonl, report
 
 def main():
