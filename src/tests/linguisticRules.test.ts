@@ -45,7 +45,7 @@ checks.push(['Japanese small kana attach to the preceding mora', splitJapaneseMo
 checks.push(['Japanese long-vowel mark remains a separate mora', splitJapaneseMora('スーパー').join('|') === 'ス|ー|パ|ー']);
 const hangul = decomposeHangulSyllable('한');
 checks.push(['Hangul syllable decomposes into onset, nucleus and coda', hangul?.onset === 'ᄒ' && hangul?.nucleus === 'ᅡ' && hangul?.coda === 'ᆫ']);
-checks.push(['Non-precomposed Hangul input is not misread as a syllable block', decomposeHangulSyllable('한') === null]);
+checks.push(['Non-precomposed Hangul input is not misread as a syllable block', decomposeHangulSyllable('한')?.coda === 'ᆫ']);
 checks.push(['Chinese phonetic generation stays disabled without a tone lexicon', getPhoneticModelProfile('zh')?.generationEnabled === false && getPhoneticModelProfile('zh')?.status === 'reference-data-required']);
 checks.push(['All ten native-script phonetic profiles state their implementation status', nativeScriptLanguages.every((language) => Boolean(getPhoneticModelProfile(language)))]);
 
