@@ -8,10 +8,13 @@ process.env.CHROME_PATH ||= chromium.executablePath();
 const outputDir = 'artifacts/lighthouse';
 await mkdir(outputDir, { recursive: true });
 
-const server = spawn('npm', ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
-  stdio: 'ignore',
-  shell: process.platform === 'win32',
-});
+const isLocalPreview = new URL(baseUrl).hostname === '127.0.0.1' || new URL(baseUrl).hostname === 'localhost';
+const server = isLocalPreview
+  ? spawn('npm', ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
+      stdio: 'ignore',
+      shell: process.platform === 'win32',
+    })
+  : null;
 
 try {
   let ready = false;
@@ -22,7 +25,7 @@ try {
     } catch {}
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
-  if (!ready) throw new Error('Vite preview did not become available at ' + baseUrl);
+  if (!ready) throw new Error('Audit target did not become available at ' + baseUrl);
 
   const args = [
     'lighthouse', baseUrl,
@@ -40,5 +43,5 @@ try {
   if (code !== 0) throw new Error('Lighthouse exited with code ' + code);
   console.log('Lighthouse reports written to ' + outputDir + '/home.report.html and .report.json');
 } finally {
-  server.kill('SIGTERM');
+  server?.kill('SIGTERM');
 }
