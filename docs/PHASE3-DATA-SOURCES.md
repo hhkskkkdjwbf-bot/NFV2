@@ -3,7 +3,7 @@
 ## Résultat et limites
 Ce commit met en place le registre de provenance `src/data/datasetManifest.ts` et un contrôle automatisé empêchant qu'une source candidate soit traitée comme une source approuvée. **Aucun corpus externe n'est encore importé dans le moteur** : la vérification d'une page de licence ne suffit pas à autoriser la redistribution d'un dump ou d'une base transformée.
 
-Les 19 familles de phrases déjà présentes dans `src/data/phraseBanks.ts` et les banques procédurales sont classées `editorial-unverified`. Le dépôt ne contient pas encore de preuve d'auteur/contributeur ni de licence explicite pour chaque entrée. Elles restent utilisables dans l'état actuel du site, mais ne doivent pas être présentées comme du domaine public ou des données libres, ni relicenciées sans confirmation des droits.
+Le champ `runtimeEnabled` signale si une banque est actuellement utilisée par l'application; il ne vaut pas approbation juridique. `getRuntimeDatasetSources()` ne retourne que les sources ayant passé le contrôle d'approbation. Ainsi, les banques historiques peuvent rester actives tout en étant signalées comme non vérifiées.\n\nLes 19 familles de phrases déjà présentes dans `src/data/phraseBanks.ts` et les banques procédurales sont classées `editorial-unverified`. Le dépôt ne contient pas encore de preuve d'auteur/contributeur ni de licence explicite pour chaque entrée. Elles restent utilisables dans l'état actuel du site, mais ne doivent pas être présentées comme du domaine public ou des données libres, ni relicenciées sans confirmation des droits.
 
 ## Sources recensées
 

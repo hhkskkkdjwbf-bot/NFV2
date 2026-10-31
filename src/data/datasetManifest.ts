@@ -13,7 +13,7 @@ export const DATASET_SOURCES:DatasetSource[]=[
 {id:'tatoeba',name:'Tatoeba',status:'candidate-review',languages:['Multilingual; coverage varies'],contentTypes:['sentences','translations','usage patterns'],license:'Per-contribution terms; commonly CC BY 2.0 FR, some CC0',attribution:'Individual contributor and sentence URL',sourceUrl:'https://tatoeba.org/',version:'Not pinned; no import authorized',redistribution:'allowed-with-conditions',obligations:['Check each contribution license','Retain contributor and sentence identifiers','Do not assume one license covers the export'],runtimeEnabled:false},
 {id:'cmudict',name:'CMU Pronouncing Dictionary',status:'candidate-review',languages:['en-US'],contentTypes:['pronunciations','ARPAbet phonemes'],license:'BSD 2-Clause',attribution:'Carnegie Mellon University / CMUSphinx contributors',sourceUrl:'https://github.com/cmusphinx/cmudict',version:'Not pinned; no import authorized',redistribution:'allowed-with-conditions',obligations:['Retain complete copyright and license notice','Use for pronunciation only, not as creative-name examples'],runtimeEnabled:false}
 ];
-export const getRuntimeDatasetSources=()=>DATASET_SOURCES.filter(x=>x.runtimeEnabled);
+export const getRuntimeDatasetSources=()=>DATASET_SOURCES.filter(isDatasetEligibleForRuntime);
 export function isDatasetEligibleForRuntime(x:DatasetSource):boolean {
  return x.status==='approved' && x.runtimeEnabled && !!x.license.trim() && !!x.attribution.trim()
  && /^https:\/\//.test(x.sourceUrl) && !!x.version.trim()
