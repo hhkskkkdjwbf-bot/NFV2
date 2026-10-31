@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId } from '../types';
 import { Logo } from './Logo';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
 import { getTranslations } from '../i18n';
-import { getLocalizedGeneratorShortTitle } from '../i18n/generatorTitles';
 import { ShieldAlert, Facebook } from 'lucide-react';
 
 interface FooterProps {
@@ -12,6 +12,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [settings, setSettings] = useState(getAppSettings());
 
   useEffect(() => subscribeToSettings(setSettings), []);
