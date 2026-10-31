@@ -235,3 +235,19 @@ Commits :
 - Tests morphologiques : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/227e2ff956d66861fbc2e5c610828a028d78edba
 
 **État global :** le socle orthographique et quelques primitives morphologiques sont en place. Les banques natives, les règles grammaticales intégrées aux générateurs, la relecture humaine et le nouveau rapport 6 552 scénarios restent à faire. Aucune amélioration de naturalité ne doit être déclarée avant ces validations.
+## 14. Première analyse phonétique et registre de sources — 2026-10-31
+
+Un module `src/services/phoneticUnits.ts` ajoute deux analyses limitées et explicites :
+- japonais : segmentation des kana en mora, avec attachement des petits kana ;
+- coréen : décomposition algorithmique d'un bloc Hangul précomposé en attaque, noyau et coda selon les indices Unicode.
+
+Les huit autres profils (`zh`, `ru`, `uk`, `el`, `he`, `hi`, `bn`, `th`) indiquent explicitement que des données de prononciation fiables sont nécessaires. La génération phonétique reste désactivée pour les dix langues. Ces fonctions d'analyse ne sont ni une transcription IPA complète ni une autorisation de synthétiser des prénoms.
+
+Le manifeste de données référence désormais Onomaverse v2026.10 comme piste de recherche uniquement, désactivée à l'exécution. La page des datasets annonce CC BY 4.0 et des tables de translittération jusqu'à 94 langues, mais les formes principales de la table de fréquence sont latines. En outre, les conditions d'utilisation du site restreignent la redistribution substantielle de la base et le téléchargement automatisé en masse. Il faut résoudre cette portée juridique et vérifier les licences des sources avant tout import. Les translittérations ne seront pas confondues avec des graphies de naissance attestées. Source de piste : https://onomaverse.com/datasets ; conditions : https://onomaverse.com/ne/legal/terms-of-service.
+
+Commit analyse phonétique : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/c080536293c65caf011d1bcdcc777c0bfcacdc16
+Commit tests mora/Hangul : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/e746cf392539b9f091b8a71260adff9e6ca667b7
+Commit registre candidat : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/32a77cda34ab6d3a7af0d0286d00c45c7ddf9f33
+Correction des métadonnées du candidat : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/53f60248c838a4ea9bcf6b9cc411ac2a3732e0da
+
+**À ne pas confondre :** les deux premières analyses phonétiques sont des outils de segmentation, pas des modèles complets de prononciation. Aucune des dix banques de prénoms n'est encore importée ou approuvée. La relecture des 840 échantillons et l'audit de 6 552 scénarios après stabilisation restent obligatoires.
