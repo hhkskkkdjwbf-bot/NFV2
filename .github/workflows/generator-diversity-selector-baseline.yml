@@ -1,21 +1,25 @@
-name: Diversity selector A/B baseline
+name: Diversity selector A/B comparison
 
 on:
   push:
     branches: [main]
     paths:
       - '.github/workflows/generator-diversity-selector-baseline.yml'
+      - 'src/services/generatorEngine.ts'
+      - 'src/services/diversity.ts'
+      - 'scripts/generator-quality-baseline.ts'
+      - 'scripts/compare-generator-quality.mjs'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  phase4-selector-baseline:
+  paired-selector-comparison:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
     steps:
-      - name: Checkout current main
+      - name: Checkout current main and full history
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -25,22 +29,30 @@ jobs:
           node-version: 22
       - name: Install current dependencies
         run: npm install
-      - name: Prepare phase 4 selector revision
+      - name: Prepare pre-selector revision
         env:
-          SELECTOR_REF: 0c7144e245a831e1290386a5bba9599617413661
+          BEFORE_SELECTOR_REF: ef2a8376d538bc5fa5a942d8eaf2892866fab6ca
         run: |
-          git worktree add --detach /tmp/nameforge-phase4 "$SELECTOR_REF"
-          cp scripts/generator-quality-baseline.ts /tmp/nameforge-phase4/scripts/generator-quality-baseline.ts
-      - name: Run identical batch-aware audit with the phase 4 selector enabled
-        working-directory: /tmp/nameforge-phase4
+          git worktree add --detach /tmp/nameforge-before-selector "$BEFORE_SELECTOR_REF"
+          cp scripts/generator-quality-baseline.ts /tmp/nameforge-before-selector/scripts/generator-quality-baseline.ts
+      - name: Run identical audit without the candidate selector
+        working-directory: /tmp/nameforge-before-selector
         run: |
           npm install
           npx --yes tsx scripts/generator-quality-baseline.ts
-      - name: Upload phase 4 selector baseline
+          mkdir -p "$GITHUB_WORKSPACE/artifacts/diversity-selector-comparison"
+          cp artifacts/generator-quality-audit/baseline.json "$GITHUB_WORKSPACE/artifacts/diversity-selector-comparison/before.json"
+      - name: Run identical audit with the candidate selector
+        run: |
+          npm run audit:generators
+          cp artifacts/generator-quality-audit/baseline.json artifacts/diversity-selector-comparison/after.json
+      - name: Calculate paired scores
+        run: node scripts/compare-generator-quality.mjs artifacts/diversity-selector-comparison/before.json artifacts/diversity-selector-comparison/after.json artifacts/diversity-selector-comparison
+      - name: Upload selector A/B results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nameforge-phase4-selector-baseline
-          path: /tmp/nameforge-phase4/artifacts/generator-quality-audit/
+          name: nameforge-diversity-selector-ab-comparison
+          path: artifacts/diversity-selector-comparison/
           if-no-files-found: error
           retention-days: 30

@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'src/services/generatorEngine.ts'
+      - 'src/services/diversity.ts'
+      - 'src/tests/diversity.test.ts'
       - 'src/data/generators*.ts'
       - 'src/data/gamingAndSystemsGenerators.ts'
       - 'src/data/attestedBabyNames.ts'

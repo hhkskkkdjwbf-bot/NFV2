@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/compare-generator-quality.mjs'
       - 'scripts/generator-quality-baseline.ts'
+      - 'src/services/generatorEngine.ts'
+      - 'src/services/diversity.ts'
       - '.github/workflows/generator-quality-comparison.yml'
   workflow_dispatch:
 
