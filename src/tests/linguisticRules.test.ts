@@ -2,6 +2,7 @@ declare const process: { exitCode?: number };
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from '../services/linguisticRules';
 import { countOrthographicUnits, getOrthographicProfile, requiresWholeTokenGeneration, splitOrthographicUnits } from '../services/orthographicUnits';
 import { applyTurkishSuffix, inflectRegularSpanishOAdjective } from '../services/languageMorphology';
+import { decomposeHangulSyllable, getPhoneticModelProfile, splitJapaneseMora } from '../services/phoneticUnits';
 const checks: Array<[string, boolean]> = [
  ['Arabic uses native script and whole tokens', getLanguageScriptProfile('ar').scripts.includes('Arabic') && getLanguageScriptProfile('ar').requiresWholeTokens],
  ['Japanese supports Han/Hiragana/Katakana', ['Han','Hiragana','Katakana'].every((s) => getLanguageScriptProfile('ja').scripts.includes(s as never))],
@@ -39,6 +40,14 @@ checks.push(['Turkish consonant harmony remains voiced after vowel', applyTurkis
 checks.push(['Spanish regular adjective agrees in feminine singular', inflectRegularSpanishOAdjective('alto', 'feminine') === 'alta']);
 checks.push(['Spanish regular adjective agrees in masculine plural', inflectRegularSpanishOAdjective('alto', 'masculine', 'plural') === 'altos']);
 checks.push(['Spanish regular adjective agrees in feminine plural', inflectRegularSpanishOAdjective('alto', 'feminine', 'plural') === 'altas']);
+
+checks.push(['Japanese small kana attach to the preceding mora', splitJapaneseMora('きゃく').join('|') === 'きゃ|く']);
+checks.push(['Japanese long-vowel mark remains a separate mora', splitJapaneseMora('スーパー').join('|') === 'ス|ー|パ|ー']);
+const hangul = decomposeHangulSyllable('한');
+checks.push(['Hangul syllable decomposes into onset, nucleus and coda', hangul?.onset === 'ᄒ' && hangul?.nucleus === 'ᅡ' && hangul?.coda === 'ᆫ']);
+checks.push(['Non-precomposed Hangul input is not misread as a syllable block', decomposeHangulSyllable('한') === null]);
+checks.push(['Chinese phonetic generation stays disabled without a tone lexicon', getPhoneticModelProfile('zh')?.generationEnabled === false && getPhoneticModelProfile('zh')?.status === 'reference-data-required']);
+checks.push(['All ten native-script phonetic profiles state their implementation status', nativeScriptLanguages.every((language) => Boolean(getPhoneticModelProfile(language))));
 
 const failed = checks.filter(([, ok]) => !ok);
 for (const [label, ok] of checks) console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
