@@ -33,7 +33,7 @@ const nativeBase: StagedCorpusRecord = {
   id: 'native-ja-001',
   sourceId: 'reviewed-japanese-register',
   sourceRecordId: 'source-entry-001',
-  displayName: '（source spelling supplied by dataset）',
+  displayName: 'テスト',
   recordKind: 'native-name-attestation',
   languageContext: 'ja-JP',
   script: 'Jpan',
@@ -54,8 +54,22 @@ const nativeCases: Array<[string, StagedCorpusRecord, boolean, boolean]> = [
   ['reject birth counts without a source-specific contract', { ...nativeBase, observation: { year: 2025, sourceSex: 'female', count: 10 } }, false, false],
 ];
 
+const nativeScriptCases: Array<[string, StagedCorpusRecord, boolean, boolean]> = [
+  ['accept Japanese script sample', { ...nativeBase, displayName: 'あ' }, true, false],
+  ['accept Korean Hangul sample', { ...nativeBase, languageContext: 'ko-KR', script: 'Hang', displayName: '가' }, true, false],
+  ['accept Chinese Han sample', { ...nativeBase, languageContext: 'zh-Hans', script: 'Hani', displayName: '山' }, true, false],
+  ['accept Russian Cyrillic sample', { ...nativeBase, languageContext: 'ru-RU', script: 'Cyrl', displayName: 'Я' }, true, false],
+  ['accept Hindi Devanagari sample', { ...nativeBase, languageContext: 'hi-IN', script: 'Deva', displayName: 'अ' }, true, false],
+  ['accept Thai script sample', { ...nativeBase, languageContext: 'th-TH', script: 'Thai', displayName: 'ก' }, true, false],
+  ['accept Greek script sample', { ...nativeBase, languageContext: 'el-GR', script: 'Grek', displayName: 'Α' }, true, false],
+  ['accept Hebrew script sample', { ...nativeBase, languageContext: 'he-IL', script: 'Hebr', displayName: 'א' }, true, false],
+  ['accept Ukrainian Cyrillic sample', { ...nativeBase, languageContext: 'uk-UA', script: 'Cyrl', displayName: 'Ї' }, true, false],
+  ['accept Bengali script sample', { ...nativeBase, languageContext: 'bn-BD', script: 'Beng', displayName: 'অ' }, true, false],
+  ['reject Latin letters in Japanese native-script record', { ...nativeBase, displayName: 'Taro' }, false, false],
+];
+
 let failures = 0;
-for (const [label, record, expectedValid, expectedRuntime] of [...cases, ...nativeCases]) {
+for (const [label, record, expectedValid, expectedRuntime] of [...cases, ...nativeCases, ...nativeScriptCases]) {
   const result = validateStagedCorpusRecord(record);
   const ok = result.valid === expectedValid && result.runtimeEligible === expectedRuntime;
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
@@ -64,5 +78,5 @@ for (const [label, record, expectedValid, expectedRuntime] of [...cases, ...nati
     console.error(result.errors);
   }
 }
-console.log(`${cases.length + nativeCases.length - failures}/${cases.length + nativeCases.length} corpus-import contract checks passed`);
+console.log(`${cases.length + nativeCases.length + nativeScriptCases.length - failures}/${cases.length + nativeCases.length + nativeScriptCases.length} corpus-import contract checks passed`);
 if (failures) process.exitCode = 1;
