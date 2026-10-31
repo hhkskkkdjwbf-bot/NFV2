@@ -18,7 +18,8 @@
     "audit:generators": "npx tsx scripts/generator-quality-baseline.ts",
     "audit:generators:deep": "npx tsx scripts/generator-quality-deep-dive.ts",
     "review:linguistic": "npx tsx scripts/build-linguistic-review.ts",
-    "audit:toolchain": "python3 scripts/toolchain-audit.py"
+    "audit:toolchain": "python3 scripts/toolchain-audit.py",
+    "audit:linguistic": "python3 scripts/linguistic-audit.py"
   },
   "dependencies": {
     "lucide-react": "^0.475.0",
