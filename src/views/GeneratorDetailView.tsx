@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import { Sparkles, ChevronDown, Check, ArrowLeft, ShieldAlert, Star, Award, Copy, Download, Layers } from 'lucide-react';
 import { GeneratorControl } from '../components/GeneratorControl';
 import { NameCard } from '../components/NameCard';
@@ -16,9 +17,7 @@ import {
   SavedNameEntry,
 } from '../types';
 import { getAppSettings, resolveGenerationLanguage, subscribeToSettings } from '../services/settings';
-import { getLocalizedGeneratorDescription } from '../i18n/generatorContent';
 import { getLocalizedStyleLabel } from '../i18n/styleLabels';
-import { getLocalizedGeneratorTitle, getLocalizedGeneratorShortTitle } from '../i18n/generatorTitles';
 import { getLocalizedEditorialMeta } from '../i18n/localizedGeneratorMeta';
 
 interface GeneratorDetailViewProps {
@@ -30,6 +29,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
   generatorId,
   onNavigate,
 }) => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const sourceMeta = GENERATORS_METADATA[generatorId] || GENERATORS_METADATA.fantasy;
   const settings = getAppSettings();
   const [language, setLanguage] = useState(settings.language);
