@@ -14,6 +14,7 @@ on:
       - 'src/data/styles.ts'
       - 'scripts/generator-quality-baseline.ts'
       - 'scripts/generator-quality-deep-dive.ts'
+      - 'scripts/build-linguistic-review.ts'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/generator-quality-audit.yml'
