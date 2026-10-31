@@ -22,9 +22,8 @@ export interface RegionalLocaleProfile {
 const PENDING = ['lexicon', 'spelling', 'grammar', 'names', 'cultural-review'] as const;
 
 /**
- * Locale registry foundation. These tags identify real regional variants but
- * deliberately do not claim that regional vocabularies or generation rules
- * have already been authored. The parent language is an explicit fallback.
+ * Registry of regional variants. It intentionally does not claim that
+ * regional vocabularies or generation rules have already been authored.
  */
 export const REGIONAL_LOCALES: Record<RegionalLocaleTag, RegionalLocaleProfile> = {
   'en-US': { tag: 'en-US', language: 'en', region: 'US', fallback: 'en', regionalDataStatus: 'metadata-only', pendingDimensions: PENDING },
@@ -39,26 +38,78 @@ export const REGIONAL_LOCALES: Record<RegionalLocaleTag, RegionalLocaleProfile> 
   'zh-Hant': { tag: 'zh-Hant', language: 'zh', region: 'TW', script: 'Hant', fallback: 'zh', regionalDataStatus: 'metadata-only', pendingDimensions: PENDING },
 };
 
-function normalizeTag(input: string): string {
-  const parts = String(input ?? '').trim().replace(/_/g, '-').split('-').filter(Boolean);
-  if (!parts.length) return '';
-  return [parts[0].toLowerCase(), ...parts.slice(1).map((part) => part.length === 4
-    ? part[0].toUpperCase() + part.slice(1).toLowerCase()
-    : part.toUpperCase())].join('-');
+interface ParsedLocale {
+  language: string;
+  script?: string;
+  region?: string;
+}
+
+/**
+ * Parses the language/script/region core of a BCP 47 tag. Unicode extensions
+ * and private-use subtags are ignored for lookup, not copied into app data.
+ * Malformed tags are rejected instead of being partially guessed.
+ */
+function parseLocale(input: string): ParsedLocale | undefined {
+  const raw = String(input ?? '').trim().replace(/_/g, '-');
+  if (!raw) return undefined;
+  const parts = raw.split('-');
+  if (parts.some((part) => !part)) return undefined;
+
+  const language = parts[0].toLowerCase();
+  if (!/^[a-z]{2,3}$/i.test(language)) return undefined;
+
+  let script: string | undefined;
+  let region: string | undefined;
+  for (let index = 1; index < parts.length; index += 1) {
+    const part = parts[index];
+    // BCP 47 extension/private-use sequences do not affect the locale lookup.
+    if (/^[0-9a-wy-z]$/i.test(part)) break;
+    if (!script && /^[a-z]{4}$/i.test(part)) {
+      script = part[0].toUpperCase() + part.slice(1).toLowerCase();
+      continue;
+    }
+    if (!region && (/^[a-z]{2}$/i.test(part) || /^\d{3}$/.test(part))) {
+      region = part.toUpperCase();
+      continue;
+    }
+    // Variants are valid BCP 47 subtags but are irrelevant to this registry.
+    if (/^(?:[a-z0-9]{5,8}|\d[a-z0-9]{3})$/i.test(part)) continue;
+    return undefined;
+  }
+  return { language, script, region };
 }
 
 export function getRegionalLocaleProfile(input: string): RegionalLocaleProfile | undefined {
-  const normalized = normalizeTag(input);
-  return Object.prototype.hasOwnProperty.call(REGIONAL_LOCALES, normalized)
-    ? REGIONAL_LOCALES[normalized as RegionalLocaleTag]
-    : undefined;
+  const parsed = parseLocale(input);
+  if (!parsed) return undefined;
+
+  if (parsed.language === 'zh') {
+    const script = parsed.script
+      ?? (['CN', 'SG'].includes(parsed.region ?? '') ? 'Hans'
+        : ['TW', 'HK', 'MO'].includes(parsed.region ?? '') ? 'Hant' : undefined);
+    if (script === 'Hans' || script === 'Hant') {
+      return REGIONAL_LOCALES[`zh-${script}`];
+    }
+  }
+
+  if (parsed.region) {
+    const tag = `${parsed.language}-${parsed.region}`;
+    if (Object.prototype.hasOwnProperty.call(REGIONAL_LOCALES, tag)) {
+      return REGIONAL_LOCALES[tag as RegionalLocaleTag];
+    }
+  }
+  return undefined;
 }
 
-/** Returns the base generation language without silently inventing a region. */
+/**
+ * Resolves a supported language from a BCP 47 locale. Regional differences
+ * are retained by getRegionalLocaleProfile; this function returns only the
+ * base generation language and never fabricates a regional profile.
+ */
 export function resolveGenerationLanguage(input: string): GenLanguageCode | undefined {
+  const parsed = parseLocale(input);
+  if (!parsed) return undefined;
   const regional = getRegionalLocaleProfile(input);
   if (regional) return regional.language;
-  const normalized = normalizeTag(input);
-  if (/^[a-z]{2,3}$/.test(normalized)) return normalized as GenLanguageCode;
-  return undefined;
+  return parsed.language as GenLanguageCode;
 }
