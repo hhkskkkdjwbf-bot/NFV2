@@ -1,0 +1,51 @@
+name: Generator before-after comparison
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  paired-comparison:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout current main and full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install current dependencies
+        run: npm install
+      - name: Prepare baseline source revision
+        env:
+          BASELINE_REF: 7db8a742906000106c5bc43b99238ea6c60caee3
+        run: |
+          git worktree add --detach /tmp/nameforge-before "$BASELINE_REF"
+          mkdir -p /tmp/nameforge-before/scripts
+          cp scripts/generator-quality-baseline.ts /tmp/nameforge-before/scripts/generator-quality-baseline.ts
+      - name: Run the exact same baseline protocol on the pre-improvement revision
+        working-directory: /tmp/nameforge-before
+        run: |
+          npm install
+          npx --yes tsx scripts/generator-quality-baseline.ts
+          mkdir -p "$GITHUB_WORKSPACE/artifacts/generator-quality-comparison"
+          cp artifacts/generator-quality-audit/baseline.json "$GITHUB_WORKSPACE/artifacts/generator-quality-comparison/before.json"
+      - name: Run the same protocol on current main
+        run: |
+          npm run audit:generators
+          cp artifacts/generator-quality-audit/baseline.json artifacts/generator-quality-comparison/after.json
+      - name: Calculate paired, explainable scores
+        run: node scripts/compare-generator-quality.mjs artifacts/generator-quality-comparison/before.json artifacts/generator-quality-comparison/after.json artifacts/generator-quality-comparison
+      - name: Upload paired comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-before-after-quality-comparison
+          path: artifacts/generator-quality-comparison/
+          if-no-files-found: error
+          retention-days: 30
