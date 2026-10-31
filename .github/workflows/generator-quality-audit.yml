@@ -38,6 +38,8 @@ jobs:
         run: npm install
       - name: Type-check
         run: npm run lint
+      - name: Detect optional offline linguistic tools
+        run: npm run audit:toolchain
       - name: Run 234 × 28 empirical baseline
         run: npm run audit:generators
       - name: Run raw-output deep instrumentation
