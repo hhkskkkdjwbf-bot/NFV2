@@ -1,7 +1,8 @@
-export type CorpusSourceId = 'insee-prenoms-2025' | 'ssa-baby-names-national';
+export type CorpusSourceId = 'insee-prenoms-2025' | 'ssa-baby-names-national' | (string & {});
 export type CorpusRecordKind =
   | 'civil-registration-name'
   | 'ssa-card-application-name'
+  | 'native-name-attestation'
   | 'transliteration'
   | 'common-word'
   | 'pronunciation-only';
@@ -18,7 +19,7 @@ export interface StagedCorpusRecord {
   sourceRecordId: string;
   displayName: string;
   recordKind: CorpusRecordKind;
-  languageContext: 'fr-FR' | 'en-US';
+  languageContext: string;
   script: string;
   observation?: CorpusObservation;
   sourceUrl: string;
@@ -51,9 +52,26 @@ export function validateStagedCorpusRecord(record: StagedCorpusRecord): CorpusVa
   if (!SHA256.test(record.sourceFileSha256)) fail('sourceFileSha256 must be a SHA-256 checksum');
   if (!record.attribution.trim()) fail('attribution is required');
 
-  const expectedContext = record.sourceId === 'insee-prenoms-2025' ? 'fr-FR' : 'en-US';
-  if (record.languageContext !== expectedContext) {
+  const expectedContext = record.sourceId === 'insee-prenoms-2025' ? 'fr-FR'
+    : record.sourceId === 'ssa-baby-names-national' ? 'en-US' : undefined;
+  if (expectedContext && record.languageContext !== expectedContext) {
     fail(`source context must be ${expectedContext}; do not infer name origin from birth location`);
+  }
+
+  const nativeScriptByLanguage: Record<string, string> = {
+    ja: 'Jpan', ko: 'Hang', zh: 'Hani', ru: 'Cyrl', hi: 'Deva',
+    th: 'Thai', el: 'Grek', he: 'Hebr', uk: 'Cyrl', bn: 'Beng',
+  };
+  if (record.recordKind === 'native-name-attestation') {
+    const language = record.languageContext.split('-')[0].toLowerCase();
+    const expectedScript = nativeScriptByLanguage[language];
+    if (!/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(record.languageContext)) {
+      fail('native-name languageContext must be a valid base or regional language tag');
+    }
+    if (!expectedScript) fail('native-name language is not in the controlled native-bank scope');
+    else if (record.script !== expectedScript) fail(`native-name script must be ${expectedScript} for ${language}`);
+    if (!record.nativeScriptAttested) fail('native-name attestation must preserve an observed native-script form');
+    if (record.observation) fail('native-name attestation cannot carry birth statistics without a source-specific observation contract');
   }
 
   if (record.recordKind === 'civil-registration-name') {
