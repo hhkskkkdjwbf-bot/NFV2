@@ -1,0 +1,31 @@
+priority_rank,generatorId,category,language,pipeline,seed,ordinal,generated_name
+1,tactical_operation,creative,fr,curated_phrase_bank,nf-deep-01,1,Opération Aube de Fer
+2,shop,business,fr,curated_phrase_bank,nf-deep-01,1,Le Petit Bazar
+3,novel_series,creative,fr,curated_phrase_bank,nf-deep-01,1,La Couronne des Ombres
+4,guild,creative,fr,curated_phrase_bank,nf-deep-01,1,Le Cercle de Minuit
+5,hotel_name,business,en,curated_phrase_bank,nf-deep-01,1,The Velvet Key
+6,newsletter,creative,en,curated_phrase_bank,nf-deep-01,1,The Monday Mix
+7,book,creative,fr,curated_phrase_bank,nf-deep-01,1,Quand les montagnes se souviennent
+8,coffee_shop,business,el,curated_phrase_bank,nf-deep-01,1,Το Ζεστό Φλιτζάνι
+9,bakery,business,fr,curated_phrase_bank,nf-deep-01,1,Farine & Miel
+10,blog_name,creative,vi,curated_phrase_bank,nf-deep-01,1,Góc nhỏ trên mạng
+11,youtube,creative,en,curated_phrase_bank,nf-deep-01,1,The Maker’s Bench
+12,podcast,creative,en,curated_phrase_bank,nf-deep-01,1,The Daily Spark
+13,band_name,creative,fr,curated_phrase_bank,nf-deep-01,1,Les Échos Creux
+14,album_title,creative,vi,curated_phrase_bank,nf-deep-01,1,Chòm sao lặng im
+15,song_title,creative,it,curated_phrase_bank,nf-deep-01,1,Ballare nel rumore
+16,slogan,business,ar,curated_phrase_bank,nf-deep-01,1,افتح باب الممكن
+17,tavern,fantasy,th,curated_phrase_bank,nf-deep-01,1,โรงเตี๊ยมแพะเต้นรำ
+18,restaurant,business,de,curated_phrase_bank,nf-deep-01,1,Ahorn & Rebe
+19,baby_name,creative,el,attested_names,nf-deep-01,1,Charlotte
+20,online_course,business,id,procedural,nf-deep-01,1,Megasari
+21,ai_agent_workflow,innovation,de,procedural,nf-deep-01,1,Eisenburg
+22,mmorpg_server_realm,fantasy,ru,procedural,nf-deep-01,1,Ярорад
+23,astronomy_constellation,fantasy,ko,procedural,nf-deep-01,1,빛린 des Rois
+24,quantum_particle,innovation,ko,procedural,nf-deep-01,1,바람솔subatomique
+25,videogame,creative,zh,curated_phrase_bank,nf-deep-01,1,苍穹编年史
+26,cyber_lab,innovation,de,procedural,nf-deep-01,1,Steinmann
+27,ai_bot,innovation,de,procedural,nf-deep-01,1,Goldtal
+28,handle,creative,he,procedural,nf-deep-01,1,אליאבי
+29,clothing_brand,business,de,procedural,nf-deep-01,1,Eisenheim
+30,real_estate,business,he,procedural,nf-deep-01,1,ניראור

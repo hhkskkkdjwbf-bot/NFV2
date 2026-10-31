@@ -1,0 +1,91 @@
+name: Deploy NameForge to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-test-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium for Playwright and Lighthouse
+        run: npx playwright install --with-deps chromium
+      - name: Type-check
+        run: npm run lint
+      - name: Run regression tests
+        run: npm test
+      - name: Build for GitHub Pages
+        run: npm run build:gh-pages
+      - name: Run Playwright browser QA
+        run: npm run test:browser
+      - name: Run Lighthouse audit
+        run: npm run audit:lighthouse
+      - name: Upload QA and Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-quality-reports
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build-test-audit
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
+  post-deploy-audit:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium for Lighthouse
+        run: npx playwright install --with-deps chromium
+      - name: Audit the published GitHub Pages site
+        run: npm run audit:lighthouse
+        env:
+          LIGHTHOUSE_BASE_URL: https://hhkskkkdjwbf-bot.github.io/NFV2/
+      - name: Upload live Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-live-lighthouse
+          path: artifacts/lighthouse/
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,68 @@
+name: Generator quality baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/services/generatorEngine.ts'
+      - 'src/data/generators*.ts'
+      - 'src/data/gamingAndSystemsGenerators.ts'
+      - 'src/data/attestedBabyNames.ts'
+      - 'src/data/syllableEnrichment.ts'
+      - 'src/data/phraseBanks.ts'
+      - 'src/data/subcategories.ts'
+      - 'src/data/styles.ts'
+      - 'scripts/generator-quality-baseline.ts'
+      - 'scripts/generator-quality-deep-dive.ts'
+      - 'scripts/build-linguistic-review.ts'
+      - 'scripts/linguistic-audit.py'
+      - 'docs/LINGUISTIC-PIPELINE.md'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/generator-quality-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install
+      - name: Type-check
+        run: npm run lint
+      - name: Detect optional offline linguistic tools
+        run: npm run audit:toolchain
+      - name: Validate offline linguistic audit adapters
+        run: |
+          python3 -m py_compile scripts/linguistic-audit.py
+          python3 scripts/linguistic-audit.py <<'EOF' > /tmp/nameforge-linguistic-audit.jsonl
+          {"name":"Élodie","language":"fr","description":"A short name."}
+          {"name":"محمد","language":"ar"}
+          EOF
+          python3 -c "import json; rows=[json.loads(x) for x in open('/tmp/nameforge-linguistic-audit.jsonl', encoding='utf-8')]; assert len(rows)==2 and all(r['schema_version']==1 and 'findings' in r for r in rows)"
+      - name: Run 234 × 28 empirical baseline
+        run: npm run audit:generators
+      - name: Run raw-output deep instrumentation
+        run: npm run audit:generators:deep
+      - name: Build balanced human-review queue for all 28 languages
+        run: npm run review:linguistic
+      - name: Upload baseline reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-generator-quality-baseline
+          path: |
+            artifacts/generator-quality-audit/
+            artifacts/linguistic-human-review/
+          if-no-files-found: warn
+          retention-days: 30
