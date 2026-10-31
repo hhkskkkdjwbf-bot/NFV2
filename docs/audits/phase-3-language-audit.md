@@ -180,3 +180,20 @@ Le changement de code et le test ont été poussés directement sur `main` :
 - Test de régression : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/414d477bfd3c6dc380b4dade533dbd88219769eb
 
 Les tests automatisés complets et le déploiement doivent encore être confirmés par une exécution réussie du workflow de validation après ces commits.
+## 12. Règles de composition grammaticales — 2026-10-31
+
+L'audit du moteur a également confirmé que les contractions et accords français de `combineParts` étaient appliqués sans tenir compte de la langue choisie. Cela créait un risque de réécriture française dans les sorties d'autres langues.
+
+Correctifs poussés sur `main` :
+- `combineParts` reçoit maintenant le code de langue ;
+- les contractions, élisions et accords adjectivaux français sont exécutés uniquement pour `fr` ;
+- les appels du moteur transmettent la langue sélectionnée à la fonction de composition ;
+- les tests couvrent la conservation des contractions françaises et leur désactivation pour `en`.
+
+Commit moteur : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/56c585f052f3e93ab54f95b18a87f831b77202e3
+Commit propagation du code de langue : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/203cd9634bbd9c8c60c87968a2368b2a18b42b4a
+Test de régression : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/a8b16b10596c69cb903fee54f2dc4f8bbf9370ff
+
+**Limite :** ce correctif empêche l'application de règles françaises aux autres langues ; il n'ajoute pas encore les grammaires natives manquantes (déclinaisons slaves, harmonie vocalique turque/finnoise, règles de noms coréens, conventions chinoises, etc.). Les profils phonétiques contiennent encore des listes romanisées pour plusieurs écritures non latines, et les champs `vowels`/`consonants` ne sont pas actuellement utilisés par les stratégies de génération. Leur refonte doit s'appuyer sur des unités orthographiques/phonologiques propres à chaque langue et une validation compétente, pas sur une conversion automatique des tableaux latins.
+
+Le workflow complet de validation et de déploiement déclenché après les commits est encore en cours au moment de cette mise à jour ; aucune réussite de tests ou de déploiement n'est revendiquée ici.
