@@ -2,28 +2,37 @@
 
 ## Objective
 
-Add a native, high-throughput processing core without replacing the existing
-TypeScript application or changing its generation behavior prematurely.
+Provide a native, high-throughput processing core for deterministic batch workloads without replacing the browser application's TypeScript generation path prematurely.
 
 ## Responsibilities
 
-Rust is intended for measured CPU-heavy workloads:
-
+Rust currently provides an independently testable native implementation for:
 - Unicode-aware normalization and comparison keys.
-- Large-batch deduplication while preserving first-seen order.
+- Large-batch deduplication while preserving deterministic order.
 - Similarity/distance calculations.
-- Future streaming audits and large dataset processing.
-- Specialized engines only when a benchmark and quality test demonstrate a benefit.
+- Reproducible benchmark workloads shared with TypeScript.
 
-## Architecture
+Future candidates include streaming corpus audits and a WebAssembly adapter, but neither is considered production-integrated until separately implemented and tested.
 
-1. TypeScript remains the UI, orchestration layer, and compatibility baseline.
-2. Rust is an isolated library under `rust/`.
-3. The first implementation provides deterministic primitives and unit tests.
-4. A later WebAssembly adapter may expose these functions to the browser.
-5. TypeScript and Rust must run the same golden test corpus before any production
-   workload is switched to Rust.
-6. Native Rust may later power offline report generation or server-side batch jobs.
+## Architecture and production boundary
+
+1. TypeScript remains the UI, browser orchestration layer and compatibility baseline.
+2. Rust lives under `rust/` and is compiled natively in CI.
+3. The Rust test suite and the TypeScript/Rust parity benchmark run on the same deterministic input corpus.
+4. A WebAssembly adapter and browser routing are separate future deliverables.
+5. No browser workload is switched to Rust until the WASM adapter, cross-browser parity, fallback behavior and real-device performance have all been verified.
+
+## Verified benchmark baseline
+
+The latest recorded benchmark run for the same generated-name workload reported:
+
+| Batch | TypeScript | Rust native |
+|---:|---:|---:|
+| 10,000 | 96.07 ms | 10.55 ms |
+| 100,000 | 309.56 ms | 78.98 ms |
+| 1,000,000 | 2,689.16 ms | 783.91 ms |
+
+These are native benchmark timings, not browser or end-to-end page timings. They demonstrate a faster native batch path for this workload; they do not prove that adding WASM will improve mobile LCP or browser responsiveness. Re-run the workflow on the target commit before using these numbers as a current release claim.
 
 ## Safety and correctness rules
 
@@ -31,12 +40,14 @@ Rust is intended for measured CPU-heavy workloads:
 - Unicode handling must be tested with Arabic, Hebrew, CJK, Indic, Thai and Latin data.
 - Structural similarity is not linguistic validity.
 - Keep the TypeScript fallback available.
-- Do not add network calls, paid APIs, or runtime AI dependencies.
-- Do not claim a performance improvement until benchmark results compare the same
-  workload, hardware, input corpus and output correctness.
+- Do not add network calls, paid APIs or runtime AI dependencies.
+- Do not claim a performance improvement unless output parity is confirmed for the exact benchmark input.
 
 ## Current status
 
-The Rust core is an initial, independently testable foundation. It is **not yet
-connected to the browser application**. WebAssembly integration, TypeScript parity,
-representative benchmarks, and production routing remain subsequent gates.
+- Rust native implementation: **implemented and benchmarked**.
+- TypeScript/Rust parity: **passed for the 10k, 100k and 1m benchmark batches** in the recorded run.
+- Native batch performance: **measured**; see the table above.
+- WebAssembly adapter: **not implemented**.
+- Browser production routing: **not implemented**.
+- Mobile LCP, image optimization and cache improvements: **separate web-performance work; not certified by the Rust benchmark**.
