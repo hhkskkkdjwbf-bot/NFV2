@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import { Search, Sparkles, ArrowRight, Dices } from 'lucide-react';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId, LanguageCode } from '../types';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
-import { getLocalizedGeneratorDescription } from '../i18n/generatorContent';
 import { normalizeSearchText } from '../services/search';
-import { getLocalizedGeneratorTitle, getLocalizedGeneratorShortTitle } from '../i18n/generatorTitles';
 import { getShellLabels } from '../i18n/shell';
 
 interface GeneratorsListViewProps {
@@ -50,6 +49,7 @@ const CATALOGUE_COPY: Partial<Record<LanguageCode, {
 const EN_COPY = CATALOGUE_COPY.en!;
 
 export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNavigate }) => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [language, setLanguage] = useState<LanguageCode>(() => getAppSettings().language);
