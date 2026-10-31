@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           mkdir -p .corpus-work
           curl --fail --location --retry 3 'https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2025-nat_csv.zip' -o .corpus-work/insee.zip
-          curl --fail --location --retry 3 'https://www.ssa.gov/oact/babynames/names.zip' -o .corpus-work/ssa.zip
+          curl --fail --location --retry 3 --user-agent 'Mozilla/5.0 (compatible; NameForgeCorpusAudit/1.0)' --referer 'https://www.ssa.gov/oact/babynames/index.html' 'https://www.ssa.gov/oact/babynames/names.zip' -o .corpus-work/ssa.zip
           sha256sum .corpus-work/*.zip | tee .corpus-work/archive-checksums.txt
       - name: Parse archives and create isolated staging artifact
         run: python scripts/audit_official_name_archives.py --insee .corpus-work/insee.zip --ssa .corpus-work/ssa.zip --out .corpus-work/output
