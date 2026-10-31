@@ -47,3 +47,11 @@ assert.ok(corpusScript.includes('sourceInternationalForms'), 'international form
 const corpusWorkflow = readFileSync(new URL('../.github/workflows/native-bank-preproduction.yml', import.meta.url), 'utf8');
 assert.ok(corpusWorkflow.includes('python scripts/prepare_russian_native_bank.py --check-only'), 'CI must verify reproducible conversion');
 console.log('Native corpus preproduction checks passed.');
+
+const serviceWorker = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8');
+const mainEntry = readFileSync(new URL('../src/main.tsx', import.meta.url), 'utf8');
+assert.ok(mainEntry.includes('navigator.serviceWorker.register'), 'production app should register its offline asset cache');
+assert.ok(serviceWorker.includes('nameforge-static-v1'), 'hashed assets should use a versioned cache');
+assert.ok(serviceWorker.includes("request.mode === 'navigate'"), 'HTML navigation should use network-first cache strategy');
+assert.ok(serviceWorker.includes('HASHED_ASSET.test(url.pathname)'), 'only content-hashed static assets should use cache-first');
+console.log('Offline cache checks passed: versioned hashed assets and network-first HTML.');
