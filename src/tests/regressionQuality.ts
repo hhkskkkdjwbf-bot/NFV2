@@ -74,6 +74,20 @@ check('Arabic baby-name generation returns a useful batch', arabicNames.length =
 check('Arabic baby-name output uses Arabic script', arabicNames.every((item) => /\p{Script=Arabic}/u.test(item.name) && !/[A-Za-z]/u.test(item.name)), arabicNames.map((item) => item.name).join(', '));
 check('Arabic baby-name output is marked as attested', arabicNames.every((item) => item.isAttested === true));
 
+// Non-Latin locales without a reviewed, native-script bank must not silently
+// fall back to the shared French/Latin baby-name catalogue.
+const nativeScriptLocales = ['ja', 'ko', 'zh', 'ru', 'hi', 'th', 'el', 'he', 'uk', 'bn'];
+for (const lang of nativeScriptLocales) {
+  for (const k of Object.keys(memory)) delete memory[k];
+  const names = generateNames({
+    generator: 'baby_name' as any,
+    genLanguage: lang as any,
+    quantity: 10,
+    seed: `no-unreviewed-baby-name-fallback-${lang}`,
+  });
+  check(`Baby-name ${lang} does not fall back to Latin names`, names.length === 0, `(got ${names.map((item) => item.name).join(', ')})`);
+}
+
 for (const item of ATTESTED_BABY_NAMES) {
   for (const lang of TRANSLATION_ORDER) {
     const meaning = getLocalizedNameMeaning(item.meaning, lang);
