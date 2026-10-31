@@ -15,6 +15,7 @@ import { ATTESTED_BABY_NAMES, LOCALIZED_BABY_NAMES } from '../data/attestedBabyN
 import { getPhraseBank } from '../data/phraseBanks';
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from './linguisticRules';
 import { selectDiverseCandidates } from './diversity';
+import { countOrthographicUnits, requiresWholeTokenGeneration } from './orthographicUnits';
 
 const RECENT_NAMES_KEY = 'nameforge_recent_names';
 const RECENT_LIMIT = 120;
@@ -421,9 +422,9 @@ function generatePhoneticHarmony(
   const m = (randomItem(d.middle || []) as string) || '';
 
   if (length === 'short') {
-    const shortSuffixes = suffixes.filter((x) => x.length <= 3 && !x.includes(' ') && !x.includes("'"));
+    const shortSuffixes = suffixes.filter((x) => countOrthographicUnits(x, genLang) <= 3 && !x.includes(' ') && !x.includes("'"));
     const chosenS = shortSuffixes.length > 0 ? (randomItem(shortSuffixes) as string) : s;
-    const shortPrefixes = prefixes.filter((x) => x.length <= 4 && !x.includes(' ') && !x.includes("'"));
+    const shortPrefixes = prefixes.filter((x) => countOrthographicUnits(x, genLang) <= 4 && !x.includes(' ') && !x.includes("'"));
     const chosenP = shortPrefixes.length > 0 ? (randomItem(shortPrefixes) as string) : p;
     return combineParts(chosenP, chosenS, genLang);
   }
@@ -431,7 +432,7 @@ function generatePhoneticHarmony(
     if (m) {
       return combineParts(combineParts(p, m, genLang), s, genLang);
     }
-    const longPrefixes = prefixes.filter((x) => x.length >= 5 || x.includes(' '));
+    const longPrefixes = prefixes.filter((x) => countOrthographicUnits(x, genLang) >= 5 || x.includes(' '));
     const chosenP = longPrefixes.length > 0 ? (randomItem(longPrefixes) as string) : p;
     return combineParts(chosenP, s, genLang);
   }
@@ -447,6 +448,11 @@ function generateNeologism(
   genLang: GenLanguageCode,
   useLanguageRoots = genLang !== 'auto'
 ): string {
+  // Never cut a native-script word into arbitrary UTF-16 fragments. Whole-token
+  // languages stay on complete vocabulary items until reviewed phoneme models exist.
+  if (requiresWholeTokenGeneration(genLang)) {
+    return generatePhoneticHarmony(d, length, genLang, useLanguageRoots);
+  }
   // Only use single standalone words without spaces or apostrophes
   const langRules = LANGUAGE_PHONETICS[genLang] || LANGUAGE_PHONETICS.auto;
   const sourcePrefixes = useLanguageRoots && langRules.prefixes.length ? langRules.prefixes : d.prefixes;
@@ -490,6 +496,12 @@ function generatePortmanteauBlend(
 
   const first = (randomItem(rootsA) as string) || 'Nova';
   const second = (randomItem(rootsB) as string) || 'craft';
+
+  // Whole-token scripts must preserve complete lexical items; do not apply
+  // Latin vowel-dropping heuristics to kana, Han, Hangul or abugida text.
+  if (requiresWholeTokenGeneration(genLang)) {
+    return combineParts(first, second, genLang);
+  }
 
   // If either contains spaces or apostrophes, combine cleanly as distinct words
   if (first.includes(' ') || second.includes(' ') || first.includes("'") || second.includes("'") || first.length > 10) {
