@@ -6,6 +6,9 @@ on:
     paths:
       - 'src/services/generatorEngine.ts'
       - 'src/data/generators*.ts'
+      - 'src/data/gamingAndSystemsGenerators.ts'
+      - 'src/data/attestedBabyNames.ts'
+      - 'src/data/syllableEnrichment.ts'
       - 'src/data/phraseBanks.ts'
       - 'src/data/subcategories.ts'
       - 'src/data/styles.ts'
