@@ -63,7 +63,7 @@ function parseLocale(input: string): ParsedLocale | undefined {
   for (let index = 1; index < parts.length; index += 1) {
     const part = parts[index];
     // BCP 47 extension/private-use sequences do not affect the locale lookup.
-    if (/^[0-9a-wy-z]$/i.test(part)) break;
+    if (/^[0-9a-z]$/i.test(part)) break;
     if (!script && /^[a-z]{4}$/i.test(part)) {
       script = part[0].toUpperCase() + part.slice(1).toLowerCase();
       continue;
