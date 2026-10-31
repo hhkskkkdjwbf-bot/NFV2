@@ -28,7 +28,7 @@ function scripts(s: string): string[] {
     ['Other',/[\p{L}&&[^\p{Script=Latin}]]/v],
   ];
   const found = new Set<string>();
-  for (const ch of points(s)) for (const [label,re] of tests.slice(0,12)) if (re.test(ch)) found.add(label);
+  for (const ch of points(s)) for (const [label,re] of tests) if (re.test(ch)) found.add(label);
   return [...found].sort();
 }
 function grams(values: string[], size: number, fromStart: boolean) {
