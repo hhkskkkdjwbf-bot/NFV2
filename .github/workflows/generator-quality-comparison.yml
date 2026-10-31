@@ -1,6 +1,11 @@
 name: Generator before-after comparison
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/compare-generator-quality.mjs'
+      - '.github/workflows/generator-quality-comparison.yml'
   workflow_dispatch:
 
 permissions:
