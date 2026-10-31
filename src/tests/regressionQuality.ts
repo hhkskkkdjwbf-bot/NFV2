@@ -181,11 +181,11 @@ for (const { generator, lang } of localizedTitleCases) {
       generator: generator as any,
       genLanguage: lang as any,
       quantity: 20,
-      seed: \`localized-title-regression-\${generator}-\${batch}\`,
+      seed: `localized-title-regression-${generator}-${batch}`,
     });
     for (const item of names) {
       const hit = foreignTitleTokens.find((re) => re.test(item.name));
-      check(\`Localized title pool is used for \${generator} (\${lang})\`, !hit, \`→ "\${item.name}" matched \${hit}\`);
+      check(`Localized title pool is used for ${generator} (${lang})`, !hit, `→ "${item.name}" matched ${hit}`);
     }
   }
 }
