@@ -82,7 +82,11 @@ export function evaluateGeneratedName(input: NameQualityInput): NameQualityResul
   } else {
     const unexpected = observedScripts.filter(script => !expected.includes(script));
     const missingExpected = !observedScripts.some(script => expected.includes(script));
-    if (missingExpected) {
+    if (missingExpected && unexpected.length) {
+      // A fully transliterated or borrowed name can be legitimate; request review, do not reject.
+      scriptScore = 75;
+      findings.push({ code: 'SCRIPT_TRANSLITERATION_REVIEW', severity: 'warning', message: `Le script principal (${expected.join(', ')}) est absent ; vérifier si cette graphie translittérée est intentionnelle.` });
+    } else if (missingExpected) {
       scriptScore = 35;
       findings.push({ code: 'EXPECTED_SCRIPT_ABSENT', severity: 'warning', message: `Aucun script principal attendu (${expected.join(', ')}) n’a été détecté.` });
     } else if (unexpected.length) {
