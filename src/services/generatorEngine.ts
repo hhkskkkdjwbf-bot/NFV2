@@ -737,19 +737,20 @@ function buildProfessionalMetadata(
     strengths.push('Grande richesse narrative', 'Forte distinction face à la concurrence');
     watchouts.push('Testez la lisibilité rapide sur supports imprimés et en affichage réduit');
   } else {
-    strengths.push('Équilibre optimal entre originalité et fluidité', 'Prononciation universelle aisée');
+    strengths.push('Équilibre entre originalité et fluidité', 'Format facile à comparer et à tester auprès du public cible');
     watchouts.push('Vérifiez l’absence d’homonymes proches dans votre univers');
   }
 
   if (isBusiness) {
-    strengths.push('Potentiel d’impact commercial et marque ombrelle');
-    watchouts.push('Effectuez une recherche de disponibilité officielle (INPI, EUIPO, USPTO)');
+    strengths.push('Point de départ pour construire une identité de marque cohérente');
+    watchouts.push('Faites tester la prononciation, l’orthographe et la mémorisation auprès du public cible');
+    watchouts.push('Vérifiez séparément les marques (INPI, EUIPO, USPTO selon le marché), les noms de domaine et les identifiants sociaux');
   } else {
     strengths.push(`Fidèle à l’archétype ${styleLabel}`, 'Immersion thématique immédiate');
   }
 
   const disclaimer = isBusiness
-    ? 'Avertissement juridique : Les propositions sont fournies à titre d’inspiration créative. La disponibilité de marque ou de domaine doit faire l’objet d’une vérification officielle.'
+    ? 'Avertissement : proposition créative uniquement. NameForge ne vérifie ni la disponibilité juridique, ni les domaines, ni les identifiants sociaux. Effectuez ces recherches avant toute utilisation commerciale.'
     : undefined;
 
   const origin = `Forge NameForge • Archétype ${styleLabel}`;
