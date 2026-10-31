@@ -250,7 +250,7 @@ export function combineParts(p: string, s: string, language: GenLanguageCode = '
   if (!cleanS) return cleanP;
 
   // French-only article/preposition contractions must not run for other locales.
-  if (language === 'fr') {
+  if ((language === 'fr' || language === 'auto')) {
     // Merge a trailing preposition with the article that starts the second part.
     const prepMatch = cleanP.match(/^(.*?)\s*\b(du|des|de la|de l['’]|de|d['’])$/i);
     const articleMatch = cleanS.match(/^(l['’]|la\s+|le\s+|les\s+)(.+)$/i);
@@ -271,12 +271,12 @@ export function combineParts(p: string, s: string, language: GenLanguageCode = '
   }
 
   // French adjective agreement is intentionally scoped to French output.
-  if (language === 'fr' && !cleanS.includes(' ') && isFeminineHead(cleanP)) {
+  if ((language === 'fr' || language === 'auto') && !cleanS.includes(' ') && isFeminineHead(cleanP)) {
     const fem = FEMININE_ADJECTIVES[cleanS.toLowerCase()];
     if (fem) cleanS = cap(fem);
   }
 
-  if (language === 'fr') {
+  if ((language === 'fr' || language === 'auto')) {
   // French preposition agreements and elisions
   const vowelsRegex = /^[aàâeéèêiîoôuûhy]/i;
   const firstWordS = cleanS.trim().split(' ')[0] || '';
