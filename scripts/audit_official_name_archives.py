@@ -64,11 +64,12 @@ def parse_ssa(p):
     out.append(item(n,'ssa-baby-names-national',fn+':'+str(ln),y,s,c,ch))
  return out,bad,members,ch
 def main():
- a=argparse.ArgumentParser();a.add_argument('--insee',type=Path,required=True);a.add_argument('--ssa',type=Path,required=True);a.add_argument('--out',type=Path,required=True);x=a.parse_args();x.out.mkdir(parents=True,exist_ok=True)
- for p in (x.insee,x.ssa):
-  if not zipfile.is_zipfile(p):raise SystemExit('Invalid ZIP: '+str(p))
- ir,ib,im,ih=parse_insee(x.insee);sr,sb,sm,sh=parse_ssa(x.ssa)
- if not ir or not sr:raise SystemExit('At least one official archive yielded zero records; inspect its format.')
+ a=argparse.ArgumentParser();a.add_argument('--insee',type=Path,required=True);a.add_argument('--ssa',type=Path,required=False);a.add_argument('--out',type=Path,required=True);x=a.parse_args();x.out.mkdir(parents=True,exist_ok=True)
+ if not zipfile.is_zipfile(x.insee):raise SystemExit('Invalid INSEE ZIP archive.')
+ if x.ssa and not zipfile.is_zipfile(x.ssa):raise SystemExit('Invalid SSA ZIP archive.')
+ ir,ib,im,ih=parse_insee(x.insee)
+ sr,sb,sm,sh=parse_ssa(x.ssa) if x.ssa else ([],Counter(),[],None)
+ if not ir:raise SystemExit('INSEE archive yielded zero records; inspect its format.')
  allr=ir+sr;groups=defaultdict(list);forms=defaultdict(set)
  for r in allr:groups[r['sourceId']].append(r);forms[r['displayName'].casefold()].add(r['sourceId'])
  stats={}
@@ -78,11 +79,11 @@ def main():
   stats[src]={'records':len(rs),'distinct_spellings':len({r['displayName'] for r in rs}),'duplicate_observation_rows':sum(n-1 for n in exact.values() if n>1),'accent_unicode_variant_groups':sum(len(v)>1 for v in variants.values()),'years':[min(r['observation']['year'] for r in rs),max(r['observation']['year'] for r in rs)]}
  with (x.out/'staging-corpus.jsonl').open('w',encoding='utf-8') as f:
   for r in allr:f.write(json.dumps(r,ensure_ascii=False)+'\n')
- report={'status':'PREPRODUCTION_ONLY_NOT_FOR_RUNTIME','runtimeImport':False,'archives':{'insee':{'sha256':ih,'members':im},'ssa':{'sha256':sh,'members':sm}},'records':{'insee':len(ir),'ssa':len(sr),'total':len(allr)},'stats':stats,'exact_name_overlap_across_sources':sum(len(v)>1 for v in forms.values()),'rejected':{'insee':dict(ib),'ssa':dict(sb)},'limitations':['INSEE is French civil-registration context, not etymology.','SSA is US card-application context, not English etymology or complete birth coverage.','Original spellings are preserved; duplicate rows are reported, not silently removed.','Automated audit is not legal or human linguistic approval.']}
+ report={'status':'PREPRODUCTION_ONLY_NOT_FOR_RUNTIME' if sr else 'PARTIAL_INSEE_ONLY_SSA_UNAVAILABLE','runtimeImport':False,'archives':{'insee':{'sha256':ih,'members':im},'ssa':{'sha256':sh,'members':sm,'available':bool(sr)}},'records':{'insee':len(ir),'ssa':len(sr),'total':len(allr)},'stats':stats,'exact_name_overlap_across_sources':sum(len(v)>1 for v in forms.values()) if sr else None,'rejected':{'insee':dict(ib),'ssa':dict(sb)},'limitations':['INSEE is French civil-registration context, not etymology.','SSA is US card-application context, not English etymology or complete birth coverage.','Original spellings are preserved; duplicate rows are reported, not silently removed.','Automated audit is not legal or human linguistic approval.']}
  (x.out/'corpus-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  lines=['# Official corpus preproduction audit','','**PREPRODUCTION ONLY — NOT FOR RUNTIME.**','','| Source | Rows | Distinct spellings | Duplicate rows | Accent/Unicode variant groups | Years |','|---|---:|---:|---:|---:|---|']
  for src,v in stats.items():lines.append('| '+src+' | '+str(v['records'])+' | '+str(v['distinct_spellings'])+' | '+str(v['duplicate_observation_rows'])+' | '+str(v['accent_unicode_variant_groups'])+' | '+str(v['years'][0])+'–'+str(v['years'][1])+' |')
- lines+=['','Exact cross-source name-form overlap: '+str(report['exact_name_overlap_across_sources']),'','Rejected rows: '+json.dumps(report['rejected'],ensure_ascii=False),'','No record from this artifact is runtime-approved.']
+ lines+=['','Exact cross-source name-form overlap: '+str(report['exact_name_overlap_across_sources']) if sr else 'Cross-source overlap: NOT MEASURED (SSA archive unavailable).','','Rejected rows: '+json.dumps(report['rejected'],ensure_ascii=False),'','No record from this artifact is runtime-approved.']
  (x.out/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
  print(json.dumps({'status':report['status'],'records':report['records'],'stats':stats},ensure_ascii=False))
 if __name__=='__main__':main()
