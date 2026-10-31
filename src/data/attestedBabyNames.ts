@@ -740,3 +740,27 @@ export const ATTESTED_BABY_NAMES: AttestedBabyName[] = [
     style: 'international',
   },
 ];
+
+
+/**
+ * Répertoires explicitement localisés.
+ * Les noms restent dans leur graphie d'usage ; les variantes latines sont des
+ * translittérations courantes, pas des traductions. Enrichir uniquement avec des
+ * sources étymologiques vérifiables et une relecture compétente.
+ */
+export const LOCALIZED_BABY_NAMES: Partial<Record<string, AttestedBabyName[]>> = {
+  ar: [
+    { name: 'محمد', gender: 'male', origin: 'Arabe', meaning: 'Digne de louange', variants: ['Muhammad', 'Mohamed', 'Mohammed'], style: 'classic' },
+    { name: 'أحمد', gender: 'male', origin: 'Arabe', meaning: 'Celui qui loue le plus ; très digne de louange', variants: ['Ahmed', 'Ahmad'], style: 'classic' },
+    { name: 'علي', gender: 'male', origin: 'Arabe', meaning: 'Élevé, noble', variants: ['Ali'], style: 'classic' },
+    { name: 'عمر', gender: 'male', origin: 'Arabe', meaning: 'Vie, longévité', variants: ['Omar', 'Umar'], style: 'classic' },
+    { name: 'يوسف', gender: 'male', origin: 'Forme arabe de Joseph', meaning: 'Forme traditionnelle du prénom Joseph ; interprétation étymologique liée à l’idée d’accroissement', variants: ['Youssef', 'Yusuf'], style: 'classic' },
+    { name: 'إبراهيم', gender: 'male', origin: 'Forme arabe d’Abraham', meaning: 'Prénom traditionnel sémitique ; étymologie généralement interprétée comme « père d’une multitude »', variants: ['Ibrahim', 'Ibraheem'], style: 'classic' },
+    { name: 'مريم', gender: 'female', origin: 'Prénom sémitique, forme arabe de Marie', meaning: 'Étymologie discutée ; prénom traditionnel porté dans plusieurs cultures', variants: ['Maryam', 'Mariam', 'Meryem'], style: 'classic' },
+    { name: 'فاطمة', gender: 'female', origin: 'Arabe', meaning: 'Associé traditionnellement à l’idée de sevrer ou de détourner', variants: ['Fatima', 'Fatimah'], style: 'classic' },
+    { name: 'خديجة', gender: 'female', origin: 'Arabe', meaning: 'Sens traditionnel : née prématurément', variants: ['Khadija', 'Khadijah'], style: 'classic' },
+    { name: 'عائشة', gender: 'female', origin: 'Arabe', meaning: 'Vivante, pleine de vie', variants: ['Aisha', 'Aïcha', 'Ayesha'], style: 'classic' },
+    { name: 'نور', gender: 'neutral', origin: 'Arabe', meaning: 'Lumière', variants: ['Nour', 'Noor'], style: 'modern' },
+    { name: 'سلمى', gender: 'female', origin: 'Arabe', meaning: 'Paisible, saine et sauve', variants: ['Salma', 'Selma'], style: 'modern' },
+  ],
+};
