@@ -59,18 +59,26 @@ pub fn unique_ratio(items: &[String]) -> f64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test] fn unicode_nfc_equivalence() {
-        assert_eq!(comparison_key("Élodie"), comparison_key("E\\u{301}lodie"));
+
+    #[test]
+    fn unicode_nfc_equivalence() {
+        assert_eq!(comparison_key("Élodie"), comparison_key("E\u{301}lodie"));
     }
-    #[test] fn keeps_scripts_and_symbols() {
+
+    #[test]
+    fn keeps_scripts_and_symbols() {
         assert_eq!(comparison_key("مُحَمَّد"), "مُحَمَّد");
         assert_eq!(comparison_key("東京"), "東京");
         assert_eq!(comparison_key("A+B"), "a+b");
     }
-    #[test] fn deduplicates_stably() {
-        assert_eq!(deduplicate(["Élodie", "E\\u{301}lodie", "東京"]), vec!["Élodie", "東京"]);
+
+    #[test]
+    fn deduplicates_stably() {
+        assert_eq!(deduplicate(["Élodie", "E\u{301}lodie", "東京"]), vec!["Élodie", "東京"]);
     }
-    #[test] fn levenshtein_uses_unicode_scalars() {
+
+    #[test]
+    fn levenshtein_uses_unicode_scalars() {
         assert_eq!(levenshtein_distance("東京", "京都"), 2);
     }
 }
