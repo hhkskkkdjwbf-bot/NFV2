@@ -19,3 +19,13 @@ The CI workflow `.github/workflows/validate.yml` installs Chromium, runs `npm te
 
 React rendering, modals and keyboard behaviour in a real browser, responsive layouts (320–1440 px), RTL layout,
 light/dark visual checks and Core Web Vitals. `scripts/visual-qa.mjs` is the entry point for the browser checks.
+
+
+## Extended quality tools
+
+- `npm run test:browser` — Playwright browser QA (Chromium required).
+- `npm run audit:lighthouse` — Lighthouse audit of the production preview; writes HTML and JSON reports to `artifacts/lighthouse/`.
+- `npm run quality` — sequential release-quality command (lint, tests, build, browser QA, Lighthouse).
+- Markdown is used for all maintained project documentation in `README.md` and `docs/*.md`.
+
+See [QUALITY.md](./QUALITY.md) for the complete workflow and report interpretation.
