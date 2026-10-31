@@ -339,3 +339,23 @@ Commits :
 - Tests de sécurité sémantique : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/096d1e28e32c07e06a20a5379d0dd47579995b9d
 
 Le workflow déclenché sur le commit de tests est en cours au moment de cette mise à jour. Les statuts TypeScript, tests, navigateur, Lighthouse et déploiement de ce dernier commit ne sont pas encore confirmés.
+
+
+## 19. Inventaire de préparation phonétique des 28 langues — 2026-10-31
+
+Ajout de `src/services/phoneticReadiness.ts`, qui décrit explicitement les besoins phonétiques pour chacune des 28 langues naturelles du produit.
+
+État déclaré dans ce registre :
+- 28 langues inventoriées ;
+- japonais et coréen : segmentation partielle (mora pour kana, structure syllabique Hangul), sans génération phonétique activée ;
+- 26 langues : données de référence encore nécessaires ;
+- 0 langue déclarée prête pour une génération fondée sur un modèle phonétique complet.
+
+Chaque profil documente les preuves manquantes : lexique de prononciation, syllabation, accent, tons, alternances phonologiques et/ou validation native. Les besoins sont propres à la langue : par exemple, tons pour le vietnamien et le thaï, accent tonal pour le suédois et le norvégien, lectures kanji et accent de hauteur pour le japonais.
+
+Ce registre est un outil d'audit et de planification. Il ne transforme pas les pools de lettres actuels en phonèmes, ne modifie pas encore les sorties du moteur et ne remplace pas des dictionnaires de prononciation sous licence.
+
+Tests ajoutés pour garantir la couverture exacte des 28 langues et empêcher qu'une langue soit déclarée prête sans preuves. Le workflow de validation du commit de tests est déclenché ; résultat final à confirmer.
+
+Commit : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/58cf59738c1ef04604a60d21a67696ab638a83da
+Tests : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/090953271414a14436e30489d61bbe03b35ab46e
