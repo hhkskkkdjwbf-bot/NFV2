@@ -302,3 +302,40 @@ Cette réussite valide le pipeline technique et le déploiement à ce commit. El
 | 5. Refaire les 6 552 scénarios | **Exécuté** : 6 552 scénarios, 232 992 noms, 0 sortie vide parmi les sorties émises, 0 signal automatique après correction. Dix scénarios de prénoms sont volontairement sans résultat. | Rejouer après chaque intégration importante ; compléter par la revue humaine et des contrôles linguistiques/culturels, qui ne sont pas couverts par le succès CI. |
 
 **Conclusion :** l'objectif 5 a été exécuté et le pipeline de déploiement est vert. Les objectifs 1 et 2 ont une base technique partielle. Les objectifs 3 et 4 ne sont pas terminés. NameForge ne doit pas être présenté comme validé linguistiquement dans 28 langues tant que les sources, les modèles natifs et les relectures ne sont pas finalisés.
+
+
+## 18. Fondations des variantes régionales et du contrôle sémantique — 2026-10-31
+
+Deux nouveaux modules de fondation ont été ajoutés directement sur `main`.
+
+### Registre de locales régionales
+
+`src/services/regionalLocales.ts` enregistre explicitement :
+- anglais : `en-US`, `en-GB` ;
+- français : `fr-FR`, `fr-CA` ;
+- portugais : `pt-BR`, `pt-PT` ;
+- espagnol : `es-ES`, `es-MX` ;
+- chinois : `zh-Hans`, `zh-Hant`.
+
+Le registre normalise les tags, distingue les variantes et fournit la langue de base comme solution de repli explicite. Son statut est volontairement `metadata-only` : les lexiques, règles orthographiques, grammaires, prénoms et relectures propres à chaque région ne sont pas encore disponibles. Le registre n'est pas encore relié au sélecteur de langue ou au moteur de génération.
+
+### Interface de contrôle sémantique
+
+`src/services/semanticSafety.ts` définit un contrat pour les lexiques de risques documentés : langue, terme, niveau de risque, explication, URL source, licence, relecteur et date de validation humaine.
+
+- Une entrée ne peut influencer le résultat que si elle est explicitement vérifiée par un humain et accompagnée de sa provenance.
+- Une correspondance à haut risque vérifiée est bloquante ; une correspondance de niveau « review » exige une revue contextuelle.
+- En l'absence de lexique validé pour une langue, le statut est `not-screened`, jamais « sûr ».
+- Le module n'embarque aucun catalogue d'insultes et n'est pas encore connecté au moteur de génération. Il ne faut donc pas annoncer une détection opérationnelle des noms offensants.
+
+### Tests ajoutés
+
+La suite `linguisticRules.test.ts` inclut des tests de normalisation et de résolution des locales, de séparation des variantes chinoises, de repli vers la langue de base, ainsi que des tests du comportement prudent du contrôle sémantique.
+
+Commits :
+- Registre régional : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/3392a0b54d8d036911f361ac6029e54b83d7978d
+- Tests régionaux : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/ffc074c0a7c5ac761a9600506b5886cddade425d
+- Interface de contrôle sémantique : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/e21d6d26b241180f01392aea04719935c55b023d
+- Tests de sécurité sémantique : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/096d1e28e32c07e06a20a5379d0dd47579995b9d
+
+Le workflow déclenché sur le commit de tests est en cours au moment de cette mise à jour. Les statuts TypeScript, tests, navigateur, Lighthouse et déploiement de ce dernier commit ne sont pas encore confirmés.
