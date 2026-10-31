@@ -943,7 +943,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
                 <Star className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">{t.topRated.emptyText}</h4>
+              <h3 className="text-base font-bold text-white">{t.topRated.emptyText}</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 {t.topRated.emptySubtext}
               </p>
