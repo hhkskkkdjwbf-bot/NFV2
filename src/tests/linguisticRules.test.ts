@@ -3,6 +3,7 @@ import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, 
 import { countOrthographicUnits, getOrthographicProfile, requiresWholeTokenGeneration, splitOrthographicUnits } from '../services/orthographicUnits';
 import { applyTurkishSuffix, inflectRegularSpanishOAdjective } from '../services/languageMorphology';
 
+import { getLanguagePhoneticReadiness, getPhoneticReadinessSummary, LANGUAGE_PHONETIC_READINESS } from '../services/phoneticReadiness';
 import { screenNameSemantics } from '../services/semanticSafety';
 import { getRegionalLocaleProfile, resolveGenerationLanguage } from '../services/regionalLocales';
 import { decomposeHangulSyllable, getPhoneticModelProfile, splitJapaneseMora } from '../services/phoneticUnits';
@@ -71,6 +72,14 @@ checks.push(['Semantic screening never claims safety when a language lexicon is 
 checks.push(['Semantic screening blocks an exact reviewed high-risk match', screenNameSemantics('Badword', 'en', sampleRiskLexicon).status === 'blocked']);
 checks.push(['Semantic screening does not match a term inside a longer word', screenNameSemantics('badwording', 'en', sampleRiskLexicon).status === 'no-match']);
 checks.push(['Unreviewed semantic terms are ignored', screenNameSemantics('badword', 'en', [{ ...sampleRiskLexicon[0], humanVerified: false }]).status === 'not-screened']);
+
+
+const phoneticReadiness = getPhoneticReadinessSummary();
+checks.push(['Phonetic readiness inventory covers exactly 28 natural languages', phoneticReadiness.totalLanguages === 28]);
+checks.push(['No language is falsely marked phonetic-generation-ready', phoneticReadiness.generationEnabled === 0]);
+checks.push(['Japanese and Korean are explicitly partial rather than complete', getLanguagePhoneticReadiness('ja')?.readiness === 'partial-segmentation' && getLanguagePhoneticReadiness('ko')?.readiness === 'partial-segmentation']);
+checks.push(['Remaining 26 languages explicitly require pronunciation references', phoneticReadiness.referenceDataRequired === 26]);
+checks.push(['All language profiles explain missing phonetic evidence', Object.values(LANGUAGE_PHONETIC_READINESS).every(profile => profile.limitation.length > 20 && profile.requiredEvidence.length > 0)]);
 
 const failed = checks.filter(([, ok]) => !ok);
 for (const [label, ok] of checks) console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
