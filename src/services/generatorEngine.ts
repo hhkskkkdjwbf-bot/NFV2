@@ -880,10 +880,13 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   // SPECIALIZED PIPELINE: REAL ATTESTED BABY NAMES (Priorité Absolue Qualité)
   // =========================================================================
   if (targetGenerator === 'baby_name') {
+    const localizedSource = genLanguage !== 'auto' ? LOCALIZED_BABY_NAMES[genLanguage] : undefined;
     const attestedSource =
-      resolved.attestedItems && resolved.attestedItems.length > 0
-        ? resolved.attestedItems
-        : (genLanguage !== 'auto' && LOCALIZED_BABY_NAMES[genLanguage]) || ATTESTED_BABY_NAMES;
+      localizedSource && localizedSource.length > 0
+        ? localizedSource
+        : resolved.attestedItems && resolved.attestedItems.length > 0
+          ? resolved.attestedItems
+          : ATTESTED_BABY_NAMES;
 
     // Apply semantic filters first. Never silently ignore gender or a user keyword:
     // an empty result is more honest than returning unrelated names.
