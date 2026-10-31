@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import {
   Sparkles,
@@ -48,6 +48,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const [savedEntries, setSavedEntries] = useState<SavedNameEntry[]>([]);
   const [copiedName, setCopiedName] = useState<string | null>(null);
   const [localizedFaq, setLocalizedFaq] = useState<ReturnType<typeof import('../i18n/localizedFaq').getLocalizedFaq>>([]);
+  const [faqNearViewport, setFaqNearViewport] = useState(false);
+  const faqSectionRef = useRef<HTMLElement | null>(null);
 
   // Quick Express Forge state
   const [quickGenId, setQuickGenId] = useState<GeneratorId>('brand');
@@ -386,20 +388,33 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   };
   const topRatedLabels = topRatedUi[settings.language] || topRatedUi.en;
 
-  // Load the large FAQ translation catalogue after the initial page has rendered.
-  // This keeps the FAQ's 80+ KB editorial dataset out of the homepage's critical bundle.
+  // Load the large FAQ catalogue only when the user approaches that section.
+  // A fixed timer can still compete with the hero for main-thread time on slow phones.
   useEffect(() => {
+    const section = faqSectionRef.current;
+    if (!section) return;
+    if (!('IntersectionObserver' in window)) {
+      setFaqNearViewport(true);
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        setFaqNearViewport(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '800px 0px' });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!faqNearViewport) return;
     let cancelled = false;
-    const timer = window.setTimeout(() => {
-      import('../i18n/localizedFaq').then(({ getLocalizedFaq }) => {
-        if (!cancelled) setLocalizedFaq(getLocalizedFaq(settings.language));
-      });
-    }, 900);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-    };
-  }, [settings.language]);
+    import('../i18n/localizedFaq').then(({ getLocalizedFaq }) => {
+      if (!cancelled) setLocalizedFaq(getLocalizedFaq(settings.language));
+    });
+    return () => { cancelled = true; };
+  }, [faqNearViewport, settings.language]);
 
   // Filtered FAQ
   const filteredFaq = useMemo(() => {
@@ -416,16 +431,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       ========================================================= */}
       <section className="relative text-center pt-16 pb-8 px-4 max-w-5xl mx-auto">
         {/* Glow ambient background circles */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-purple-600/10 rounded-full blur-3xl pointer-events-none -z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse_at_center,rgba(147,51,234,0.10),transparent_70%)] pointer-events-none -z-10" />
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-black uppercase tracking-widest mb-8 shadow-inner">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
           <span>{t.hero.badge.replace(/\b134\b/g, String(ALL_GENERATORS_LIST.length))}</span>
         </div>
 
-        <h1 className="nf-animated-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6">
+        <h1 className="nf-animated-heading nf-hero-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6">
           {t.hero.titleA}{' '}
-          <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-300 bg-[length:200%_auto] animate-gradient-x bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-300 bg-clip-text text-transparent">
             {t.hero.titleB}
           </span>
         </h1>
@@ -1012,7 +1027,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           8. SECTION FAQ RÉÉCRITE (18 QUESTIONS COMPLÈTES)
       ========================================================= */}
-      <section data-testid="home-faq-section" className="max-w-4xl mx-auto px-4 sm:px-6">
+      <section ref={faqSectionRef} data-testid="home-faq-section" className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
             <HelpCircle className="w-3.5 h-3.5" />

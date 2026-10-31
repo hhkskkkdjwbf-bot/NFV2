@@ -45,7 +45,7 @@ assert.ok(corpusScript.includes('EXPECTED_SHA256'), 'Russian conversion must pin
 assert.ok(corpusScript.includes('runtimeEligible'), 'Russian staged records must carry runtime gate');
 assert.ok(corpusScript.includes('sourceInternationalForms'), 'international forms must remain separate');
 const corpusWorkflow = readFileSync(new URL('../.github/workflows/native-bank-preproduction.yml', import.meta.url), 'utf8');
-assert.ok(corpusWorkflow.includes('python scripts/prepare_russian_native_bank.py --check-only'), 'CI must verify reproducible conversion');
+assert.ok(corpusWorkflow.includes('python scripts/prepare_russian_native_bank.py') && corpusWorkflow.includes('git diff --exit-code'), 'CI must verify reproducible conversion');
 console.log('Native corpus preproduction checks passed.');
 
 const serviceWorker = readFileSync(new URL('../public/sw.js', import.meta.url), 'utf8');
