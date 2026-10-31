@@ -7,7 +7,7 @@
 - Upstream path: `data/names.csv`
 - Upstream Git blob SHA-1: `58478fe0d910ac400be6ba25022fcd1a7e932428`
 - Raw file size: 873328 bytes
-- SHA-256 of the exact decoded source bytes: `9a5680f48cf7accf5df118ed923b7f56ce26731fca67be7eeb6b405cbe06eb3f`
+- SHA-256 of the exact decoded source bytes: `a8baa5aac8edf49ec317f3d6ba2556e3b12d63de883b2ee4150fd7ee57f62a77`
 - Format: CSV, UTF-8 with BOM, comma-separated; multi-value fields use semicolon separators
 - Dataset scope: 1,551 Russian given names (809 male, 742 female), according to upstream documentation
 - Licence: Creative Commons Attribution 4.0 International (CC BY 4.0); see `LICENSE-NEN.txt`

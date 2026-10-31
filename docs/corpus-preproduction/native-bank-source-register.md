@@ -30,7 +30,7 @@ Avant toute intégration, chaque source doit avoir un fichier/version figé, ses
 
 - Fichier : `raw/ru/names.csv`
 - Révision amont : `38b3cad3aa123326be8bb97b0e9a3c0e5c7f54e6`
-- SHA-256 du fichier brut : `9a5680f48cf7accf5df118ed923b7f56ce26731fca67be7eeb6b405cbe06eb3f`
+- SHA-256 du fichier brut : `a8baa5aac8edf49ec317f3d6ba2556e3b12d63de883b2ee4150fd7ee57f62a77`
 - Taille : 873328 octets
 - Licence et attribution : `raw/ru/LICENSE-NEN.txt` et `raw/ru/SOURCE.md`
 
