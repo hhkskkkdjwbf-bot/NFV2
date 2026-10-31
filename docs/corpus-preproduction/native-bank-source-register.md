@@ -1,53 +1,63 @@
 # NameForge V2 — Registre des sources candidates pour les banques natives
 
-- État du registre : recherche documentaire initiale, préproduction uniquement
+- État du registre : recherche documentaire + premier snapshot brut en préproduction
 - Date de vérification : 2026-10-31
 - Périmètre : `ja`, `ko`, `zh`, `ru`, `hi`, `th`, `el`, `he`, `uk`, `bn`
-- Politique : aucune ligne de prénom n'est importée par ce registre. Il ne constitue pas un corpus de prénoms.
+- Politique : aucun prénom de ce dossier n'est intégré à un générateur public.
 
 ## Décision générale
 
-Aucune banque native n'est déclarée prête à intégrer. Les pages et licences ci-dessous identifient des pistes et leurs limites. Avant tout import, il faut télécharger un fichier source précis, figer sa version, conserver les notices et le texte de licence, calculer son SHA-256, documenter la provenance de chaque entrée, dédupliquer sans fusionner les graphies, distinguer les noms natifs des translittérations, puis faire relire les échantillons par un locuteur compétent.
+Une seule source a franchi le seuil documentaire et a été copiée en préproduction : le corpus russe NEN sous CC BY 4.0, avec son fichier de licence et son attribution obligatoire. Les autres pistes restent conditionnelles ou bloquées. Aucun nom n'est déclaré linguistiquement validé par le seul fait qu'il figure dans un corpus.
 
-Les sommes de contrôle de `SHA256SUMS` portent uniquement sur les fichiers de ce dossier de recherche. Elles ne sont pas des empreintes de corpus sources.
+Avant toute intégration, chaque source doit avoir un fichier/version figé, ses notices de licence, un SHA-256 calculé sur les octets originaux, une provenance par entrée, une séparation stricte des translittérations et une revue humaine.
 
 ## Registre par langue
 
 | Langue | Piste principale | Licence / conditions observées | Décision de préproduction |
 |---|---|---|---|
-| Japonais `ja` | EDRDG **JMnedict/ENAMDICT** : dictionnaire de noms japonais comprenant des prénoms, mais aussi des noms de famille, lieux, organisations et œuvres. Les codes `g`, `f`, `m` isolent les prénoms; `u` reste ambigu. | Licence EDRDG spécifique, pas une simple déclaration CC BY. Usage commercial autorisé sous conditions d'attribution; ne pas revendiquer le copyright du contenu; maintenir les données à jour au moins mensuellement. | **Candidat exploitable sous conditions**. Télécharger le fichier officiel, isoler les codes de prénoms, conserver l'attribution et organiser les mises à jour. |
-| Coréen `ko` | Statistiques de prénoms déclarés à la Cour suprême coréenne, exposées par des sites tiers; Wikidata peut servir de source complémentaire pour les libellés natifs. | Les pages consultées montrent l'existence de statistiques officielles, mais aucune licence de redistribution du fichier source n'a été confirmée ici. Wikidata structured data est CC0. | **Bloqué pour le registre officiel** jusqu'à vérification des conditions de réutilisation et obtention du fichier source. Wikidata seulement comme complément CC0, avec contrôle manuel des types d'entités. |
-| Chinois `zh` | Wikidata (libellés natifs et items de prénoms) comme amorce; les bases CJKI sont commerciales/propriétaires. Un corpus chinois signalé comme provenant d'une collaboration privée avec NCIIC ne fournit pas, dans la documentation consultée, de licence de redistribution claire. | Wikidata structured data CC0. Les bases CJKI ne sont pas retenues sans contrat/licence. La documentation du corpus privé ne suffit pas à autoriser la redistribution. | **Partiellement exploitable** : uniquement les données CC0 de Wikidata après validation des items; pas d'import du corpus privé ou propriétaire. |
-| Russe `ru` | NEN « Имена » / `russian-given-names-nen`, 1 551 entrées annoncées, avec formes natives, diminutifs et références à des statistiques ZAGS de Moscou. | CC BY 4.0 déclaré par la fiche du jeu de données; attribution exigée, avec lien vers NEN pour l'utilisation en ligne. | **Candidat exploitable sous conditions**. Vérifier le dépôt canonique, le fichier intégral, la provenance des champs, la date de version et les obligations d'attribution avant copie. |
-| Hindi `hi` | Wikidata pour les items explicitement classés comme prénoms et possédant un libellé Devanagari; portail OGD India à examiner si un jeu de données de prénoms est identifié. | Les données structurées Wikidata sont CC0. Le portail OGD India prévoit une licence ouverte gouvernementale pour les jeux concernés, mais les droits d'un jeu précis doivent être lus dans ses métadonnées; aucun corpus de prénoms précis n'a été confirmé. | **Pas de corpus officiel identifié**. Wikidata peut fournir une liste de départ CC0, à valider individuellement; ne pas assimiler cela à une liste représentative de prénoms hindi. |
-| Thaï `th` | `korkeatw/thai-names-corpus` : listes thaïes d'hommes/femmes; le dépôt indique 7 124 prénoms masculins et 5 098 féminins. | CC BY-SA 4.0 déclaré par le dépôt. L'auteur indique une collecte sur le Web et une extraction de noms de candidats électoraux; les sources amont ne sont pas toutes documentées individuellement. | **Bloqué pour import public** tant que la provenance amont et les droits sur les données compilées ne sont pas clarifiés. Licence share-alike à respecter si l'usage est autorisé. |
-| Grec `el` | Wikidata WikiProject Names — liste de prénoms grecs avec labels grecs et catégories explicites; données structurées Wikidata. | CC0 pour les données structurées. Vérifier chaque item, son type, sa langue et son écriture avant extraction. | **Candidat complémentaire exploitable** sous CC0, mais la couverture et la naturalité doivent être mesurées; ce n'est pas un registre officiel. |
-| Hébreu `he` | Jeu « שמות פרטיים בישראל » publié sur data.gov.il par l'Autorité de la population et de l'immigration; CSV annoncé, données arrêtées au 14-09-2020. | Métadonnée de licence affichée « Other (Open) »; le portail signale des erreurs possibles de conversion/transcription. La page source a renvoyé 403 pendant la vérification, donc le texte exact de licence et le fichier n'ont pas pu être contrôlés. | **Candidat à vérifier, non importable pour l'instant**. Obtenir le CSV et le texte de licence officiel; contrôler les graphies et les erreurs signalées. |
-| Ukrainien `uk` | Publications des services régionaux du ministère de la Justice donnant des listes de prénoms enregistrés; les jeux ouverts consultés sur la natalité ne contiennent pas les prénoms. Wikidata peut compléter les libellés natifs. | Les articles officiels ne prouvent pas, à eux seuls, un droit de réutilisation en corpus. Le jeu ouvert de natalité ukrainien est sous CC BY, mais ne contient pas les noms. Wikidata structured data CC0. | **Pas de fichier source de prénoms réutilisable confirmé**. Ne pas recopier les listes d'articles comme corpus sans clarification; Wikidata reste un complément CC0 à vérifier. |
-| Bengali `bn` | Wikidata pour les items de prénoms avec libellés bengalis; aucune banque officielle ou corpus natif avec licence de redistribution vérifiée n'a été confirmé pendant cette passe. | CC0 pour les données structurées Wikidata. Aucune licence de corpus tiers vérifiée. | **Pas de corpus officiel identifié**. Utiliser Wikidata uniquement comme amorce CC0, avec validation linguistique et contrôle de provenance. |
+| Japonais `ja` | EDRDG **JMnedict/ENAMDICT** : dictionnaire de noms japonais comprenant prénoms, noms de famille, lieux, organisations et œuvres. Les codes `g`, `f`, `m` isolent les prénoms; `u` reste ambigu. | Licence EDRDG spécifique. Usage commercial autorisé sous conditions d'attribution; ne pas revendiquer le copyright du contenu; maintenir les données à jour au moins mensuellement. | **Candidat exploitable sous conditions**. Pas encore de snapshot brut. |
+| Coréen `ko` | Statistiques de prénoms déclarés à la Cour suprême coréenne; Wikidata en complément pour les libellés natifs. | Aucune licence de redistribution du fichier officiel confirmée. Wikidata structured data est CC0. | **Bloqué pour le registre officiel** jusqu'à vérification des conditions et obtention du fichier source. |
+| Chinois `zh` | Wikidata (libellés natifs et items de prénoms); bases CJKI commerciales/propriétaires; corpus issu d'une collaboration privée avec NCIIC. | Wikidata structured data CC0. Pas de licence claire identifiée pour le corpus privé; CJKI non retenu sans contrat. | **Partiellement exploitable** via Wikidata après validation individuelle des items seulement. |
+| Russe `ru` | NEN « Имена » / `mdanina/nen-imena-dataset`, 1 551 entrées annoncées (809 masculines, 742 féminines). Snapshot copié dans `raw/ru/names.csv`. | CC BY 4.0. Attribution exacte obligatoire : « Данные: НЭН — сервис „Имена“, https://n-e-n.ru/imena/ »; en ligne, le lien doit être actif. | **Snapshot brut en préproduction**. SHA-256 et licence conservés dans `raw/ru/`; conversion et revue humaine encore à faire. |
+| Hindi `hi` | Wikidata pour les items explicitement classés comme prénoms avec libellé Devanagari; portail OGD India à examiner si un jeu précis est identifié. | Wikidata CC0. La licence OGD India s'applique selon les métadonnées de chaque jeu; aucun corpus de prénoms précis confirmé. | **Pas de corpus officiel identifié**. Wikidata comme amorce CC0 seulement. |
+| Thaï `th` | `korkeatw/thai-names-corpus` : 7 124 prénoms masculins et 5 098 féminins annoncés. | CC BY-SA 4.0 déclaré par le dépôt. Sources amont collectées sur le Web et issues de noms de candidats; droits sous-jacents à clarifier. | **Bloqué pour import public** tant que la provenance amont n'est pas clarifiée. |
+| Grec `el` | Wikidata WikiProject Names — liste de prénoms grecs avec labels grecs et catégories explicites. | CC0 pour les données structurées. | **Candidat complémentaire CC0**; couverture et naturalité à mesurer. |
+| Hébreu `he` | Jeu « שמות פרטיים בישראל » de l'Autorité de la population et de l'immigration, CSV annoncé, données au 14-09-2020. | Métadonnée « Other (Open) »; le portail signale des erreurs possibles de conversion/transcription. Fichier et texte exact de licence non vérifiés directement. | **Bloqué** jusqu'à obtention du CSV et de la licence officielle. |
+| Ukrainien `uk` | Publications régionales du ministère de la Justice avec listes de prénoms; Wikidata en complément. | Les articles officiels ne prouvent pas un droit de réutilisation en corpus. Le jeu ouvert de natalité consulté ne contient pas les prénoms. | **Pas de fichier de prénoms réutilisable confirmé**. |
+| Bengali `bn` | Wikidata pour les items de prénoms avec libellés bengalis. | CC0 pour les données structurées; aucun corpus tiers avec licence vérifiée dans cette passe. | **Pas de corpus officiel identifié**. Wikidata comme amorce CC0 seulement. |
+
+## Snapshot russe — empreintes et provenance
+
+- Fichier : `raw/ru/names.csv`
+- Révision amont : `38b3cad3aa123326be8bb97b0e9a3c0e5c7f54e6`
+- SHA-256 du fichier brut : `9a5680f48cf7accf5df118ed923b7f56ce26731fca67be7eeb6b405cbe06eb3f`
+- Taille : 873328 octets
+- Licence et attribution : `raw/ru/LICENSE-NEN.txt` et `raw/ru/SOURCE.md`
+
+Le CSV est un fichier source brut. Le champ `international_forms` contient des formes internationales romanisées et ne doit jamais être fusionné dans la banque native cyrillique. `popularity_place` est un rang relatif, pas un nombre de naissances.
 
 ## Règles d'importation obligatoires
 
 1. Une source et une version par fichier brut; URL stable et date d'accès conservées.
 2. SHA-256 calculé sur les octets exacts téléchargés, avant toute transformation.
-3. Notice de licence, attribution requise et obligations de partage à conserver avec le fichier.
-4. Chaque entrée conserve `sourceId`, `sourceRecordId`, graphie originale, script, langue de contexte et référence de provenance.
-5. Une translittération est une ligne distincte, liée explicitement au prénom natif; elle ne peut pas être marquée comme graphie native attestée.
+3. Notice de licence, attribution et obligations de partage conservées avec le fichier.
+4. Chaque entrée conserve `sourceId`, `sourceRecordId`, graphie originale, script, langue et provenance.
+5. Une translittération est une ligne distincte liée au prénom natif; jamais une attestation native.
 6. Les homographes, variantes régionales et formes historiques ne sont pas fusionnés automatiquement.
-7. Les statistiques de naissance ne sont importées que si la source et son contrat autorisent explicitement ces observations.
-8. Les corpus CC BY-SA restent isolés jusqu'à décision sur la compatibilité de la licence avec la distribution de NameForge.
+7. Les statistiques de naissance ne sont importées que si la source et son contrat l'autorisent explicitement.
+8. Les corpus CC BY-SA restent isolés jusqu'à décision sur la compatibilité de la licence avec NameForge.
 9. Les banques restent hors des générateurs publics jusqu'à validation juridique, technique et humaine.
 
-## Références documentaires consultées
+## Références documentaires
 
 - EDRDG, licence des dictionnaires : https://www.edrdg.org/edrdg/licence.html
 - EDRDG, documentation JMnedict : https://www.edrdg.org/pub/Nihongo/enamdict_doc.html
-- Corée, service de statistiques des déclarations de naissance : https://efamily.scourt.go.kr/
+- Corée, statistiques des déclarations de naissance : https://efamily.scourt.go.kr/
 - Wikidata, politique de licence : https://www.wikidata.org/wiki/Wikidata:Licensing
+- NEN, dépôt canonique : https://github.com/mdanina/nen-imena-dataset
 - NEN, jeu russe : https://huggingface.co/datasets/MentalTech/russian-given-names-nen
 - Thaï, dépôt de prénoms : https://github.com/korkeatw/thai-names-corpus
 - Inde, licence OGD : https://www.data.gov.in/Godl
 - Israël, jeu officiel : https://data.gov.il/he/datasets/population_authority/firs-name
 - Ukraine, jeu de natalité (ne contient pas les prénoms) : https://data.gov.ua/dataset/d8cc2022-424b-4e7e-9460-bb7bf7f77ad9
 - Grèce, liste Wikidata : https://www.wikidata.org/wiki/Wikidata:WikiProject_Names/lists/Greek_first_names
-

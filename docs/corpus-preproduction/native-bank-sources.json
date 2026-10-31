@@ -14,8 +14,11 @@
     "bn"
   ],
   "publicIntegration": false,
-  "rawSourcesDownloaded": false,
-  "note": "This is a source-research register, not a name corpus. SHA256SUMS covers only the files in this directory, not upstream datasets.",
+  "rawSourcesDownloaded": true,
+  "stagedSourceFiles": [
+    "ru"
+  ],
+  "note": "Research register plus one raw Russian NEN source snapshot. SHA256SUMS at root covers register files only; raw/ru/SHA256SUMS covers the exact upstream source bytes and notices.",
   "languages": [
     {
       "language": "ja",
@@ -62,15 +65,20 @@
       "language": "ru",
       "script": "Cyrl",
       "candidate": "NEN russian-given-names-nen",
-      "url": "https://huggingface.co/datasets/MentalTech/russian-given-names-nen",
-      "license": "CC BY 4.0 declared by dataset publisher",
-      "status": "conditional_candidate",
+      "url": "https://github.com/mdanina/nen-imena-dataset",
+      "license": "CC BY 4.0",
+      "status": "staged_preproduction_raw",
+      "sourceCommit": "38b3cad3aa123326be8bb97b0e9a3c0e5c7f54e6",
+      "sourcePath": "data/names.csv",
+      "stagedRawPath": "docs/corpus-preproduction/raw/ru/names.csv",
+      "sourceFileSha256": "9a5680f48cf7accf5df118ed923b7f56ce26731fca67be7eeb6b405cbe06eb3f",
+      "attribution": "Данные: НЭН — сервис «Имена», https://n-e-n.ru/imena/",
       "conditions": [
-        "pin canonical repository release and full data asset",
-        "preserve required attribution and online hyperlink to NEN",
-        "review field-level provenance and native-script spelling"
-      ],
-      "sourceFileSha256": null
+        "keep the raw CSV unchanged",
+        "preserve Cyrillic name separately from international_forms",
+        "keep required online attribution hyperlink",
+        "human review and source-to-entry provenance before generator integration"
+      ]
     },
     {
       "language": "hi",
