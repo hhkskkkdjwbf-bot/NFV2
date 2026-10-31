@@ -1178,19 +1178,29 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
         formattedName = combineParts(baseName, secondary);
       }
     } else {
-      // Title format (only apply if the category explicitly provides titles or is high fantasy)
-      if (resolved.titles && resolved.titles.length > 0 && activeRandom() < 0.28) {
-        const title = (randomItem(resolved.titles) as string) || '';
+      // Prefer titles written for the selected language. Category-level title
+      // banks are not consistently localized and can otherwise inject French
+      // words into Korean, Russian, and other explicitly localized results.
+      const langRules = LANGUAGE_PHONETICS[genLanguage] || LANGUAGE_PHONETICS.auto;
+      const localizedTitles =
+        genLanguage !== 'auto' ? langRules.titleWords : [];
+      const categoryTitles = resolved.titles || [];
+      const titlesPool =
+        localizedTitles.length > 0 ? localizedTitles : categoryTitles;
+
+      if (titlesPool.length > 0 && activeRandom() < 0.28) {
+        const title = (randomItem(titlesPool) as string) || '';
         if (title) {
           formattedName = combineParts(baseName, title);
         }
       } else if (isFantasyOrLore && !baseName.includes(' ') && activeRandom() < 0.22) {
-        const langRules = LANGUAGE_PHONETICS[genLanguage] || LANGUAGE_PHONETICS.auto;
-        const titlesPool =
-          genLanguage !== 'auto' && langRules.titleWords.length > 0
-            ? langRules.titleWords
-            : (genLanguage === 'auto' ? ['le Brave', 'l’Ancien', 'le Juste', 'le Gardien'] : ['the Brave', 'the Ancient', 'the Silent', 'the Just', 'the Guardian']);
-        const title = (randomItem(titlesPool) as string) || 'le Brave';
+        const fallbackTitles =
+          genLanguage === 'auto'
+            ? ['le Brave', 'l’Ancien', 'le Juste', 'le Gardien']
+            : localizedTitles.length > 0
+              ? localizedTitles
+              : ['the Brave', 'the Ancient', 'the Silent', 'the Just', 'the Guardian'];
+        const title = (randomItem(fallbackTitles) as string) || 'the Brave';
         formattedName = combineParts(baseName, title);
       }
     }
