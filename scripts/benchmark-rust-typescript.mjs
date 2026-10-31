@@ -31,6 +31,13 @@ function distance(a, b) {
   }
   return row[x.length];
 }
+function stableJson(value) {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${stableJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
 function hashStrings(items) {
   let hash = 0xcbf29ce484222325n;
   for (const item of items) {
@@ -87,7 +94,7 @@ if (process.argv[2] === '--typescript-worker') {
     const ts = runTimed(process.execPath, [fileURLToPath(import.meta.url), '--typescript-worker', inputPath], 'TypeScript');
     const rust = runTimed(rustBin, [inputPath], 'Rust');
     const tsResult = JSON.parse(ts.stdout), rustResult = JSON.parse(rust.stdout);
-    const parity = JSON.stringify(tsResult) === JSON.stringify(rustResult);
+    const parity = stableJson(tsResult) === stableJson(rustResult);
     report.runs.push({
       input_count: size, parity,
       typescript: { elapsed_ms: ts.elapsedMs, max_rss_kb: ts.maxRssKb },
