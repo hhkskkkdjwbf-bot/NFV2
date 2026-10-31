@@ -33,6 +33,9 @@ type Scenario = {
   scriptMismatchRate: number | null;
   samples: string[];
   signals: string[];
+  withinBatchUniqueRate: number;
+  crossSeedOverlapRate: number;
+  perSeed: Array<{ seed: string; generated: number; empty: number; unique: number; uniqueRate: number; duplicateRate: number; names: string[]; topPrefixes: Array<{ value: string; count: number; share: number }>; topSuffixes: Array<{ value: string; count: number; share: number }> }>;
 };
 
 const SCRIPT_PATTERNS: Record<string, RegExp> = {
@@ -106,6 +109,7 @@ async function main() {
     for (const language of LANGUAGES) {
       const names: string[] = [];
       let empty = 0;
+      const perSeed: Scenario['perSeed'] = [];
       for (const seed of SEEDS) {
         storage.clear();
         const batch = generateNames({
@@ -114,11 +118,25 @@ async function main() {
           quantity: BATCH_SIZE,
           seed: `${seed}:${generator.id}:${language}`,
         });
+        const batchNames: string[] = [];
+        let batchEmpty = 0;
         for (const item of batch) {
           const value = String(item?.name ?? '').trim();
-          if (!value) empty++;
-          else names.push(value);
+          if (!value) { empty++; batchEmpty++; }
+          else { names.push(value); batchNames.push(value); }
         }
+        const batchUnique = new Set(batchNames.map(normalizeName));
+        perSeed.push({
+          seed,
+          generated: batchNames.length,
+          empty: batchEmpty,
+          unique: batchUnique.size,
+          uniqueRate: batchNames.length ? batchUnique.size / batchNames.length : 0,
+          duplicateRate: batchNames.length ? 1 - batchUnique.size / batchNames.length : 0,
+          names: batchNames,
+          topPrefixes: topParts(batchNames, true),
+          topSuffixes: topParts(batchNames, false),
+        });
       }
       const normalized = names.map(normalizeName);
       const unique = new Set(normalized);
@@ -127,10 +145,13 @@ async function main() {
       const scriptChecks = names.filter(n => mismatch(n, language) !== null).length;
       const duplicateRate = names.length ? 1 - unique.size / names.length : 0;
       const uniqueRate = names.length ? unique.size / names.length : 0;
+      const perBatchUniqueCount = perSeed.reduce((sum, batch) => sum + batch.unique, 0);
+      const withinBatchUniqueRate = names.length ? perBatchUniqueCount / names.length : 0;
+      const crossSeedOverlapRate = perBatchUniqueCount ? 1 - unique.size / perBatchUniqueCount : 0;
       const signals: string[] = [];
       if (empty) signals.push('empty_output');
-      if (duplicateRate >= 0.15) signals.push('high_duplicate_rate');
-      if (names.length && uniqueRate < 0.65) signals.push('low_diversity');
+      if (1 - withinBatchUniqueRate >= 0.15) signals.push('high_within_batch_duplicate_rate');
+      if (names.length && withinBatchUniqueRate < 0.65) signals.push('low_within_batch_diversity');
       if (scriptChecks && mismatchCount / scriptChecks >= 0.2) signals.push('possible_script_mismatch');
       const category = (generator as any).category || 'unknown';
       scenarios.push({
@@ -141,6 +162,9 @@ async function main() {
         empty,
         duplicateRate: Number(duplicateRate.toFixed(4)),
         uniqueRate: Number(uniqueRate.toFixed(4)),
+        withinBatchUniqueRate: Number(withinBatchUniqueRate.toFixed(4)),
+        crossSeedOverlapRate: Number(crossSeedOverlapRate.toFixed(4)),
+        perSeed,
         meanLength: lengths.length ? Number((lengths.reduce((a,b)=>a+b,0)/lengths.length).toFixed(2)) : 0,
         minLength: lengths.length ? Math.min(...lengths) : 0,
         maxLength: lengths.length ? Math.max(...lengths) : 0,
@@ -197,14 +221,14 @@ async function main() {
     '',
     '> Heuristic report only. Signals identify cases for review; they are not a subjective naturalness score.',
     '',
-    '| Generator | Category | Language | Names | Duplicate rate | Script mismatch | Signals |',
-    '|---|---|---:|---:|---:|---:|---|',
-    ...scenarios.map(s => `| ${s.generatorId} | ${s.category} | ${s.language} | ${s.generated} | ${(s.duplicateRate*100).toFixed(1)}% | ${s.scriptMismatchRate === null ? 'n/a' : (s.scriptMismatchRate*100).toFixed(1)+'%'} | ${s.signals.join(', ') || '—'} |`),
+    '| Generator | Category | Language | Names | Within-batch duplicates | Cross-seed overlap | Script mismatch | Signals |',
+    '|---|---|---:|---:|---:|---:|---:|---|',
+    ...scenarios.map(s => `| ${s.generatorId} | ${s.category} | ${s.language} | ${s.generated} | ${((1-s.withinBatchUniqueRate)*100).toFixed(1)}% | ${(s.crossSeedOverlapRate*100).toFixed(1)}% | ${s.scriptMismatchRate === null ? 'n/a' : (s.scriptMismatchRate*100).toFixed(1)+'%'} | ${s.signals.join(', ') || '—'} |`),
     '',
-    '## Highest duplicate rates',
+    '## Highest within-batch duplicate rates',
     '',
-    ...[...scenarios].sort((a,b)=>b.duplicateRate-a.duplicateRate).slice(0,30)
-      .map(s=>`- ${s.generatorId} / ${s.language}: ${(s.duplicateRate*100).toFixed(1)}% (${s.generated} names)`),
+    ...[...scenarios].sort((a,b)=>(1-a.withinBatchUniqueRate)-(1-b.withinBatchUniqueRate)).slice(0,30)
+      .map(s=>`- ${s.generatorId} / ${s.language}: ${((1-s.withinBatchUniqueRate)*100).toFixed(1)}% within batches; cross-seed overlap ${(s.crossSeedOverlapRate*100).toFixed(1)}%`),
   ];
   await writeFile(`${outputDir}/baseline.md`, lines.join('\n'), 'utf8');
   console.log(JSON.stringify({

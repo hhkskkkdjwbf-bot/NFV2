@@ -2,7 +2,7 @@
 
 ## Portée et échantillon
 
-Le contrôle automatique couvre 234 générateurs × 28 langues, soit 6 552 scénarios. Il ne constitue pas une validation linguistique.
+Le contrôle automatique couvre 234 générateurs × 28 langues, soit 6 552 scénarios. Pour distinguer les doublons d'un lot visible des répétitions entre exécutions indépendantes, l'audit mesure désormais l'unicité à l'intérieur de chaque lot de 12 noms. Le chevauchement entre graines est conservé séparément, car les tests déterministes désactivent l'historique récent. Ces mesures ne constituent pas une validation linguistique.
 
 Le workflow génère un fichier de relecture avec 30 sorties réelles par langue (840 noms au total), réparties entre plusieurs générateurs lorsque les données le permettent. Le CSV est produit dans l'artefact GitHub Actions `nameforge-generator-quality-baseline`, sous `artifacts/linguistic-human-review/review-queue-28-languages.csv`.
 
