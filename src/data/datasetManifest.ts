@@ -1,0 +1,21 @@
+export type DatasetStatus = 'editorial-unverified' | 'candidate-review' | 'approved';
+export interface DatasetSource {
+ id:string; name:string; status:DatasetStatus; languages:string[]; contentTypes:string[];
+ license:string; attribution:string; sourceUrl:string; version:string;
+ redistribution:'allowed-with-conditions'|'share-alike'|'restricted-or-unverified';
+ obligations:string[]; runtimeEnabled:boolean;
+}
+/** Candidates are not runtime data until exact releases, notices and imported records are reviewed. */
+export const DATASET_SOURCES:DatasetSource[]=[
+{id:'nameforge-editorial-phrase-banks',name:'Existing NameForge phrase banks and procedural seeds',status:'editorial-unverified',languages:['28 UI languages; per-bank coverage varies'],contentTypes:['creative phrases','prefixes','suffixes'],license:'Undeclared; contributor authorship and rights need confirmation',attribution:'NameForge repository; attribution does not prove ownership',sourceUrl:'https://github.com/hhkskkkdjwbf-bot/NFV2',version:'main snapshot at Phase 3 start',redistribution:'restricted-or-unverified',obligations:['Identify contributors','Confirm ownership or obtain written permission','Do not retroactively assign an open license'],runtimeEnabled:true},
+{id:'open-english-wordnet-2025',name:'Open English WordNet 2025',status:'candidate-review',languages:['en'],contentTypes:['common-word lemmas','synsets','semantic relations'],license:'CC BY 4.0 plus inherited Princeton WordNet license notice',attribution:'Open English WordNet Team and Princeton University WordNet',sourceUrl:'https://github.com/globalwordnet/english-wordnet',version:'2025 edition, released 2025-12-31',redistribution:'allowed-with-conditions',obligations:['Retain CC BY attribution and indicate modifications','Ship Princeton WordNet notice with copies','Filter by part of speech and sense','Do not misrepresent common words as verified names'],runtimeEnabled:false},
+{id:'wiktionary-kaikki',name:'Wiktionary extracts via Kaikki/Wiktextract',status:'candidate-review',languages:['Multilingual; coverage varies'],contentTypes:['lemmas','forms','pronunciations','etymology','translations'],license:'CC BY-SA 4.0 and GFDL 1.3; verify exact extract terms',attribution:'Wiktionary contributors; retain entry-level source links',sourceUrl:'https://kaikki.org/',version:'Not pinned; no import authorized',redistribution:'share-alike',obligations:['Preserve attribution and source links','Review ShareAlike and GFDL obligations','Keep derived records separable'],runtimeEnabled:false},
+{id:'tatoeba',name:'Tatoeba',status:'candidate-review',languages:['Multilingual; coverage varies'],contentTypes:['sentences','translations','usage patterns'],license:'Per-contribution terms; commonly CC BY 2.0 FR, some CC0',attribution:'Individual contributor and sentence URL',sourceUrl:'https://tatoeba.org/',version:'Not pinned; no import authorized',redistribution:'allowed-with-conditions',obligations:['Check each contribution license','Retain contributor and sentence identifiers','Do not assume one license covers the export'],runtimeEnabled:false},
+{id:'cmudict',name:'CMU Pronouncing Dictionary',status:'candidate-review',languages:['en-US'],contentTypes:['pronunciations','ARPAbet phonemes'],license:'BSD 2-Clause',attribution:'Carnegie Mellon University / CMUSphinx contributors',sourceUrl:'https://github.com/cmusphinx/cmudict',version:'Not pinned; no import authorized',redistribution:'allowed-with-conditions',obligations:['Retain complete copyright and license notice','Use for pronunciation only, not as creative-name examples'],runtimeEnabled:false}
+];
+export const getRuntimeDatasetSources=()=>DATASET_SOURCES.filter(x=>x.runtimeEnabled);
+export function isDatasetEligibleForRuntime(x:DatasetSource):boolean {
+ return x.status==='approved' && x.runtimeEnabled && !!x.license.trim() && !!x.attribution.trim()
+ && /^https:\/\//.test(x.sourceUrl) && !!x.version.trim()
+ && x.redistribution!=='restricted-or-unverified' && x.obligations.length>0;
+}
