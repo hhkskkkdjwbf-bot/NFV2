@@ -197,3 +197,41 @@ Test de régression : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/a8b16b1059
 **Limite :** ce correctif empêche l'application de règles françaises aux autres langues ; il n'ajoute pas encore les grammaires natives manquantes (déclinaisons slaves, harmonie vocalique turque/finnoise, règles de noms coréens, conventions chinoises, etc.). Les profils phonétiques contiennent encore des listes romanisées pour plusieurs écritures non latines, et les champs `vowels`/`consonants` ne sont pas actuellement utilisés par les stratégies de génération. Leur refonte doit s'appuyer sur des unités orthographiques/phonologiques propres à chaque langue et une validation compétente, pas sur une conversion automatique des tableaux latins.
 
 Le workflow complet de validation et de déploiement déclenché après les commits est encore en cours au moment de cette mise à jour ; aucune réussite de tests ou de déploiement n'est revendiquée ici.
+## 13. Unités orthographiques et premières règles morphologiques — 2026-10-31
+
+### Unités orthographiques
+
+Un module `src/services/orthographicUnits.ts` définit maintenant un profil explicite pour chacune des dix langues non latines signalées : japonais, coréen, chinois, russe, hindi, thaï, grec, hébreu, ukrainien et bengali.
+
+- Segmentation en graphèmes via `Intl.Segmenter` quand disponible, avec une solution de repli qui conserve les marques combinatoires, les séquences ZWJ et les signes virama.
+- Comptage des unités orthographiques au lieu de la longueur UTF-16 dans les choix de préfixes/suffixes courts ou longs.
+- Les dix langues restent en génération par mots entiers : aucune découpe arbitraire en pseudo-phonèmes.
+- Les tableaux `vowels`/`consonants` romanisés ou incomplets ont été vidés pour ces profils ; ils ne doivent plus être interprétés comme des inventaires phonologiques.
+
+Ce travail décrit des unités d'écriture, pas une transcription phonétique : les tons, mora, syllabes, phonèmes et règles prosodiques restent à modéliser à partir de références linguistiques propres à chaque langue.
+
+### Morphologie
+
+Un module `src/services/languageMorphology.ts` introduit deux fonctions explicites et testées :
+- harmonie vocalique turque avec les marqueurs de suffixe `A`, `I`, `D`, `C` ;
+- accord régulier des adjectifs espagnols en `-o` lorsque le genre et le nombre sont fournis explicitement.
+
+**Limite d'intégration :** ces fonctions sont des primitives morphologiques testables, pas encore des règles appliquées automatiquement aux générateurs. Les banques actuelles ne portent pas encore les annotations grammaticales nécessaires (type de radical, suffixe morphologique, genre, nombre, exceptions). Les appliquer à des racines créatives arbitraires serait linguistiquement risqué. Les règles slaves, grecques, hébraïques, arabes, japonaises, coréennes, chinoises, hindi, bengalies et thaïes nécessitent également des métadonnées et des validations propres à chaque système.
+
+### Banques de prénoms et licences
+
+Aucun nouveau prénom n'a été ajouté aux dix langues. Le manifeste `src/data/datasetManifest.ts` ne contient actuellement aucune source de prénoms dont la version exacte, la licence de redistribution, l'attribution et les obligations aient été approuvées. Le garde-fou de génération vide reste donc volontairement actif. Le lot de 840 échantillons est toujours en attente de notation humaine ; aucune validation native n'est revendiquée.
+
+### Tests et revalidation
+
+Les tests de `src/tests/linguisticRules.test.ts` couvrent maintenant les dix profils orthographiques, les graphèmes grec, coréen, hindi, bengali et thaï, ainsi que les règles turques et espagnoles. Ces tests doivent être confirmés par le workflow CI complet. Le nouvel audit de 6 552 scénarios doit être exécuté après stabilisation des changements ; les anciens chiffres de référence ne sont pas présentés comme des résultats post-correctif.
+
+Commits :
+- Profils orthographiques : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/9941d1fa7f0d471dc3efb0a0e64aa11cb4c62493b
+- Protection des tokens et comptage par graphèmes : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/111282179ed653b440b5a0c4d35384acb8cc764e
+- Tests orthographiques : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/a41d5f080df3c33ed523fa9f33fb6633df5ed3dc
+- Primitives morphologiques : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/9a84e3d8298e6df85fb5cc48c6e9577cb501efd6
+- Suppression des pseudo-inventaires de voyelles/consonnes : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/f48cd7de7d2ab7fa7981b827f463be6dace71086
+- Tests morphologiques : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/227e2ff956d66861fbc2e5c610828a028d78edba
+
+**État global :** le socle orthographique et quelques primitives morphologiques sont en place. Les banques natives, les règles grammaticales intégrées aux générateurs, la relecture humaine et le nouveau rapport 6 552 scénarios restent à faire. Aucune amélioration de naturalité ne doit être déclarée avant ces validations.
