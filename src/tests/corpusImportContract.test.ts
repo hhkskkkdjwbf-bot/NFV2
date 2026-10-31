@@ -28,8 +28,34 @@ const cases: Array<[string, StagedCorpusRecord, boolean, boolean]> = [
   ['reject language inferred from the wrong source context', { ...base, languageContext: 'en-US' }, false, false],
 ];
 
+const nativeBase: StagedCorpusRecord = {
+  ...base,
+  id: 'native-ja-001',
+  sourceId: 'reviewed-japanese-register',
+  sourceRecordId: 'source-entry-001',
+  displayName: '（source spelling supplied by dataset）',
+  recordKind: 'native-name-attestation',
+  languageContext: 'ja-JP',
+  script: 'Jpan',
+  observation: undefined,
+  sourceUrl: 'https://example.org/dataset',
+  release: '2026.1',
+  sourceFileSha256: 'b'.repeat(64),
+  attribution: 'Dataset attribution retained in the source manifest.',
+  nativeScriptAttested: true,
+};
+
+const nativeCases: Array<[string, StagedCorpusRecord, boolean, boolean]> = [
+  ['accept a Japanese native-script preproduction record without runtime approval', nativeBase, true, false],
+  ['reject Latin script for Japanese native-name attestation', { ...nativeBase, script: 'Latn' }, false, false],
+  ['reject romanized form marked as native-script attested', { ...nativeBase, nativeScriptAttested: false }, false, false],
+  ['reject unsupported language from controlled ten-language scope', { ...nativeBase, languageContext: 'fr-FR' }, false, false],
+  ['reject malformed native-name locale tag', { ...nativeBase, languageContext: 'ja--JP' }, false, false],
+  ['reject birth counts without a source-specific contract', { ...nativeBase, observation: { year: 2025, sourceSex: 'female', count: 10 } }, false, false],
+];
+
 let failures = 0;
-for (const [label, record, expectedValid, expectedRuntime] of cases) {
+for (const [label, record, expectedValid, expectedRuntime] of [...cases, ...nativeCases]) {
   const result = validateStagedCorpusRecord(record);
   const ok = result.valid === expectedValid && result.runtimeEligible === expectedRuntime;
   console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
@@ -38,5 +64,5 @@ for (const [label, record, expectedValid, expectedRuntime] of cases) {
     console.error(result.errors);
   }
 }
-console.log(`${cases.length - failures}/${cases.length} corpus-import contract checks passed`);
+console.log(`${cases.length + nativeCases.length - failures}/${cases.length + nativeCases.length} corpus-import contract checks passed`);
 if (failures) process.exitCode = 1;
