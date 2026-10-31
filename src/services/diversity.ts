@@ -20,15 +20,15 @@ export interface NameDiversityProfile {
 
 const points = (value: string): string[] => Array.from(value.normalize('NFC'));
 const key = (value: string): string =>
-  value.normalize('NFKC').toLocaleLowerCase().replace(/[^\\p{L}\\p{M}\\p{N}]+/gu, ' ').trim();
+  value.normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{M}\p{N}]+/gu, ' ').trim();
 
 export function getNameDiversityProfile(name: string): NameDiversityProfile {
   const normalized = key(name);
-  const tokens = normalized.split(/\\s+/u).filter(Boolean);
+  const tokens = normalized.split(/\s+/u).filter(Boolean);
   const first = points(tokens[0] || '');
   const last = points(tokens[tokens.length - 1] || '');
-  const letters = points(normalized.replace(/\\s/gu, ''));
-  const latin = /\\p{Script=Latin}/u.test(normalized);
+  const letters = points(normalized.replace(/\s/gu, ''));
+  const latin = /\p{Script=Latin}/u.test(normalized);
   const vowelCount = latin ? (normalized.match(/[aeiouyà-ÿ]/giu) || []).length : 0;
   const letterCount = Math.max(1, letters.length);
   const ratio = vowelCount / letterCount;
@@ -55,7 +55,7 @@ export function selectDiverseCandidates<T extends DiversityCandidate>(
   candidates: T[],
   limit = candidates.length
 ): T[] {
-  const remaining = candidates.map((candidate, index) => ({ candidate, index }));
+  const remaining = candidates.map((candidate) => ({ candidate }));
   const selected: T[] = [];
   const strategyCounts = new Map<string, number>();
   const onsetCounts = new Map<string, number>();
