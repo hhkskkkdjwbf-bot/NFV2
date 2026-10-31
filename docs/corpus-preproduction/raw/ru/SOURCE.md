@@ -24,3 +24,14 @@
 7. Retain the exact attribution above, including the working hyperlink wherever the data is shown online.
 
 The upstream README and licence were checked at the pinned revision. The source's full licence notice is copied alongside this file.
+
+## Structural validation performed on the staged CSV
+
+- Parsed data rows (excluding header): **1,551**
+- Distinct `name` spellings: **1,548**
+- Repeated spellings with separate gender rows: **3** — Айнур (m/f), Адель (m/f), Фирдаус (f/m)
+- Empty `name` fields: **0**
+- Names containing Cyrillic letters and no Latin letters in the `name` field: **1,551 / 1,551**
+- Human linguistic review: **not performed yet**
+
+The three repeated spellings must remain distinct source records because their gender field differs. This check validates CSV structure and the declared Unicode script only; it does not establish etymology, cultural suitability, or naturalness.

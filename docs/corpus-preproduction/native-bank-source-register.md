@@ -34,7 +34,7 @@ Avant toute intégration, chaque source doit avoir un fichier/version figé, ses
 - Taille : 873328 octets
 - Licence et attribution : `raw/ru/LICENSE-NEN.txt` et `raw/ru/SOURCE.md`
 
-Le CSV est un fichier source brut. Le champ `international_forms` contient des formes internationales romanisées et ne doit jamais être fusionné dans la banque native cyrillique. `popularity_place` est un rang relatif, pas un nombre de naissances.
+Le CSV est un fichier source brut. Le contrôle structurel a confirmé 1 551 lignes, 1 548 graphies distinctes, trois graphies répétées avec des catégories de genre différentes (Айнур, Адель, Фирдаус), aucun champ prénom vide et 1 551/1 551 graphies cyrilliques sans lettre latine. Le détail est dans `raw/ru/SOURCE.md`. Ce contrôle ne remplace pas la relecture humaine. Le champ `international_forms` contient des formes internationales romanisées et ne doit jamais être fusionné dans la banque native cyrillique. `popularity_place` est un rang relatif, pas un nombre de naissances.
 
 ## Règles d'importation obligatoires
 

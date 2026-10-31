@@ -78,7 +78,19 @@
         "preserve Cyrillic name separately from international_forms",
         "keep required online attribution hyperlink",
         "human review and source-to-entry provenance before generator integration"
-      ]
+      ],
+      "qualityChecks": {
+        "parsedRows": 1551,
+        "distinctNameSpellings": 1548,
+        "repeatedSpellingsWithSeparateGender": [
+          "Айнур (m/f)",
+          "Адель (m/f)",
+          "Фирдаус (f/m)"
+        ],
+        "emptyNameFields": 0,
+        "cyrillicOnlyNameFields": 1551,
+        "humanLinguisticReview": "pending"
+      }
     },
     {
       "language": "hi",
