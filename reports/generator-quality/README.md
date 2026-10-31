@@ -1,6 +1,6 @@
 # NameForge — quality and linguistic review
 
-The automated baseline covers 234 generators × 28 languages (6,552 scenarios). It measures output availability, duplicates, length and script-family signals. These metrics are diagnostic and do not certify linguistic quality.
+The automated baseline covers 234 generators × 28 languages (6,552 scenarios). It measures output availability, within-batch uniqueness, cross-seed overlap, length and script-family signals. Within-batch uniqueness is calculated separately for each visible 12-name batch. Cross-seed overlap is reported separately because deterministic runs disable recent-name history; it is not counted as a duplicate inside one generation. These metrics are diagnostic and do not certify linguistic quality.
 
 ## Human review
 

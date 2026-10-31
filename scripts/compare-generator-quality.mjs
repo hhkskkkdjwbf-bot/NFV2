@@ -21,6 +21,24 @@ const beforeMap = new Map(before.scenarios.map(s => [keyOf(s), s]));
 const afterMap = new Map(after.scenarios.map(s => [keyOf(s), s]));
 const WEIGHTS = { availability: 0.25, uniqueness: 0.35, scriptCompatibility: 0.25, structuralDiversity: 0.15 };
 
+function normalizedName(name) {
+  return String(name ?? '').normalize('NFKC').toLocaleLowerCase()
+    .replace(/[\\p{P}\\p{S}\\s]+/gu, ' ').trim().replace(/\\s+/g, ' ');
+}
+function repeatedAcrossSeeds(s) {
+  const seen = new Map();
+  for (const batch of s.perSeed || []) {
+    for (const name of batch.names || []) {
+      const key = normalizedName(name);
+      if (!key) continue;
+      if (!seen.has(key)) seen.set(key, { name, seeds: new Set() });
+      seen.get(key).seeds.add(batch.seed);
+    }
+  }
+  return [...seen.values()].filter(item => item.seeds.size > 1)
+    .map(item => ({ name: item.name, seedCount: item.seeds.size }));
+}
+
 function metrics(s) {
   const total = s.generated + (s.empty || 0);
   const availability = total ? 100 * s.generated / total : 0;
@@ -74,6 +92,10 @@ for (const [key, oldScenario] of beforeMap) {
     generatedAfter: newScenario.generated,
     emptyBefore: oldScenario.empty || 0,
     emptyAfter: newScenario.empty || 0,
+    repeatedNamesBefore: repeatedAcrossSeeds(oldScenario),
+    repeatedNamesAfter: repeatedAcrossSeeds(newScenario),
+    crossSeedOverlapDelta: oldMetrics.crossSeedOverlap == null || newMetrics.crossSeedOverlap == null
+      ? null : Number((newMetrics.crossSeedOverlap - oldMetrics.crossSeedOverlap).toFixed(3)),
   });
 }
 if (!rows.length) throw new Error('No matching generator/language scenarios were found.');
@@ -139,6 +161,8 @@ const report = {
   byCategory,
   largestImprovements: [...rows].sort((a,b)=>(b.delta.operationalScore ?? -Infinity)-(a.delta.operationalScore ?? -Infinity)).slice(0,30),
   largestRegressions: [...rows].sort((a,b)=>(a.delta.operationalScore ?? Infinity)-(b.delta.operationalScore ?? Infinity)).slice(0,30),
+  largestCrossSeedOverlapIncreases: [...rows]
+    .sort((a,b)=>(b.crossSeedOverlapDelta ?? -Infinity)-(a.crossSeedOverlapDelta ?? -Infinity)).slice(0,30),
   scenarios: rows,
 };
 await mkdir(outputDir, { recursive: true });
@@ -159,6 +183,12 @@ const lines = [
   `- Before: **${fmt(summary.crossSeedOverlap.before)}%**`,
   `- After: **${fmt(summary.crossSeedOverlap.after)}%**`,
   `- Change: **${fmt(summary.crossSeedOverlap.delta)} percentage points**`,
+  '',
+  '## Largest cross-seed overlap increases (diagnostic only)','',
+  '| Generator | Language | Before | After | Δ points | Repeated-name examples |',
+  '|---|---|---:|---:|---:|---|',
+  ...report.largestCrossSeedOverlapIncreases.slice(0,15).map(x =>
+    `| ${x.generatorId} | ${x.language} | ${fmt(x.before.crossSeedOverlap)}% | ${fmt(x.after.crossSeedOverlap)}% | ${fmt(x.crossSeedOverlapDelta)} | ${x.repeatedNamesAfter.slice(0,4).map(n=>n.name).join('; ') || '—'} |`),
   '',
   '## Scoring formula','',
   '- Availability (25%): generated / requested outputs.',
