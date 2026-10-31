@@ -125,6 +125,16 @@ for (const generatorId of PHRASE_BANK_GENERATORS) {
   }
 }
 
+// 5c. Commercial-name outputs include practical validation warnings and never
+// imply that a name/domain/trademark has already been cleared.
+for (const id of ['brand', 'business', 'startup']) {
+  for (const k of Object.keys(memory)) delete memory[k];
+  const names = generateNames({ generator: id as any, genLanguage: 'en', quantity: 5, seed: `commercial-review-${id}` });
+  check(`Commercial generator ${id} returns names`, names.length === 5);
+  check(`Commercial generator ${id} includes a legal availability disclaimer`, names.every((item) => Boolean(item.disclaimer && /ne vérifie ni la disponibilité juridique/i.test(item.disclaimer))));
+  check(`Commercial generator ${id} advises domain and social-handle checks`, names.every((item) => (item.watchouts || []).some((warning) => /noms de domaine.*identifiants sociaux/i.test(warning))));
+}
+
 // 6. Seeded generation is reproducible, and different seeds differ
 for (const [id, lang] of [['fantasy', 'auto'], ['brand', 'en'], ['handle', 'uk'], ['dragon', 'bn'], ['tavern', 'nb'], ['baby_name', 'fr']] as const) {
   const a = generateNames({ generator: id as any, genLanguage: lang as any, quantity: 8, seed: 'nameforge-42' }).map((n) => n.name);
