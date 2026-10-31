@@ -1,6 +1,7 @@
 declare const process: { exitCode?: number };
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from '../services/linguisticRules';
 import { countOrthographicUnits, getOrthographicProfile, requiresWholeTokenGeneration, splitOrthographicUnits } from '../services/orthographicUnits';
+import { applyTurkishSuffix, inflectRegularSpanishOAdjective } from '../services/languageMorphology';
 const checks: Array<[string, boolean]> = [
  ['Arabic uses native script and whole tokens', getLanguageScriptProfile('ar').scripts.includes('Arabic') && getLanguageScriptProfile('ar').requiresWholeTokens],
  ['Japanese supports Han/Hiragana/Katakana', ['Han','Hiragana','Katakana'].every((s) => getLanguageScriptProfile('ja').scripts.includes(s as never))],
@@ -29,6 +30,15 @@ checks.push(['Bengali vowel mark stays attached to its consonant', splitOrthogra
 checks.push(['Thai tone/ vowel marks remain attached to the base grapheme', splitOrthographicUnits('กิ', 'th').length === 1]);
 checks.push(['Kana text is counted by grapheme rather than UTF-16 code unit', countOrthographicUnits('が', 'ja') === 1]);
 checks.push(['Orthographic profiles do not claim phonetic transcription', nativeScriptLanguages.every((language) => getOrthographicProfile(language)?.generation === 'whole-token')]);
+
+checks.push(['Turkish back-vowel harmony selects a', applyTurkishSuffix('okul', 'A') === 'okula']);
+checks.push(['Turkish front-vowel harmony selects e', applyTurkishSuffix('ev', 'A') === 'eve']);
+checks.push(['Turkish high-vowel harmony selects ü', applyTurkishSuffix('göz', 'I') === 'gözü']);
+checks.push(['Turkish consonant harmony devoices after p', applyTurkishSuffix('kitap', 'DAn') === 'kitaptan']);
+checks.push(['Turkish consonant harmony remains voiced after vowel', applyTurkishSuffix('ev', 'DA') === 'evde']);
+checks.push(['Spanish regular adjective agrees in feminine singular', inflectRegularSpanishOAdjective('alto', 'feminine') === 'alta']);
+checks.push(['Spanish regular adjective agrees in masculine plural', inflectRegularSpanishOAdjective('alto', 'masculine', 'plural') === 'altos']);
+checks.push(['Spanish regular adjective agrees in feminine plural', inflectRegularSpanishOAdjective('alto', 'feminine', 'plural') === 'altas']);
 
 const failed = checks.filter(([, ok]) => !ok);
 for (const [label, ok] of checks) console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
