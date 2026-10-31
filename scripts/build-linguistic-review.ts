@@ -26,7 +26,7 @@ function reviewSignals(name: string, profile: string[], lang: string): string[] 
   if (/[\p{Script=Latin}]/u.test(name) && profile.some(s => s !== 'Latin') && lang !== 'ja') {
     signals.push('mixed_script_review');
   }
-  if (/(.)\\1{3,}/u.test(name)) signals.push('repeated_character_review');
+  if (/(.)\1{3,}/u.test(name)) signals.push('repeated_character_review');
   if (lang !== 'fr' && name === name.normalize('NFC') && /[A-Za-zÀ-ÖØ-öø-ÿ]/u.test(name) && profile.length === 1 && profile[0] === 'Latin') {
     signals.push('attested_name_locale_review');
   }
