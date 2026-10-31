@@ -71,7 +71,7 @@ for (const k of Object.keys(memory)) delete memory[k];
 const arabicNames = generateNames({ generator: 'baby_name' as any, genLanguage: 'ar', quantity: 10, seed: 'arabic-native-names' });
 check('Arabic baby-name bank exists', (LOCALIZED_BABY_NAMES.ar?.length || 0) >= 10);
 check('Arabic baby-name generation returns a useful batch', arabicNames.length === 10, `(got ${arabicNames.length})`);
-check('Arabic baby-name output uses Arabic script', arabicNames.every((item) => /\\p{Script=Arabic}/u.test(item.name) && !/[A-Za-z]/u.test(item.name)), arabicNames.map((item) => item.name).join(', '));
+check('Arabic baby-name output uses Arabic script', arabicNames.every((item) => /\p{Script=Arabic}/u.test(item.name) && !/[A-Za-z]/u.test(item.name)), arabicNames.map((item) => item.name).join(', '));
 check('Arabic baby-name output is marked as attested', arabicNames.every((item) => item.isAttested === true));
 
 for (const item of ATTESTED_BABY_NAMES) {
