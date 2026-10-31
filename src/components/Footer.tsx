@@ -93,9 +93,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
           {/* Fantasy Column */}
           <div>
-            <h4 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
+            <h2 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
               {t.exploreTitle}
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs">
               {fantasyGens.map((gen) => (
                 <li key={gen.id}>
@@ -113,9 +113,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
           {/* Business Column */}
           <div>
-            <h4 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
+            <h2 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
               {t.businessTitle}
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs">
               {businessGens.map((gen) => (
                 <li key={gen.id}>
@@ -133,9 +133,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
           {/* Creative & Tools Column */}
           <div>
-            <h4 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
+            <h2 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-4">
               {t.creativeTitle}
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs mb-6">
               {creativeGens.map((gen) => (
                 <li key={gen.id}>
@@ -150,9 +150,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               ))}
             </ul>
 
-            <h4 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-2">
+            <h2 className="nf-footer-heading text-xs font-bold uppercase tracking-wider mb-2">
               {t.toolsTitle}
-            </h4>
+            </h2>
             <ul className="space-y-2 text-xs">
               <li>
                 <button
