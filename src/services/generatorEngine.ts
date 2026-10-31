@@ -243,24 +243,26 @@ function isFeminineHead(prefix: string): boolean {
   return (head && FEMININE_HEAD_NOUNS.has(stripped || head.toLowerCase())) || (words.length === 1 && /^l['’]/i.test(head) && FEMININE_HEAD_NOUNS.has(stripped));
 }
 
-export function combineParts(p: string, s: string): string {
+export function combineParts(p: string, s: string, language: GenLanguageCode = 'fr'): string {
   let cleanP = String(p || '').trim();
   let cleanS = String(s || '').trim();
   if (!cleanP) return cleanS;
   if (!cleanS) return cleanP;
 
-  // Merge a trailing preposition with the article that starts the second part:
-  // "du" + "la Plaine" -> "de la Plaine", "de" + "l’Infini" -> "de l’Infini", "du" + "les Rois" -> "des Rois".
-  const prepMatch = cleanP.match(/^(.*?)\s*\b(du|des|de la|de l['’]|de|d['’])$/i);
-  const articleMatch = cleanS.match(/^(l['’]|la\s+|le\s+|les\s+)(.+)$/i);
-  if (prepMatch && articleMatch) {
-    const head = prepMatch[1] ? `${prepMatch[1]} ` : '';
-    const art = articleMatch[1].trim().toLowerCase().replace('’', "'");
-    const rest = articleMatch[2];
-    if (art === "l'") return cleanWord(`${head}de l’${rest}`);
-    if (art === 'la') return cleanWord(`${head}de la ${rest}`);
-    if (art === 'le') return cleanWord(`${head}du ${rest}`);
-    return cleanWord(`${head}des ${rest}`);
+  // French-only article/preposition contractions must not run for other locales.
+  if (language === 'fr') {
+    // Merge a trailing preposition with the article that starts the second part.
+    const prepMatch = cleanP.match(/^(.*?)\s*\b(du|des|de la|de l['’]|de|d['’])$/i);
+    const articleMatch = cleanS.match(/^(l['’]|la\s+|le\s+|les\s+)(.+)$/i);
+    if (prepMatch && articleMatch) {
+      const head = prepMatch[1] ? `${prepMatch[1]} ` : '';
+      const art = articleMatch[1].trim().toLowerCase().replace('’', "'");
+      const rest = articleMatch[2];
+      if (art === "l'") return cleanWord(`${head}de l’${rest}`);
+      if (art === 'la') return cleanWord(`${head}de la ${rest}`);
+      if (art === 'le') return cleanWord(`${head}du ${rest}`);
+      return cleanWord(`${head}des ${rest}`);
+    }
   }
 
   // Hyphenated toponyms ("Pic-" + "Gris" -> "Pic-gris")
@@ -268,12 +270,13 @@ export function combineParts(p: string, s: string): string {
     return cleanWord(cleanP + cleanS.toLowerCase());
   }
 
-  // Adjective agreement: "La Chope" + "Boiteux" -> "La Chope Boiteuse"
-  if (!cleanS.includes(' ') && isFeminineHead(cleanP)) {
+  // French adjective agreement is intentionally scoped to French output.
+  if (language === 'fr' && !cleanS.includes(' ') && isFeminineHead(cleanP)) {
     const fem = FEMININE_ADJECTIVES[cleanS.toLowerCase()];
     if (fem) cleanS = cap(fem);
   }
 
+  if (language === 'fr') {
   // French preposition agreements and elisions
   const vowelsRegex = /^[aàâeéèêiîoôuûhy]/i;
   const firstWordS = cleanS.trim().split(' ')[0] || '';
@@ -345,6 +348,7 @@ export function combineParts(p: string, s: string): string {
     cleanP = cleanP.replace(/\bà\s+le$/i, 'au');
   } else if (/\bà\s+les$/i.test(cleanP)) {
     cleanP = cleanP.replace(/\bà\s+les$/i, 'aux');
+  }
   }
 
   // Apostrophe attachment (e.g. "L'Atelier", "d'Émeraude", "Maison d'")
@@ -421,17 +425,17 @@ function generatePhoneticHarmony(
     const chosenS = shortSuffixes.length > 0 ? (randomItem(shortSuffixes) as string) : s;
     const shortPrefixes = prefixes.filter((x) => x.length <= 4 && !x.includes(' ') && !x.includes("'"));
     const chosenP = shortPrefixes.length > 0 ? (randomItem(shortPrefixes) as string) : p;
-    return combineParts(chosenP, chosenS);
+    return combineParts(chosenP, chosenS, genLang);
   }
   if (length === 'long') {
     if (m) {
-      return combineParts(combineParts(p, m), s);
+      return combineParts(combineParts(p, m, genLang), s, genLang);
     }
     const longPrefixes = prefixes.filter((x) => x.length >= 5 || x.includes(' '));
     const chosenP = longPrefixes.length > 0 ? (randomItem(longPrefixes) as string) : p;
-    return combineParts(chosenP, s);
+    return combineParts(chosenP, s, genLang);
   }
-  return combineParts(p, s);
+  return combineParts(p, s, genLang);
 }
 
 /**
@@ -489,7 +493,7 @@ function generatePortmanteauBlend(
 
   // If either contains spaces or apostrophes, combine cleanly as distinct words
   if (first.includes(' ') || second.includes(' ') || first.includes("'") || second.includes("'") || first.length > 10) {
-    return combineParts(first, second);
+    return combineParts(first, second, genLang);
   }
 
   // Smooth blending transition: drop trailing vowel of first if second starts with vowel
@@ -532,7 +536,7 @@ function generateSymbolicEvocative(
     : (d.suffixes.length > 0 ? d.suffixes : ['is', 'or', 'ex', 'ix', 'um', 'ia']);
   const suffix = randomItem(suffixPool) || 'is';
 
-  return combineParts(root, suffix);
+  return combineParts(root, suffix, genLang);
 }
 
 /**
@@ -547,7 +551,7 @@ function generatePunchyMinimal(d: SubcategoryData, genLang: GenLanguageCode = 'a
 
   // If p is a full multi-word phrase, combine cleanly without chopping
   if (p.includes(' ') || s.includes(' ') || p.includes("'") || s.includes("'") || p.length > 8) {
-    return combineParts(p, s);
+    return combineParts(p, s, genLang);
   }
 
   // Clean compact syllables
