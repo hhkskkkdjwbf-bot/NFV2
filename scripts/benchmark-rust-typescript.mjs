@@ -13,7 +13,7 @@ const reportPath = path.join(root, 'artifacts/rust-benchmark/report.json');
 const rustBin = path.join(root, 'rust/target/release/nameforge-bench');
 
 function key(value) {
-  return value.normalize('NFC').toLowerCase()
+  return Array.from(value.normalize('NFC'), ch => ch.toLowerCase()).join('')
     .replace(/[^\\p{L}\\p{M}\\p{N}\\p{S}]+/gu, ' ').trim().replace(/\\s+/g, ' ');
 }
 function distance(a, b) {

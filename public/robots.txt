@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://jjspa4830-hue.github.io/nameforge-V2/sitemap.xml
