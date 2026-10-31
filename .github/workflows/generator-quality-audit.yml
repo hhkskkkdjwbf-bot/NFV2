@@ -45,7 +45,7 @@ jobs:
       - name: Validate offline linguistic audit adapters
         run: |
           python3 -m py_compile scripts/linguistic-audit.py
-          printf '%s\\n' '{"name":"Élodie","language":"fr","description":"A short name."}' '{"name":"محمد","language":"ar"}' | npm run audit:linguistic > /tmp/nameforge-linguistic-audit.jsonl
+          printf '%s\\n' '{"name":"Élodie","language":"fr","description":"A short name."}' '{"name":"محمد","language":"ar"}' | python3 scripts/linguistic-audit.py > /tmp/nameforge-linguistic-audit.jsonl
           python3 -c "import json; rows=[json.loads(x) for x in open('/tmp/nameforge-linguistic-audit.jsonl', encoding='utf-8')]; assert len(rows)==2 and all(r['schema_version']==1 and 'findings' in r for r in rows)"
       - name: Run 234 × 28 empirical baseline
         run: npm run audit:generators
