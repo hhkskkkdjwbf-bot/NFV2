@@ -21,6 +21,8 @@ export interface SemanticScreenResult {
   explanation: string;
 }
 
+const NO_SPACE_SEGMENTATION_LANGUAGES = new Set<GenLanguageCode>(['ja', 'zh', 'th']);
+
 function normalizeForLookup(value: string, language: GenLanguageCode): string {
   let normalized = String(value ?? '').normalize('NFKC').trim();
   try {
@@ -31,16 +33,46 @@ function normalizeForLookup(value: string, language: GenLanguageCode): string {
   return normalized.replace(/[’‘]/g, "'").replace(/\s+/g, ' ');
 }
 
-function containsWholeTerm(name: string, term: string): boolean {
-  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const expression = new RegExp(`(^|[^\\p{L}\\p{N}])${escaped}($|[^\\p{L}\\p{N}])`, 'u');
+function isValidReviewedEntry(entry: ReviewedRiskTerm): boolean {
+  if (!entry || typeof entry !== 'object') return false;
+  const term = normalizeForLookup(entry.term, entry.language);
+  const reviewedAt = String(entry.reviewedAt ?? '');
+  const dateIsValid = /^\d{4}-\d{2}-\d{2}$/.test(reviewedAt)
+    && Number.isFinite(Date.parse(reviewedAt))
+    && new Date(reviewedAt).toISOString().slice(0, 10) === reviewedAt;
+
+  return Boolean(
+    String(entry.id ?? '').trim()
+    && term
+    && /\p{L}/u.test(term)
+    && (entry.level === 'review' || entry.level === 'high')
+    && String(entry.meaning ?? '').trim()
+    && /^https:\/\//.test(String(entry.sourceUrl ?? ''))
+    && String(entry.sourceLicense ?? '').trim()
+    && String(entry.reviewer ?? '').trim()
+    && dateIsValid
+    && entry.humanVerified === true
+  );
+}
+
+function containsWholeTerm(name: string, term: string, language: GenLanguageCode): boolean {
+  if (!name || !term) return false;
+
+  // Japanese, Chinese and Thai do not consistently separate words with spaces.
+  // A substring match is intentionally conservative: it requests review rather
+  // than claiming that the whole candidate has the matched meaning.
+  if (NO_SPACE_SEGMENTATION_LANGUAGES.has(language)) return name.includes(term);
+
+  const escaped = term.replace(/[.*+?^ ${}()|[\]\\]/g, '\\$&');
+  const expression = new RegExp(`(^|[^\\p{L}\\p{M}\\p{N}])${escaped}($|[^\\p{L}\\p{M}\\p{N}])`, 'u');
   return expression.test(name);
 }
 
 /**
  * Screens against a reviewed, licensed lexicon supplied by the caller.
- * No bundled profanity list is claimed: an empty/unavailable lexicon returns
- * not-screened, never "safe". Only high-risk human-verified entries block.
+ * Invalid or incomplete entries are ignored. An empty/unavailable lexicon
+ * returns not-screened, never "safe". A match in scripts without reliable
+ * whitespace segmentation is a review signal, not a semantic conclusion.
  */
 export function screenNameSemantics(
   name: string,
@@ -48,23 +80,30 @@ export function screenNameSemantics(
   lexicon: readonly ReviewedRiskTerm[]
 ): SemanticScreenResult {
   const candidate = normalizeForLookup(name, language);
-  if (!candidate) return { status: 'not-screened', matchedTermIds: [], explanation: 'Empty input cannot be screened.' };
+  if (!candidate) {
+    return { status: 'not-screened', matchedTermIds: [], explanation: 'Empty input cannot be screened.' };
+  }
 
   const eligible = lexicon.filter((entry) =>
-    entry.language === language &&
-    entry.humanVerified &&
-    /^https:\/\//.test(entry.sourceUrl) &&
-    Boolean(entry.sourceLicense.trim() && entry.reviewer.trim() && entry.reviewedAt.trim())
+    entry.language === language && isValidReviewedEntry(entry)
   );
   if (!eligible.length) {
-    return { status: 'not-screened', matchedTermIds: [], explanation: 'No reviewed, licensed semantic-risk lexicon is available for this language.' };
+    return {
+      status: 'not-screened',
+      matchedTermIds: [],
+      explanation: 'No complete, human-verified, licensed semantic-risk entry is available for this language.',
+    };
   }
 
   const matches = eligible.filter((entry) =>
-    containsWholeTerm(candidate, normalizeForLookup(entry.term, language))
+    containsWholeTerm(candidate, normalizeForLookup(entry.term, language), language)
   );
   if (!matches.length) {
-    return { status: 'no-match', matchedTermIds: [], explanation: 'No match in the available reviewed lexicon; this is not a guarantee of cultural safety.' };
+    return {
+      status: 'no-match',
+      matchedTermIds: [],
+      explanation: 'No match in the available reviewed lexicon; this is not a guarantee of cultural safety.',
+    };
   }
 
   const high = matches.some((entry) => entry.level === 'high');
