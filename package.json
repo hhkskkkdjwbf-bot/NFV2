@@ -16,7 +16,8 @@
     "audit:lighthouse": "node scripts/lighthouse-audit.mjs",
     "quality": "npm run lint && npm test && npm run build && npm run test:browser && npm run audit:lighthouse",
     "audit:generators": "npx tsx scripts/generator-quality-baseline.ts",
-    "audit:generators:deep": "npx tsx scripts/generator-quality-deep-dive.ts"
+    "audit:generators:deep": "npx tsx scripts/generator-quality-deep-dive.ts",
+    "review:linguistic": "npx tsx scripts/build-linguistic-review.ts"
   },
   "dependencies": {
     "lucide-react": "^0.475.0",
