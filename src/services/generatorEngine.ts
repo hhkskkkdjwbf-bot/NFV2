@@ -11,7 +11,7 @@ import { SUBCATEGORIES_DATA } from '../data/subcategories';
 import { resolveStyleData } from '../data/styles';
 import { addGenerationHistory } from './storage';
 import { GENERATORS_METADATA } from '../data/generators';
-import { ATTESTED_BABY_NAMES } from '../data/attestedBabyNames';
+import { ATTESTED_BABY_NAMES, LOCALIZED_BABY_NAMES } from '../data/attestedBabyNames';
 import { getPhraseBank } from '../data/phraseBanks';
 
 const RECENT_NAMES_KEY = 'nameforge_recent_names';
@@ -882,7 +882,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     const attestedSource =
       resolved.attestedItems && resolved.attestedItems.length > 0
         ? resolved.attestedItems
-        : ATTESTED_BABY_NAMES;
+        : (genLanguage !== 'auto' && LOCALIZED_BABY_NAMES[genLanguage]) || ATTESTED_BABY_NAMES;
 
     // Apply semantic filters first. Never silently ignore gender or a user keyword:
     // an empty result is more honest than returning unrelated names.
@@ -926,7 +926,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       seenInBatch.push(item.name.toLowerCase());
       out.push({
         name: item.name,
-        description: `🌸 Prénom certifié d’origine ${item.origin} signifiant « ${item.meaning} ».${item.variants && item.variants.length > 0 ? ` Variantes connues : ${item.variants.join(', ')}.` : ''}`,
+        description: `🌸 Prénom répertorié — origine : ${item.origin}. Sens ou interprétation : « ${item.meaning} ».${item.variants && item.variants.length > 0 ? ` Variantes et translittérations : ${item.variants.join(', ')}.` : ''}`,
         style: resolved.label || targetStyle,
         icon: '👶',
         bestFor: resolved.bestFor || 'futurs enfants, fratries et faire-part',
@@ -934,8 +934,8 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
         generatorId: 'baby_name',
         pronunciation: generatePronunciation(item.name),
         strengths: [
-          'Prénom authentique attesté à l’état civil',
-          `Origine étymologique certifiée : ${item.origin}`,
+          'Prénom issu du répertoire documenté de NameForge',
+          `Origine indiquée dans le répertoire : ${item.origin}`,
           'Élocution quotidienne fluide et douce',
         ],
         watchouts: ['Prononcez-le avec votre nom de famille pour vérifier l’accord phonétique'],
@@ -955,14 +955,14 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
         seenInBatch.push(item.name.toLowerCase());
         out.push({
           name: item.name,
-          description: `🌸 Prénom certifié d’origine ${item.origin} signifiant « ${item.meaning} ».`,
+          description: `🌸 Prénom répertorié — origine : ${item.origin}. Sens ou interprétation : « ${item.meaning} ».`,
           style: resolved.label || targetStyle,
           icon: '👶',
           bestFor: resolved.bestFor || 'futurs enfants, fratries et faire-part',
           tone: resolved.tone || 'Harmonieux • intemporel • doux',
           generatorId: 'baby_name',
           pronunciation: generatePronunciation(item.name),
-          strengths: ['Prénom authentique attesté', `Origine : ${item.origin}`],
+          strengths: ['Prénom issu du répertoire NameForge', `Origine indiquée : ${item.origin}`],
           watchouts: ['Prononcez avec le nom de famille'],
           origin: `Origine certifiée : ${item.origin}`,
           meaning: item.meaning,
