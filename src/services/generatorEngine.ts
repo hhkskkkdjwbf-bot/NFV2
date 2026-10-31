@@ -888,8 +888,31 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   // =========================================================================
   if (targetGenerator === 'baby_name') {
     const localizedSource = genLanguage !== 'auto' ? LOCALIZED_BABY_NAMES[genLanguage] : undefined;
-    const attestedSource =
-      localizedSource && localizedSource.length > 0
+    const scriptProfile = genLanguage !== 'auto' ? getLanguageScriptProfile(genLanguage) : undefined;
+    const requiresNativeScriptBank = Boolean(
+      scriptProfile?.scripts.some((script) => script !== 'Latin')
+    );
+
+    // A non-Latin locale must never inherit French/Latin attested names from a
+    // generic subcategory or the global fallback. Until a reviewed native-script
+    // bank exists, return no results rather than misrepresenting names as local.
+    if (requiresNativeScriptBank && (!localizedSource || localizedSource.length === 0)) {
+      return [];
+    }
+
+    const nativeScriptSource = requiresNativeScriptBank
+      ? localizedSource!.filter((item) => {
+          const observed = getScriptsInText(item.name);
+          return observed.length > 0 && observed.every((script) => scriptProfile!.scripts.includes(script));
+        })
+      : undefined;
+    if (requiresNativeScriptBank && (!nativeScriptSource || nativeScriptSource.length === 0)) {
+      return [];
+    }
+
+    const attestedSource = requiresNativeScriptBank
+      ? nativeScriptSource!
+      : localizedSource && localizedSource.length > 0
         ? localizedSource
         : resolved.attestedItems && resolved.attestedItems.length > 0
           ? resolved.attestedItems
