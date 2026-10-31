@@ -85,7 +85,7 @@ export function screenNameSemantics(
   }
 
   const eligible = lexicon.filter((entry) =>
-    entry.language === language && isValidReviewedEntry(entry)
+    isValidReviewedEntry(entry) && entry.language === language
   );
   if (!eligible.length) {
     return {
