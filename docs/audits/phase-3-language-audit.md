@@ -161,3 +161,22 @@ La file de relecture contient exactement 840 lignes, soit 30 échantillons pour 
 
 ---
 Ce rapport est un audit technique et quantitatif. Il ne constitue pas une certification linguistique par des locuteurs natifs.
+## 11. Correctif de sécurité linguistique — 2026-10-31
+
+Le correctif `1b7d996` dans `src/services/generatorEngine.ts` supprime le repli silencieux vers le répertoire global pour les langues dont le script attendu n'est pas latin :
+
+- les langues non latines doivent disposer d'une banque explicitement localisée ;
+- chaque prénom de cette banque est filtré selon les scripts autorisés pour la langue ;
+- si aucune banque localisée valide n'existe, le générateur renvoie une liste vide plutôt que des prénoms français/latins présentés comme attestés ;
+- l'arabe conserve sa banque localisée existante ;
+- les langues latines conservent le comportement historique, en attendant une séparation plus fine des répertoires régionaux.
+
+Le test de régression ajouté dans `src/tests/regressionQuality.ts` vérifie les dix langues signalées : `ja`, `ko`, `zh`, `ru`, `hi`, `th`, `el`, `he`, `uk`, `bn`. Il vérifie également que le parcours arabe conserve ses sorties en écriture arabe.
+
+**Statut exact :** le défaut de faux repli est corrigé dans le code et le test de non-régression est ajouté. Les dix banques natives ne sont pas encore constituées ; le générateur de prénoms reste donc volontairement sans résultat dans ces dix langues jusqu'à l'intégration de données documentées, autorisées et relues. Ce correctif ne constitue pas une validation linguistique humaine et ne doit pas être compté comme une amélioration de naturalité.
+
+Le changement de code et le test ont été poussés directement sur `main` :
+- Correctif moteur : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/1b7d9966f05ddd31e72735386a99b8af75f6a37c
+- Test de régression : https://github.com/hhkskkkdjwbf-bot/NFV2/commit/414d477bfd3c6dc380b4dade533dbd88219769eb
+
+Les tests automatisés complets et le déploiement doivent encore être confirmés par une exécution réussie du workflow de validation après ces commits.
