@@ -1,7 +1,10 @@
 import { spawn } from 'node:child_process';
+import { chromium } from 'playwright';
 import { mkdir } from 'node:fs/promises';
 
 const baseUrl = process.env.LIGHTHOUSE_BASE_URL || 'http://127.0.0.1:4173/';
+// Reuse Playwright's pinned Chromium so Lighthouse works consistently in CI and locally.
+process.env.CHROME_PATH ||= chromium.executablePath();
 const outputDir = 'artifacts/lighthouse';
 await mkdir(outputDir, { recursive: true });
 
