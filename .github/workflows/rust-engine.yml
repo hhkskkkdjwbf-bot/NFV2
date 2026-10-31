@@ -1,14 +1,17 @@
-name: Rust engine
+
+name: Rust engine and parity benchmark
 
 on:
   push:
     branches: [main]
     paths:
       - "rust/**"
+      - "scripts/benchmark-rust-typescript.mjs"
       - ".github/workflows/rust-engine.yml"
   pull_request:
     paths:
       - "rust/**"
+      - "scripts/benchmark-rust-typescript.mjs"
       - ".github/workflows/rust-engine.yml"
   workflow_dispatch:
 
@@ -16,14 +19,31 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Rust tests
+  test-and-benchmark:
+    name: Rust tests, parity and benchmarks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: rust
-      - name: Run unit tests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Node dependencies
+        run: npm install
+      - name: Run Rust unit tests
         run: cargo test --manifest-path rust/Cargo.toml --all-targets
+      - name: Build optimized Rust benchmark binary
+        run: cargo build --manifest-path rust/Cargo.toml --release --bin nameforge-bench
+      - name: Run 10k, 100k and 1m parity benchmarks
+        run: node scripts/benchmark-rust-typescript.mjs
+      - name: Upload measured benchmark report
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-rust-typescript-benchmark
+          path: artifacts/rust-benchmark/report.json
+          if-no-files-found: error
+          retention-days: 90
