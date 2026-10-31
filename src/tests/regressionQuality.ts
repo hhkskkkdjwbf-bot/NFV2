@@ -75,6 +75,20 @@ for (const item of ATTESTED_BABY_NAMES) {
 // 5. Curated phrase banks: slogans, book titles and song titles exist natively in all 25 languages
 const { getPhraseBank, PHRASE_BANK_GENERATORS } = await import('../data/phraseBanks');
 const ALL_LANGS = ['en','fr','es','de','it','pt','ar','tr','ja','ko','zh','ru','hi','nl','pl','sv','vi','id','th','el','he','cs','ro','da','fi','uk','bn','nb'];
+// 5b. Shop banks are intentionally bounded: a large request must return the
+// available distinct curated names, never pad the result with duplicates.
+for (const lang of ALL_LANGS) {
+  const bank = getPhraseBank('shop', lang);
+  const names = generateNames({
+    generator: 'shop' as any,
+    genLanguage: lang as any,
+    quantity: 30,
+    seed: `shop-bank-capacity-${lang}`,
+  });
+  const unique = new Set(names.map((item) => item.name.normalize('NFC').toLocaleLowerCase()));
+  check(`Shop ${lang} returns only distinct curated names when request exceeds bank`, names.length === bank.length && unique.size === names.length && names.every((item) => bank.includes(item.name)), `(bank=${bank.length}, returned=${names.length}, unique=${unique.size})`);
+}
+
 for (const generatorId of PHRASE_BANK_GENERATORS) {
   for (const lang of ALL_LANGS) {
     const bank = getPhraseBank(generatorId, lang);
