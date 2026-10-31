@@ -1125,11 +1125,11 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       const titleW = randomItem(keywordTitles || []) || '';
 
       if (mode < 0.35 && suf) {
-        baseName = combineParts(kwCap, suf, genLang);
+        baseName = combineParts(kwCap, suf, genLanguage);
       } else if (mode < 0.65 && pref) {
-        baseName = combineParts(pref, kwCap, genLang);
+        baseName = combineParts(pref, kwCap, genLanguage);
       } else if (titleW && activeRandom() < 0.5) {
-        baseName = combineParts(kwCap, titleW, genLang);
+        baseName = combineParts(kwCap, titleW, genLanguage);
       } else {
         baseName = `${kwCap} ${suf || ''}`.trim();
       }
@@ -1144,7 +1144,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
         // Phrasal categories must preserve whole words without mutilating syllables
         const p = (randomItem(resolved.prefixes) as string) || 'Le';
         const s = (randomItem(resolved.suffixes) as string) || 'Monde';
-        baseName = combineParts(p, s, genLang);
+        baseName = combineParts(p, s, genLanguage);
       } else {
         switch (strategy) {
           case 'phonetic_harmony':
@@ -1168,7 +1168,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
             if (part1.includes(' ') || part2.includes(' ')) {
               baseName = part1;
             } else {
-              baseName = combineParts(part1, part2, genLang);
+              baseName = combineParts(part1, part2, genLanguage);
             }
             break;
           }
@@ -1183,7 +1183,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     if (format === 'full' && keywordScriptsMatch) {
       const surname = generatePhoneticHarmony(resolved, 'medium', genLanguage, usesLanguageRoots);
       if (surname.toLowerCase() !== baseName.toLowerCase()) {
-        formattedName = combineParts(baseName, surname, genLang);
+        formattedName = combineParts(baseName, surname, genLanguage);
       }
     } else if (format === 'group' && keywordScriptsMatch) {
       const localizedGroups = genLanguage !== 'auto' ? GROUP_WORDS[genLanguage] : undefined;
@@ -1211,7 +1211,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     } else if (format === 'compound' && keywordScriptsMatch) {
       if (!baseName.includes(' ')) {
         const secondary = generatePunchyMinimal(resolved, genLanguage, usesLanguageRoots);
-        formattedName = combineParts(baseName, secondary, genLang);
+        formattedName = combineParts(baseName, secondary, genLanguage);
       }
     } else if (keywordScriptsMatch) {
       // Prefer titles written for the selected language. Category-level title
@@ -1225,14 +1225,14 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       if (titlesPool.length > 0 && activeRandom() < 0.28) {
         const title = (randomItem(titlesPool) as string) || '';
         if (title) {
-          formattedName = combineParts(baseName, title, genLang);
+          formattedName = combineParts(baseName, title, genLanguage);
         }
       } else if (isFantasyOrLore && !baseName.includes(' ') && activeRandom() < 0.22) {
         const fallbackTitles = genLanguage === 'auto'
           ? ['le Brave', 'l’Ancien', 'le Juste', 'le Gardien']
           : localizedTitles;
         const title = (randomItem(fallbackTitles) as string) || '';
-        if (title) formattedName = combineParts(baseName, title, genLang);
+        if (title) formattedName = combineParts(baseName, title, genLanguage);
       }
     }
 
@@ -1244,7 +1244,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       if (resolved.femaleStarts && resolved.femaleStarts.length > 0 && activeRandom() < 0.4) {
         const fPrefix = randomItem(resolved.femaleStarts);
         if (fPrefix) {
-          formattedName = combineParts(fPrefix, formattedName.toLowerCase(), genLang);
+          formattedName = combineParts(fPrefix, formattedName.toLowerCase(), genLanguage);
         }
       } else if (/(?:or|us|os|ik|ak)$/i.test(formattedName)) {
         const feminized = formattedName.replace(/(?:or|us|os|ik|ak)$/i, 'a');
@@ -1257,7 +1257,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       if (resolved.maleStarts && resolved.maleStarts.length > 0 && activeRandom() < 0.4) {
         const mPrefix = randomItem(resolved.maleStarts);
         if (mPrefix) {
-          formattedName = combineParts(mPrefix, formattedName.toLowerCase(), genLang);
+          formattedName = combineParts(mPrefix, formattedName.toLowerCase(), genLanguage);
         }
       } else if (/a$/i.test(formattedName) && formattedName.length > 4) {
         formattedName = formattedName.slice(0, -1) + 'an';
@@ -1362,7 +1362,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     } else {
       const p = randomItem(resolved.prefixes) || 'Nova';
       const s = randomItem(resolved.suffixes) || 'is';
-      syntheticName = combineParts(p, s, genLang);
+      syntheticName = combineParts(p, s, genLanguage);
     }
 
     if (!seenInBatch.some((item) => item.toLowerCase() === syntheticName.toLowerCase())) {
