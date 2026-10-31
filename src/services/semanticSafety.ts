@@ -63,8 +63,8 @@ function containsWholeTerm(name: string, term: string, language: GenLanguageCode
   // than claiming that the whole candidate has the matched meaning.
   if (NO_SPACE_SEGMENTATION_LANGUAGES.has(language)) return name.includes(term);
 
-  const escaped = term.replace(/[.*+?^ ${}()|[\]\\]/g, '\\$&');
-  const expression = new RegExp(`(^|[^\\p{L}\\p{M}\\p{N}])${escaped}($|[^\\p{L}\\p{M}\\p{N}])`, 'u');
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const expression = new RegExp('(^|[^\\p{L}\\p{M}\\p{N}])' + escaped + '($|[^\\p{L}\\p{M}\\p{N}])', 'u');
   return expression.test(name);
 }
 
