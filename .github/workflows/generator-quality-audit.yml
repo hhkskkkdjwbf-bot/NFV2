@@ -1,0 +1,46 @@
+name: Generator quality baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/services/generatorEngine.ts'
+      - 'src/data/generators*.ts'
+      - 'src/data/phraseBanks.ts'
+      - 'src/data/subcategories.ts'
+      - 'src/data/styles.ts'
+      - 'scripts/generator-quality-baseline.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/generator-quality-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Type-check
+        run: npm run lint
+      - name: Run 234 × 28 empirical baseline
+        run: npm run audit:generators
+      - name: Upload baseline reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-generator-quality-baseline
+          path: artifacts/generator-quality-audit/
+          if-no-files-found: warn
+          retention-days: 30
