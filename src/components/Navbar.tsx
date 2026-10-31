@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import { Bookmark, Menu, X, ChevronDown, Settings, Search, Globe, Dices, Wand2 } from 'lucide-react';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId } from '../types';
@@ -9,7 +10,6 @@ import { LanguageSelectorModal } from './LanguageSelectorModal';
 import { getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from '../services/settings';
 import { getTranslations } from '../i18n';
 import { getShellLabels } from '../i18n/shell';
-import { getLocalizedGeneratorShortTitle } from '../i18n/generatorTitles';
 
 interface NavbarProps {
   currentView: string;
@@ -22,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentGenerator,
   onNavigate,
 }) => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [generatorsDropdownOpen, setGeneratorsDropdownOpen] = useState(false);
   const [showLangModal, setShowLangModal] = useState(false);
