@@ -29,6 +29,8 @@ check('du + la merges', combineParts('Les Lions du', 'la Plaine') === 'Les Lions
 check('de + l’ merges', combineParts('La Tour de', 'l’Abîme') === 'La Tour de l’Abîme', combineParts('La Tour de', 'l’Abîme'));
 check('de + le merges', combineParts('Le Défi de', 'le Futur') === 'Le Défi du Futur', combineParts('Le Défi de', 'le Futur'));
 check('Feminine adjective agreement', combineParts('La Chope', 'Boiteux') === 'La Chope Boiteuse', combineParts('La Chope', 'Boiteux'));
+check('French contractions are not applied to English locale', combineParts('de', 'le Dragon', 'en') === 'de le Dragon', combineParts('de', 'le Dragon', 'en'));
+check('French contractions remain active for French locale', combineParts('de', 'le Dragon', 'fr') === 'du Dragon', combineParts('de', 'le Dragon', 'fr'));
 
 // 2. Bulk generation: no broken patterns across every generator and style
 const broken = [
