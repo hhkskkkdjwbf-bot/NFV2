@@ -84,8 +84,8 @@ checks.push(['Semantic screening does not match a term inside a longer word', sc
 checks.push(['Unreviewed semantic terms are ignored', screenNameSemantics('badword', 'en', [{ ...sampleRiskLexicon[0], humanVerified: false }]).status === 'not-screened']);
 checks.push(['Empty semantic terms cannot block every candidate', screenNameSemantics('Example', 'en', [{ ...sampleRiskLexicon[0], term: '' }]).status === 'not-screened']);
 checks.push(['Invalid review dates are excluded from semantic screening', screenNameSemantics('badword', 'en', [{ ...sampleRiskLexicon[0], reviewedAt: 'not-a-date' }]).status === 'not-screened']);
-checks.push(['Chinese risk terms are detected without whitespace boundaries', screenNameSemantics('前缀风险词后缀', 'zh', [{ ...sampleRiskLexicon[0], language: 'zh', term: '风险词' }]).status === 'blocked');
-checks.push(['A punctuation-delimited Latin risk term still matches', screenNameSemantics('name-badword!', 'en', sampleRiskLexicon).status === 'blocked');
+checks.push(['Chinese risk terms are detected without whitespace boundaries', screenNameSemantics('前缀风险词后缀', 'zh', [{ ...sampleRiskLexicon[0], language: 'zh', term: '风险词' }]).status === 'blocked']);
+checks.push(['A punctuation-delimited Latin risk term still matches', screenNameSemantics('name-badword!', 'en', sampleRiskLexicon).status === 'blocked']);
 
 
 
