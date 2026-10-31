@@ -63,6 +63,17 @@ for (const id of ['fantasy', 'rpg', 'elf', 'vampire', 'warrior']) {
 // 4. Attested baby names: every meaning is translated into the 24 non-French languages
 const { getLocalizedNameMeaning, getLocalizedNameOrigin, TRANSLATION_ORDER } = await import('../i18n/attestedNameTranslations');
 const { ATTESTED_BABY_NAMES } = await import('../data/attestedBabyNames');
+const { LOCALIZED_BABY_NAMES } = await import('../data/attestedBabyNames');
+
+// 4b. Arabic requests use native-script, locally curated records rather than
+// silently falling back to the French/European shared list.
+for (const k of Object.keys(memory)) delete memory[k];
+const arabicNames = generateNames({ generator: 'baby_name' as any, genLanguage: 'ar', quantity: 10, seed: 'arabic-native-names' });
+check('Arabic baby-name bank exists', (LOCALIZED_BABY_NAMES.ar?.length || 0) >= 10);
+check('Arabic baby-name generation returns a useful batch', arabicNames.length === 10, `(got ${arabicNames.length})`);
+check('Arabic baby-name output uses Arabic script', arabicNames.every((item) => /\\p{Script=Arabic}/u.test(item.name) && !/[A-Za-z]/u.test(item.name)), arabicNames.map((item) => item.name).join(', '));
+check('Arabic baby-name output is marked as attested', arabicNames.every((item) => item.isAttested === true));
+
 for (const item of ATTESTED_BABY_NAMES) {
   for (const lang of TRANSLATION_ORDER) {
     const meaning = getLocalizedNameMeaning(item.meaning, lang);
