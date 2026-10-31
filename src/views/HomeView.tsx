@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import {
   Sparkles,
   ArrowRight,
@@ -30,9 +31,7 @@ import { GeneratedName, GeneratorFamily, GeneratorId, SavedNameEntry } from '../
 import { getSavedNames, subscribeToStorage } from '../services/storage';
 import { getAppSettings, resolveGenerationLanguage, subscribeToSettings } from '../services/settings';
 import { getTranslations } from '../i18n';
-import { getLocalizedGeneratorDescription } from '../i18n/generatorContent';
 import { getShellLabels } from '../i18n/shell';
-import { getLocalizedGeneratorTitle, getLocalizedGeneratorShortTitle } from '../i18n/generatorTitles';
 import { NameCard } from '../components/NameCard';
 
 interface HomeViewProps {
@@ -40,6 +39,7 @@ interface HomeViewProps {
 }
 
 export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [settings, setSettings] = useState(getAppSettings());
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFamily, setSelectedFamily] = useState<string>('all');
