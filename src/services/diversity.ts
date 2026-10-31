@@ -1,9 +1,8 @@
 /**
- * Diversity-aware candidate ranking.
+ * Quality-guarded candidate ranking.
  *
- * The generator still scores linguistic plausibility first. This module only reorders
- * candidates with a greedy, diminishing-return penalty for repeated construction patterns.
- * It is script-safe: Unicode code points are used and Latin vowel heuristics are optional.
+ * Linguistic score remains primary: the diversity tie-breaker only considers candidates
+ * within a small score window of the best remaining candidate. It never hard-rejects names.
  */
 export interface DiversityCandidate {
   name: string;
@@ -39,6 +38,7 @@ export function getNameDiversityProfile(name: string): NameDiversityProfile {
       : ratio > 0.55
         ? 'vowel-rich'
         : 'balanced';
+
   return {
     onset: first.slice(0, Math.min(2, first.length)).join(''),
     ending: last.slice(-Math.min(2, last.length)).join(''),
@@ -48,14 +48,16 @@ export function getNameDiversityProfile(name: string): NameDiversityProfile {
 }
 
 /**
- * Greedy max-marginal ranking. Repetition penalties diminish after the first use,
- * so variety is encouraged rather than enforced as a brittle hard rule.
+ * Greedy selection with a 2.5-point quality guard.
+ * Within that band, it favors unused strategies, onsets and endings.
+ * Lower-scoring candidates outside the band cannot jump ahead just for variety.
  */
 export function selectDiverseCandidates<T extends DiversityCandidate>(
   candidates: T[],
-  limit = candidates.length
+  limit = candidates.length,
+  qualityWindow = 2.5
 ): T[] {
-  const remaining = candidates.map((candidate) => ({ candidate }));
+  const remaining = [...candidates];
   const selected: T[] = [];
   const strategyCounts = new Map<string, number>();
   const onsetCounts = new Map<string, number>();
@@ -68,37 +70,50 @@ export function selectDiverseCandidates<T extends DiversityCandidate>(
     const count = counts.get(value) || 0;
     return count === 0 ? 0 : weight / Math.sqrt(count);
   };
+  const increment = (counts: Map<string, number>, value: string): void => {
+    if (value) counts.set(value, (counts.get(value) || 0) + 1);
+  };
 
   while (remaining.length && selected.length < Math.max(0, limit)) {
-    let bestIndex = 0;
-    let bestUtility = Number.NEGATIVE_INFINITY;
+    const bestScore = Math.max(...remaining.map((candidate) => candidate.score));
+    const minimumScore = bestScore - Math.max(0, qualityWindow);
+    let bestIndex = -1;
+    let bestPenalty = Number.POSITIVE_INFINITY;
+    let bestCandidateScore = Number.NEGATIVE_INFINITY;
+
     for (let i = 0; i < remaining.length; i++) {
-      const candidate = remaining[i].candidate;
+      const candidate = remaining[i];
+      if (candidate.score < minimumScore) continue;
       const profile = getNameDiversityProfile(candidate.name);
-      const utility =
-        candidate.score -
-        penalty(strategyCounts, candidate.strategy, 5) -
-        penalty(onsetCounts, profile.onset, 4) -
-        penalty(endingCounts, profile.ending, 4) -
-        penalty(structureCounts, profile.structure, 2) -
-        penalty(familyCounts, profile.phoneticFamily, 2.5);
-      if (utility > bestUtility) {
-        bestUtility = utility;
+      const diversityPenalty =
+        penalty(strategyCounts, candidate.strategy, 1.25) +
+        penalty(onsetCounts, profile.onset, 1) +
+        penalty(endingCounts, profile.ending, 1) +
+        penalty(structureCounts, profile.structure, 0.35) +
+        (profile.phoneticFamily === 'non-latin'
+          ? 0
+          : penalty(familyCounts, profile.phoneticFamily, 0.35));
+
+      if (
+        diversityPenalty < bestPenalty ||
+        (diversityPenalty === bestPenalty && candidate.score > bestCandidateScore)
+      ) {
+        bestPenalty = diversityPenalty;
+        bestCandidateScore = candidate.score;
         bestIndex = i;
       }
     }
 
-    const [{ candidate }] = remaining.splice(bestIndex, 1);
+    // A non-empty remaining list always has at least its highest-scoring candidate in-band.
+    if (bestIndex < 0) break;
+    const [candidate] = remaining.splice(bestIndex, 1);
     selected.push(candidate);
     const profile = getNameDiversityProfile(candidate.name);
-    const increment = (counts: Map<string, number>, value: string) => {
-      if (value) counts.set(value, (counts.get(value) || 0) + 1);
-    };
     increment(strategyCounts, candidate.strategy);
     increment(onsetCounts, profile.onset);
     increment(endingCounts, profile.ending);
     increment(structureCounts, profile.structure);
-    increment(familyCounts, profile.phoneticFamily);
+    if (profile.phoneticFamily !== 'non-latin') increment(familyCounts, profile.phoneticFamily);
   }
 
   return selected;

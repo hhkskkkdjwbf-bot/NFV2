@@ -14,6 +14,7 @@ import { GENERATORS_METADATA } from '../data/generators';
 import { ATTESTED_BABY_NAMES, LOCALIZED_BABY_NAMES } from '../data/attestedBabyNames';
 import { getPhraseBank } from '../data/phraseBanks';
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from './linguisticRules';
+import { selectDiverseCandidates } from './diversity';
 
 const RECENT_NAMES_KEY = 'nameforge_recent_names';
 const RECENT_LIMIT = 120;
@@ -1242,8 +1243,8 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     }
   }
 
-  // Sort candidate pool by quality score descending
-  candidatePool.sort((a, b) => b.score - a.score);
+  // Keep linguistic score primary while using diversity as a tie-breaker within a 2.5-point band.
+  candidatePool = selectDiverseCandidates(candidatePool, quantity * 4);
 
   // Diverse Selection Phase (incorporating Levenshtein anti-similarity filter)
   const usedStrategies = new Set<GenerationStrategy>();
