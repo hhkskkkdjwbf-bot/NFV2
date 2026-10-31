@@ -1,0 +1,46 @@
+name: Diversity selector A/B baseline
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/generator-diversity-selector-baseline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase4-selector-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install current dependencies
+        run: npm install
+      - name: Prepare phase 4 selector revision
+        env:
+          SELECTOR_REF: 0c7144e245a831e1290386a5bba9599617413661
+        run: |
+          git worktree add --detach /tmp/nameforge-phase4 "$SELECTOR_REF"
+          cp scripts/generator-quality-baseline.ts /tmp/nameforge-phase4/scripts/generator-quality-baseline.ts
+      - name: Run identical batch-aware audit with the phase 4 selector enabled
+        working-directory: /tmp/nameforge-phase4
+        run: |
+          npm install
+          npx --yes tsx scripts/generator-quality-baseline.ts
+      - name: Upload phase 4 selector baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-phase4-selector-baseline
+          path: /tmp/nameforge-phase4/artifacts/generator-quality-audit/
+          if-no-files-found: error
+          retention-days: 30
