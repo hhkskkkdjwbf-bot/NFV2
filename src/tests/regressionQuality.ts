@@ -164,26 +164,31 @@ check('Stored legacy "no" setting is migrated to nb', (normalizeAppSettings({ la
 check('Unsupported browser languages default to English', detectBrowserLanguage(['xx-YY']) === 'en');
 
 // 10. Explicit Korean and Russian generation must not fall back to French category titles.
+// Exercise the exact categories whose title banks previously leaked French words.
 const foreignTitleTokens = [
-  /\\bBrillante\\b/i, /\\bdes Rois\\b/i, /\\bdu Nord\\b/i, /\\bÉternelle\\b/i,
-  /\\bSubatomique\\b/i, /\\bStable\\b/i, /\\bComplet\\b/i, /\\bHautement Peuplé\\b/i,
-  /\\bÉpique\\b/i,
+  /\bBrillante\b/i, /\bdes Rois\b/i, /\bdu Nord\b/i, /\bÉternelle\b/i,
+  /\bSubatomique\b/i, /\bStable\b/i, /\bComplet\b/i, /\bHautement Peuplé\b/i,
+  /\bÉpique\b/i,
 ];
-for (const lang of ['ko', 'ru'] as const) {
+const localizedTitleCases = [
+  { generator: 'astronomy_constellation', lang: 'ko' },
+  { generator: 'quantum_particle', lang: 'ko' },
+  { generator: 'mmorpg_server_realm', lang: 'ru' },
+] as const;
+for (const { generator, lang } of localizedTitleCases) {
   for (let batch = 0; batch < 12; batch++) {
     const names = generateNames({
-      generator: 'fantasy' as any,
+      generator: generator as any,
       genLanguage: lang as any,
       quantity: 20,
-      seed: `localized-title-regression-${lang}-${batch}`,
+      seed: \`localized-title-regression-\${generator}-\${batch}\`,
     });
     for (const item of names) {
       const hit = foreignTitleTokens.find((re) => re.test(item.name));
-      check(`Localized title pool is used for ${lang}`, !hit, `→ "${item.name}" matched ${hit}`);
+      check(\`Localized title pool is used for \${generator} (\${lang})\`, !hit, \`→ "\${item.name}" matched \${hit}\`);
     }
   }
 }
-
 console.log(`Quality regression: ${passed} checks passed, ${failures.length} failed (${generated} names scanned).`);
 if (failures.length) {
   console.log([...new Set(failures)].slice(0, 40).join('\n'));
