@@ -1,20 +1,156 @@
 {
   "schemaVersion": 1,
   "generatedAt": "2026-10-31",
-  "scope": ["ja", "ko", "zh", "ru", "hi", "th", "el", "he", "uk", "bn"],
+  "scope": [
+    "ja",
+    "ko",
+    "zh",
+    "ru",
+    "hi",
+    "th",
+    "el",
+    "he",
+    "uk",
+    "bn"
+  ],
   "publicIntegration": false,
   "rawSourcesDownloaded": false,
   "note": "This is a source-research register, not a name corpus. SHA256SUMS covers only the files in this directory, not upstream datasets.",
   "languages": [
-    {"language":"ja","script":"Jpan","candidate":"EDRDG JMnedict/ENAMDICT","url":"https://www.edrdg.org/pub/Nihongo/enamdict_doc.html","license":"EDRDG custom dictionary licence","status":"conditional_candidate","conditions":["filter given-name classifications g/f/m; exclude surnames, places, companies, works and ambiguous u records","preserve attribution and do not claim copyright over source material","keep source current; licence requests updates at least monthly"],"sourceFileSha256":null},
-    {"language":"ko","script":"Hang","candidate":"Supreme Court Korean newborn given-name statistics","url":"https://efamily.scourt.go.kr/","license":"not verified for redistribution","status":"blocked_pending_license","conditions":["obtain the official export and its exact reuse terms","do not substitute third-party compilations as primary source"],"sourceFileSha256":null},
-    {"language":"zh","script":"Hani","candidate":"Wikidata given-name items with native Chinese labels","url":"https://www.wikidata.org/wiki/Wikidata:Licensing","license":"CC0 for structured data","status":"limited_cc0_seed","conditions":["retain item identifiers and references","verify each item is a given name and the Chinese label is genuinely native","do not use proprietary CJKI datasets or private-collaboration corpus without permission"],"sourceFileSha256":null},
-    {"language":"ru","script":"Cyrl","candidate":"NEN russian-given-names-nen","url":"https://huggingface.co/datasets/MentalTech/russian-given-names-nen","license":"CC BY 4.0 declared by dataset publisher","status":"conditional_candidate","conditions":["pin canonical repository release and full data asset","preserve required attribution and online hyperlink to NEN","review field-level provenance and native-script spelling"],"sourceFileSha256":null},
-    {"language":"hi","script":"Deva","candidate":"Wikidata given-name items with Devanagari labels; investigate India OGD catalogue","url":"https://www.wikidata.org/wiki/Wikidata:Licensing","license":"CC0 for Wikidata structured data; India OGD licence applies only to individually licensed datasets","status":"limited_cc0_seed_no_official_corpus","conditions":["identify and verify a specific name dataset before using India OGD terms","manually verify item language, given-name type and native Devanagari form"],"sourceFileSha256":null},
-    {"language":"th","script":"Thai","candidate":"korkeatw/thai-names-corpus","url":"https://github.com/korkeatw/thai-names-corpus","license":"CC BY-SA 4.0 declared by repository","status":"blocked_upstream_provenance","conditions":["resolve provenance and rights for names scraped from public web and election candidate lists","retain attribution and share-alike obligations if cleared"],"sourceFileSha256":null},
-    {"language":"el","script":"Grek","candidate":"Wikidata WikiProject Names Greek first-name list","url":"https://www.wikidata.org/wiki/Wikidata:WikiProject_Names/lists/Greek_first_names","license":"CC0 for structured Wikidata data","status":"limited_cc0_seed","conditions":["extract structured items rather than reusing wiki prose","verify type, Greek label and native-script form"],"sourceFileSha256":null},
-    {"language":"he","script":"Hebr","candidate":"Israel Population and Immigration Authority first names dataset","url":"https://data.gov.il/he/datasets/population_authority/firs-name","license":"portal metadata says Other (Open); exact licence text not verified","status":"blocked_pending_file_and_license","conditions":["retrieve official CSV and full licence notice","check data quality warnings about legacy conversion/transcription errors","confirm permitted redistribution and attribution"],"sourceFileSha256":null},
-    {"language":"uk","script":"Cyrl","candidate":"Regional Ministry of Justice birth-name publications; Wikidata as supplementary source","url":"https://www.kharkivjust.gov.ua/news/view/142-yaki-imena-obyрали-dlya-novonarodzhenih-u-i-pivrichchi-2026-roku","license":"article reuse terms not confirmed; Wikidata structured data CC0","status":"blocked_official_lists_reuse_not_confirmed","conditions":["do not scrape article lists into a corpus without reuse clearance","birth statistics dataset does not include given names","Wikidata items require individual language and type validation"],"sourceFileSha256":null},
-    {"language":"bn","script":"Beng","candidate":"Wikidata given-name items with Bengali labels","url":"https://www.wikidata.org/wiki/Wikidata:Licensing","license":"CC0 for structured data","status":"limited_cc0_seed_no_official_corpus","conditions":["no official Bengali name corpus with verified redistribution licence identified in this pass","validate native Bengali label, given-name type and provenance item by item"],"sourceFileSha256":null}
+    {
+      "language": "ja",
+      "script": "Jpan",
+      "candidate": "EDRDG JMnedict/ENAMDICT",
+      "url": "https://www.edrdg.org/pub/Nihongo/enamdict_doc.html",
+      "license": "EDRDG custom dictionary licence",
+      "status": "conditional_candidate",
+      "conditions": [
+        "filter given-name classifications g/f/m; exclude surnames, places, companies, works and ambiguous u records",
+        "preserve attribution and do not claim copyright over source material",
+        "keep source current; licence requests updates at least monthly"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "ko",
+      "script": "Hang",
+      "candidate": "Supreme Court Korean newborn given-name statistics",
+      "url": "https://efamily.scourt.go.kr/",
+      "license": "not verified for redistribution",
+      "status": "blocked_pending_license",
+      "conditions": [
+        "obtain the official export and its exact reuse terms",
+        "do not substitute third-party compilations as primary source"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "zh",
+      "script": "Hani",
+      "candidate": "Wikidata given-name items with native Chinese labels",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "license": "CC0 for structured data",
+      "status": "limited_cc0_seed",
+      "conditions": [
+        "retain item identifiers and references",
+        "verify each item is a given name and the Chinese label is genuinely native",
+        "do not use proprietary CJKI datasets or private-collaboration corpus without permission"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "ru",
+      "script": "Cyrl",
+      "candidate": "NEN russian-given-names-nen",
+      "url": "https://huggingface.co/datasets/MentalTech/russian-given-names-nen",
+      "license": "CC BY 4.0 declared by dataset publisher",
+      "status": "conditional_candidate",
+      "conditions": [
+        "pin canonical repository release and full data asset",
+        "preserve required attribution and online hyperlink to NEN",
+        "review field-level provenance and native-script spelling"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "hi",
+      "script": "Deva",
+      "candidate": "Wikidata given-name items with Devanagari labels; investigate India OGD catalogue",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "license": "CC0 for Wikidata structured data; India OGD licence applies only to individually licensed datasets",
+      "status": "limited_cc0_seed_no_official_corpus",
+      "conditions": [
+        "identify and verify a specific name dataset before using India OGD terms",
+        "manually verify item language, given-name type and native Devanagari form"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "th",
+      "script": "Thai",
+      "candidate": "korkeatw/thai-names-corpus",
+      "url": "https://github.com/korkeatw/thai-names-corpus",
+      "license": "CC BY-SA 4.0 declared by repository",
+      "status": "blocked_upstream_provenance",
+      "conditions": [
+        "resolve provenance and rights for names scraped from public web and election candidate lists",
+        "retain attribution and share-alike obligations if cleared"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "el",
+      "script": "Grek",
+      "candidate": "Wikidata WikiProject Names Greek first-name list",
+      "url": "https://www.wikidata.org/wiki/Wikidata:WikiProject_Names/lists/Greek_first_names",
+      "license": "CC0 for structured Wikidata data",
+      "status": "limited_cc0_seed",
+      "conditions": [
+        "extract structured items rather than reusing wiki prose",
+        "verify type, Greek label and native-script form"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "he",
+      "script": "Hebr",
+      "candidate": "Israel Population and Immigration Authority first names dataset",
+      "url": "https://data.gov.il/he/datasets/population_authority/firs-name",
+      "license": "portal metadata says Other (Open); exact licence text not verified",
+      "status": "blocked_pending_file_and_license",
+      "conditions": [
+        "retrieve official CSV and full licence notice",
+        "check data quality warnings about legacy conversion/transcription errors",
+        "confirm permitted redistribution and attribution"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "uk",
+      "script": "Cyrl",
+      "candidate": "Regional Ministry of Justice birth-name publications; Wikidata as supplementary source",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "license": "article reuse terms not confirmed; Wikidata structured data CC0",
+      "status": "blocked_official_lists_reuse_not_confirmed",
+      "conditions": [
+        "do not scrape article lists into a corpus without reuse clearance",
+        "birth statistics dataset does not include given names",
+        "Wikidata items require individual language and type validation"
+      ],
+      "sourceFileSha256": null
+    },
+    {
+      "language": "bn",
+      "script": "Beng",
+      "candidate": "Wikidata given-name items with Bengali labels",
+      "url": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+      "license": "CC0 for structured data",
+      "status": "limited_cc0_seed_no_official_corpus",
+      "conditions": [
+        "no official Bengali name corpus with verified redistribution licence identified in this pass",
+        "validate native Bengali label, given-name type and provenance item by item"
+      ],
+      "sourceFileSha256": null
+    }
   ]
 }
