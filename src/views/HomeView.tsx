@@ -26,7 +26,6 @@ import {
   Wand2,
 } from 'lucide-react';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG, GENERATORS_METADATA } from '../data/generators';
-import { getLocalizedFaq } from '../i18n/localizedFaq';
 import { GeneratedName, GeneratorFamily, GeneratorId, SavedNameEntry } from '../types';
 import { getSavedNames, subscribeToStorage } from '../services/storage';
 import { getAppSettings, resolveGenerationLanguage, subscribeToSettings } from '../services/settings';
@@ -48,6 +47,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [savedEntries, setSavedEntries] = useState<SavedNameEntry[]>([]);
   const [copiedName, setCopiedName] = useState<string | null>(null);
+  const [localizedFaq, setLocalizedFaq] = useState<ReturnType<typeof import('../i18n/localizedFaq').getLocalizedFaq>>([]);
 
   // Quick Express Forge state
   const [quickGenId, setQuickGenId] = useState<GeneratorId>('brand');
@@ -386,8 +386,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   };
   const topRatedLabels = topRatedUi[settings.language] || topRatedUi.en;
 
+  // Load the large FAQ translation catalogue after the initial page has rendered.
+  // This keeps the FAQ's 80+ KB editorial dataset out of the homepage's critical bundle.
+  useEffect(() => {
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      import('../i18n/localizedFaq').then(({ getLocalizedFaq }) => {
+        if (!cancelled) setLocalizedFaq(getLocalizedFaq(settings.language));
+      });
+    }, 900);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [settings.language]);
+
   // Filtered FAQ
-  const localizedFaq = useMemo(() => getLocalizedFaq(settings.language), [settings.language]);
   const filteredFaq = useMemo(() => {
     if (faqCategory === 'all') return localizedFaq;
     return localizedFaq.filter((item) => item.category === faqCategory);
