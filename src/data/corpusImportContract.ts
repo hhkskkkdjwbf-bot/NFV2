@@ -36,6 +36,18 @@ export interface CorpusValidationResult {
   runtimeEligible: boolean;
 }
 
+const NATIVE_SCRIPT_PATTERNS: Record<string, RegExp> = {
+  Jpan: /^[\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}\\p{M}\\p{N}\\p{Zs}'’・ー-]+$/u,
+  Hang: /^[\\p{Script=Hangul}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Hani: /^[\\p{Script=Han}\\p{M}\\p{N}\\p{Zs}'’·-]+$/u,
+  Cyrl: /^[\\p{Script=Cyrillic}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Deva: /^[\\p{Script=Devanagari}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Thai: /^[\\p{Script=Thai}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Grek: /^[\\p{Script=Greek}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Hebr: /^[\\p{Script=Hebrew}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+  Beng: /^[\\p{Script=Bengali}\\p{M}\\p{N}\\p{Zs}'’.-]+$/u,
+};
+
 const SHA256 = /^[a-f0-9]{64}$/i;
 const SCRIPT_TAG = /^[A-Z][a-z]{3}$/;
 
@@ -71,6 +83,10 @@ export function validateStagedCorpusRecord(record: StagedCorpusRecord): CorpusVa
     if (!expectedScript) fail('native-name language is not in the controlled native-bank scope');
     else if (record.script !== expectedScript) fail(`native-name script must be ${expectedScript} for ${language}`);
     if (!record.nativeScriptAttested) fail('native-name attestation must preserve an observed native-script form');
+    const scriptPattern = expectedScript ? NATIVE_SCRIPT_PATTERNS[expectedScript] : undefined;
+    if (scriptPattern && (!scriptPattern.test(record.displayName) || !/\\p{L}/u.test(record.displayName))) {
+      fail('displayName contains characters outside the declared native script or has no letters in that script');
+    }
     if (record.observation) fail('native-name attestation cannot carry birth statistics without a source-specific observation contract');
   }
 
