@@ -1,4 +1,5 @@
 import React, { lazy, Suspense, useState, useEffect } from 'react';
+import { useGeneratorLocalization } from './hooks/useGeneratorLocalization';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { HomeView } from './views/HomeView';
@@ -10,11 +11,11 @@ import { GeneratorId } from './types';
 import { GENERATORS_METADATA, ALL_GENERATORS_LIST } from './data/generators';
 import { applySettingsToDOM, getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from './services/settings';
 import { getShellLabels } from './i18n/shell';
-import { getLocalizedGeneratorTitle } from './i18n/generatorTitles';
 import { getOpenGraphLocale, getSeoDescription, setMetaContent } from './i18n/seoMetadata';
 import './styles/animated-headings.css';
 
 export const App: React.FC = () => {
+  const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [currentView, setCurrentView] = useState<string>('home');
   const [currentGenerator, setCurrentGenerator] = useState<GeneratorId>('fantasy');
   const [styleStudioText, setStyleStudioText] = useState<string>('NameForge');
