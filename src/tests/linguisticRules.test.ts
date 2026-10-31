@@ -3,6 +3,7 @@ import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, 
 import { countOrthographicUnits, getOrthographicProfile, requiresWholeTokenGeneration, splitOrthographicUnits } from '../services/orthographicUnits';
 import { applyTurkishSuffix, inflectRegularSpanishOAdjective } from '../services/languageMorphology';
 
+import { screenNameSemantics } from '../services/semanticSafety';
 import { getRegionalLocaleProfile, resolveGenerationLanguage } from '../services/regionalLocales';
 import { decomposeHangulSyllable, getPhoneticModelProfile, splitJapaneseMora } from '../services/phoneticUnits';
 const checks: Array<[string, boolean]> = [
@@ -58,6 +59,18 @@ checks.push(['Brazilian and European Portuguese remain distinct locale tags', ge
 checks.push(['Simplified and Traditional Chinese script tags remain distinct', getRegionalLocaleProfile('zh-Hans')?.script === 'Hans' && getRegionalLocaleProfile('zh-Hant')?.script === 'Hant']);
 checks.push(['Regional locale maps to its base generation language', resolveGenerationLanguage('es-MX') === 'es']);
 checks.push(['Unknown region is not silently accepted as a supported locale', getRegionalLocaleProfile('en-AU') === undefined]);
+
+
+const sampleRiskLexicon = [{
+  id: 'test-risk-1', language: 'en' as const, term: 'badword', level: 'high' as const,
+  meaning: 'Test-only placeholder term', sourceUrl: 'https://example.org/test-lexicon',
+  sourceLicense: 'CC0 test fixture', reviewer: 'Automated test fixture',
+  reviewedAt: '2026-10-31', humanVerified: true,
+}];
+checks.push(['Semantic screening never claims safety when a language lexicon is absent', screenNameSemantics('Example', 'ja', []).status === 'not-screened']);
+checks.push(['Semantic screening blocks an exact reviewed high-risk match', screenNameSemantics('Badword', 'en', sampleRiskLexicon).status === 'blocked']);
+checks.push(['Semantic screening does not match a term inside a longer word', screenNameSemantics('badwording', 'en', sampleRiskLexicon).status === 'no-match']);
+checks.push(['Unreviewed semantic terms are ignored', screenNameSemantics('badword', 'en', [{ ...sampleRiskLexicon[0], humanVerified: false }]).status === 'not-screened']);
 
 const failed = checks.filter(([, ok]) => !ok);
 for (const [label, ok] of checks) console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
