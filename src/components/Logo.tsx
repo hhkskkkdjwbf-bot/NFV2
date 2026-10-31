@@ -29,7 +29,7 @@ export const Logo: React.FC<LogoProps> = ({
     <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
       <img
         src={logoImg}
-        alt="NameForge"
+        alt="" aria-hidden="true"
         className={`${iconSizes[size]} shrink-0 rounded-xl object-contain`}
         width={128}
         height={128}
