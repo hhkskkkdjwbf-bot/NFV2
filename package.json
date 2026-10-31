@@ -21,6 +21,9 @@
     "audit:toolchain": "python3 scripts/toolchain-audit.py",
     "audit:linguistic": "python3 scripts/linguistic-audit.py"
   },
+  "overrides": {
+    "rollup": "4.67.2"
+  },
   "dependencies": {
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
