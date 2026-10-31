@@ -7,8 +7,9 @@
 - Native-script records: **1,551**
 - Distinct native spellings: **1,548**
 - Source gender rows: **809 male / 742 female**
-- Human linguistic review: **pending**
+- Records with source short forms: **1,537**
+- Records with international forms: **362**
 
-Native Cyrillic spellings remain separate from source short forms and international forms. International forms are not relabelled as transliterations because the upstream column does not make that claim. Homographs remain separate where source IDs or gender differ. Popularity ranks are not converted to birth counts.
+Native Cyrillic spellings are preserved separately from source short forms and international forms. International forms are not automatically labelled as transliterations because the upstream column does not make that claim. Homographs remain separate source records where source IDs or gender differ. Popularity ranks are not converted to birth counts.
 
-**Preproduction only. Not connected to public NameForge generators.**
+**Human linguistic review is pending. This is preproduction only and is not connected to any public NameForge generator.**
