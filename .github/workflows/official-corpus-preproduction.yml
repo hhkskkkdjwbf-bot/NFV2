@@ -26,7 +26,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Check parser syntax
-        run: python -m py_compile scripts/audit_official_name_archives.py
+        run: python -m py_compile scripts/audit_official_name_archives.py && python scripts/audit_official_name_archives.py --help
       - name: Download official archives
         shell: bash
         run: |
