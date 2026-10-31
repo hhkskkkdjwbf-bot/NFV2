@@ -2,6 +2,10 @@ name: Official corpus preproduction audit
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/official-corpus-preproduction.yml'
 
 permissions:
   contents: read
@@ -21,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Check parser syntax
+        run: python -m py_compile scripts/audit_official_name_archives.py
       - name: Download official archives
         shell: bash
         run: |

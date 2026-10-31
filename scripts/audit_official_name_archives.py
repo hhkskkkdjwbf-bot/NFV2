@@ -42,6 +42,7 @@ def parse_insee(p):
    for ln,r in enumerate(rs,2):
     n=(r.get(nc) or '').strip();s=(r.get(sc) or '').strip();y=num(r.get(yc));c=num(r.get(cc))
     if not n:bad['empty_name']+=1;continue
+    if n.startswith('_'):bad['aggregate_or_suppressed_label']+=1;continue
     if s not in ('1','2'):bad['invalid_sex']+=1;continue
     if y is None or not 1900<=y<=2025:bad['non_year_or_out_of_range']+=1;continue
     if c is None or c<0 or c%5:bad['invalid_count_or_rounding']+=1;continue
