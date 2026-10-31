@@ -23,7 +23,9 @@ jobs:
       - name: Unit-test the conversion contract
         run: python -m unittest scripts/tests/test_prepare_russian_native_bank.py
       - name: Verify reproducible conversion from pinned source
-        run: python scripts/prepare_russian_native_bank.py --check-only
+        run: |
+          python scripts/prepare_russian_native_bank.py
+          git diff --exit-code -- docs/corpus-preproduction/staged/ru/names.jsonl docs/corpus-preproduction/staged/ru/README.md
       - name: Generate and verify SHA-256 manifest
         run: |
           cd docs/corpus-preproduction/staged/ru
