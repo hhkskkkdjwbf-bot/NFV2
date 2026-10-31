@@ -9,7 +9,7 @@
     "build:gh-pages": "tsc && vite build --base=./ && npx tsx scripts/generate-seo-pages.ts",
     "preview": "vite preview --host 0.0.0.0 --port 3000",
     "lint": "tsc --noEmit",
-    "test": "npx tsx src/tests/comprehensiveSuite.ts && npx tsx src/tests/regressionQuality.ts && npx tsx src/tests/linguisticQuality.test.ts && npx tsx src/tests/linguisticRules.test.ts && npx tsx src/tests/generatorLanguageRules.integration.test.ts && npx tsx src/tests/datasetManifest.test.ts && node scripts/siteMetadata.test.mjs",
+    "test": "npx tsx src/tests/diversity.test.ts && npx tsx src/tests/comprehensiveSuite.ts && npx tsx src/tests/regressionQuality.ts && npx tsx src/tests/linguisticQuality.test.ts && npx tsx src/tests/linguisticRules.test.ts && npx tsx src/tests/generatorLanguageRules.integration.test.ts && npx tsx src/tests/datasetManifest.test.ts && node scripts/siteMetadata.test.mjs",
     "test:visual": "node scripts/visual-qa.mjs",
     "audit:i18n": "npx tsx scripts/localization-coverage-audit.ts",
     "test:browser": "node scripts/visual-qa.mjs",

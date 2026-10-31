@@ -14,6 +14,7 @@ import { GENERATORS_METADATA } from '../data/generators';
 import { ATTESTED_BABY_NAMES, LOCALIZED_BABY_NAMES } from '../data/attestedBabyNames';
 import { getPhraseBank } from '../data/phraseBanks';
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from './linguisticRules';
+import { selectDiverseCandidates } from './diversity';
 
 const RECENT_NAMES_KEY = 'nameforge_recent_names';
 const RECENT_LIMIT = 120;
@@ -1242,8 +1243,9 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     }
   }
 
-  // Sort candidate pool by quality score descending
-  candidatePool.sort((a, b) => b.score - a.score);
+  // Greedy ranking balances quality with phonetic and structural variety.
+  // It preserves high-quality candidates while avoiding one dominant strategy or ending.
+  candidatePool = selectDiverseCandidates(candidatePool, quantity * 4);
 
   // Diverse Selection Phase (incorporating Levenshtein anti-similarity filter)
   const usedStrategies = new Set<GenerationStrategy>();
@@ -1262,7 +1264,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     }
 
     // Check recent history collision if possible
-    if (recentNames.some((r) => r.toLowerCase() === cand.name.toLowerCase())) {
+    if (isTooSimilar(cand.name, recentNames, cleanKw)) {
       continue;
     }
 
@@ -1296,7 +1298,8 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     for (const cand of candidatePool) {
       if (out.length >= quantity) break;
       if (cleanKw && !cand.name.toLowerCase().includes(cleanKw.toLowerCase())) continue;
-      if (seenInBatch.some((s) => s.toLowerCase() === cand.name.toLowerCase())) continue;
+      if (isTooSimilar(cand.name, seenInBatch, cleanKw)) continue;
+      if (isTooSimilar(cand.name, recentNames, cleanKw)) continue;
 
       seenInBatch.push(cand.name);
       const desc =
