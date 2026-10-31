@@ -2,6 +2,8 @@ declare const process: { exitCode?: number };
 import { getFamilyLinguisticPolicy, getLanguageScriptProfile, getScriptsInText, isKeywordCompatibleWithLanguage } from '../services/linguisticRules';
 import { countOrthographicUnits, getOrthographicProfile, requiresWholeTokenGeneration, splitOrthographicUnits } from '../services/orthographicUnits';
 import { applyTurkishSuffix, inflectRegularSpanishOAdjective } from '../services/languageMorphology';
+
+import { getRegionalLocaleProfile, resolveGenerationLanguage } from '../services/regionalLocales';
 import { decomposeHangulSyllable, getPhoneticModelProfile, splitJapaneseMora } from '../services/phoneticUnits';
 const checks: Array<[string, boolean]> = [
  ['Arabic uses native script and whole tokens', getLanguageScriptProfile('ar').scripts.includes('Arabic') && getLanguageScriptProfile('ar').requiresWholeTokens],
@@ -48,6 +50,14 @@ checks.push(['Hangul syllable decomposes into onset, nucleus and coda', hangul?.
 checks.push(['Non-precomposed Hangul input is not misread as a syllable block', decomposeHangulSyllable('한')?.coda === 'ᆫ']);
 checks.push(['Chinese phonetic generation stays disabled without a tone lexicon', getPhoneticModelProfile('zh')?.generationEnabled === false && getPhoneticModelProfile('zh')?.status === 'reference-data-required']);
 checks.push(['All ten native-script phonetic profiles state their implementation status', nativeScriptLanguages.every((language) => Boolean(getPhoneticModelProfile(language)))]);
+
+
+checks.push(['en-GB resolves to English with explicit regional metadata', getRegionalLocaleProfile('en-gb')?.language === 'en' && getRegionalLocaleProfile('en-gb')?.region === 'GB']);
+checks.push(['French Canadian locale resolves without pretending regional rules exist', getRegionalLocaleProfile('fr_CA')?.fallback === 'fr' && getRegionalLocaleProfile('fr_CA')?.regionalDataStatus === 'metadata-only']);
+checks.push(['Brazilian and European Portuguese remain distinct locale tags', getRegionalLocaleProfile('pt-BR')?.tag !== getRegionalLocaleProfile('pt-PT')?.tag]);
+checks.push(['Simplified and Traditional Chinese script tags remain distinct', getRegionalLocaleProfile('zh-Hans')?.script === 'Hans' && getRegionalLocaleProfile('zh-Hant')?.script === 'Hant']);
+checks.push(['Regional locale maps to its base generation language', resolveGenerationLanguage('es-MX') === 'es']);
+checks.push(['Unknown region is not silently accepted as a supported locale', getRegionalLocaleProfile('en-AU') === undefined]);
 
 const failed = checks.filter(([, ok]) => !ok);
 for (const [label, ok] of checks) console.log(`${ok ? 'PASS' : 'FAIL'} ${label}`);
