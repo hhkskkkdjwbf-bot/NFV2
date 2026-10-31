@@ -27,21 +27,24 @@ try {
   }
   if (!ready) throw new Error('Audit target did not become available at ' + baseUrl);
 
-  const args = [
-    'lighthouse', baseUrl,
-    '--chrome-flags=--headless --no-sandbox',
-    '--output=json', '--output=html',
-    '--output-path=' + outputDir + '/home',
-    '--only-categories=performance,accessibility,best-practices,seo',
-    '--quiet',
-  ];
-  const audit = spawn('npx', args, { stdio: 'inherit', shell: process.platform === 'win32' });
-  const code = await new Promise((resolve, reject) => {
-    audit.on('error', reject);
-    audit.on('close', resolve);
-  });
-  if (code !== 0) throw new Error('Lighthouse exited with code ' + code);
-  console.log('Lighthouse reports written to ' + outputDir + '/home.report.html and .report.json');
+  for (const profile of ['desktop', 'mobile']) {
+    const args = [
+      'lighthouse', baseUrl,
+      '--chrome-flags=--headless --no-sandbox',
+      '--output=json', '--output=html',
+      '--output-path=' + outputDir + '/home-' + profile,
+      '--only-categories=performance,accessibility,best-practices,seo',
+      ...(profile === 'desktop' ? ['--preset=desktop'] : []),
+      '--quiet',
+    ];
+    const audit = spawn('npx', args, { stdio: 'inherit', shell: process.platform === 'win32' });
+    const code = await new Promise((resolve, reject) => {
+      audit.on('error', reject);
+      audit.on('close', resolve);
+    });
+    if (code !== 0) throw new Error('Lighthouse ' + profile + ' audit exited with code ' + code);
+    console.log('Lighthouse ' + profile + ' reports written to ' + outputDir + '/home-' + profile + '.report.html and .report.json');
+  }
 } finally {
   server?.kill('SIGTERM');
 }
