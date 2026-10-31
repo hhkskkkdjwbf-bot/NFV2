@@ -8,6 +8,12 @@ Le workflow génère un fichier de relecture avec 30 sorties réelles par langue
 
 Cet échantillon sert à détecter des problèmes représentatifs. Il ne certifie pas chaque sortie, ni chaque scénario de la matrice.
 
+## Grille de notation
+
+La grille détaillée et les consignes propres aux 28 langues se trouvent dans `reports/generator-quality/REVIEWER-RUBRIC.md`. Chaque échantillon reçoit quatre notes de 1 à 5 : naturalité, adéquation à la catégorie, correction linguistique et lisibilité. Une proposition de correction et un motif sont demandés lorsqu'un problème est trouvé.
+
+Le paquet inclut également `language-signoff.csv`, une ligne de suivi par langue. Les statuts possibles sont `pending`, `in_review`, `needs_revision`, `approved` et `blocked`. Le protocole de signature est décrit dans `reports/generator-quality/REVIEWER-SIGNOFF.md`.
+
 ## Qui peut noter ?
 
 Un relecteur ne doit évaluer que les langues qu'il maîtrise suffisamment pour juger l'usage courant, la grammaire, la morphologie et les connotations culturelles. Une validation dite « native » doit être confirmée par le relecteur lui-même ; ne jamais déduire son niveau de compétence.
@@ -34,6 +40,10 @@ Les colonnes `unicode_scripts` et `automatic_review_signals` servent uniquement 
 4. Corriger les règles ou données concernées sans remplacer arbitrairement une langue par l'anglais.
 5. Relancer TypeScript, tests de régression, baseline 234 × 28, Playwright, Lighthouse et contrôle après déploiement.
 6. Conserver la décision, la correction, le relecteur, sa compétence déclarée et la date de validation.
+
+## Contrôle de l'échantillon
+
+Le générateur de file évite les doublons de noms au sein d'une langue lorsque 30 candidats distincts existent et répartit les choix entre les générateurs et catégories lorsque possible. Les lignes de relecture incluent le statut, l'alias du relecteur, sa compétence déclarée, la variante linguistique, la date et une proposition de correction. Les colonnes de notation restent vides jusqu'à une vraie relecture.
 
 ## Statut honnête
 
