@@ -6,6 +6,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { ALL_GENERATORS_LIST } from '../src/data/generators';
 import { generateNames } from '../src/services/generatorEngine';
+import { getPhraseBank } from '../src/data/phraseBanks';
 
 declare const process: { cwd(): string; exitCode?: number };
 
@@ -23,6 +24,7 @@ type Scenario = {
   language: string;
   generated: number;
   empty: number;
+  phraseBankSize: number;
   duplicateRate: number;
   uniqueRate: number;
   meanLength: number;
@@ -108,6 +110,7 @@ async function main() {
   for (const generator of generators) {
     for (const language of LANGUAGES) {
       const names: string[] = [];
+      const phraseBankSize = getPhraseBank(generator.id, language).length;
       let empty = 0;
       const perSeed: Scenario['perSeed'] = [];
       for (const seed of SEEDS) {
@@ -150,8 +153,15 @@ async function main() {
       const crossSeedOverlapRate = perBatchUniqueCount ? 1 - unique.size / perBatchUniqueCount : 0;
       const signals: string[] = [];
       if (empty) signals.push('empty_output');
+      if (names.length === 0) signals.push('zero_output_scenario');
       if (names.length > 0 && 1 - withinBatchUniqueRate >= 0.15) signals.push('high_within_batch_duplicate_rate');
       if (names.length && withinBatchUniqueRate < 0.65) signals.push('low_within_batch_diversity');
+      // Cross-seed overlap catches a weakness that within-batch uniqueness misses:
+      // a phrase bank can return a unique batch every time while repeating the
+      // same small catalogue across separate sessions.
+      if (names.length && crossSeedOverlapRate >= 0.20) signals.push('high_cross_seed_repetition');
+      // This is a coverage target for curated phrase banks, not a linguistic verdict.
+      if (phraseBankSize > 0 && phraseBankSize < 30) signals.push('phrase_bank_below_30_entries');
       if (scriptChecks && mismatchCount / scriptChecks >= 0.2) signals.push('possible_script_mismatch');
       const category = (generator as any).category || 'unknown';
       scenarios.push({
@@ -160,6 +170,7 @@ async function main() {
         language,
         generated: names.length,
         empty,
+        phraseBankSize,
         duplicateRate: Number(duplicateRate.toFixed(4)),
         uniqueRate: Number(uniqueRate.toFixed(4)),
         withinBatchUniqueRate: Number(withinBatchUniqueRate.toFixed(4)),
@@ -199,6 +210,8 @@ async function main() {
         'Semantic relevance and naturalness require human review or language-specific reference data.',
         'Script mismatch is a warning signal, not a definitive language-quality judgment.',
         'Seeded runs improve reproducibility but do not guarantee a statistically exhaustive sample.',
+        'Cross-seed overlap measures repeated catalogue exposure across separate sessions; it is not a measure of within-batch duplicates.',
+        'A phrase bank below 30 entries is flagged as an expansion target, not as proof of poor translation quality.',
       ],
     },
     scenarios,
