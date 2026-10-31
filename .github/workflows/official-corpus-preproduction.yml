@@ -1,0 +1,43 @@
+name: Official corpus preproduction audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-corpus-preproduction
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download official archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .corpus-work
+          curl --fail --location --retry 3 'https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2025-nat_csv.zip' -o .corpus-work/insee.zip
+          curl --fail --location --retry 3 'https://www.ssa.gov/oact/babynames/names.zip' -o .corpus-work/ssa.zip
+          sha256sum .corpus-work/*.zip | tee .corpus-work/archive-checksums.txt
+      - name: Parse archives and create isolated staging artifact
+        run: python scripts/audit_official_name_archives.py --insee .corpus-work/insee.zip --ssa .corpus-work/ssa.zip --out .corpus-work/output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-official-corpus-preproduction
+          path: |
+            .corpus-work/archive-checksums.txt
+            .corpus-work/output/report.md
+            .corpus-work/output/corpus-audit.json
+            .corpus-work/output/staging-corpus.jsonl
+          if-no-files-found: error
+          retention-days: 14
