@@ -35,7 +35,6 @@ jobs:
           curl --fail --location --retry 3 'https://www.insee.fr/fr/statistiques/fichier/8595130/prenoms-2025-nat_csv.zip' -o .corpus-work/insee.zip
           if ! curl --fail --location --retry 2 --user-agent 'Mozilla/5.0 (compatible; NameForgeCorpusAudit/1.0)' --referer 'https://www.ssa.gov/oact/babynames/index.html' 'https://www.ssa.gov/oact/babynames/names.zip' -o .corpus-work/ssa.zip; then echo 'SSA archive unavailable from this runner; INSEE-only audit will be marked partial.' | tee -a .corpus-work/download-status.txt; fi
           sha256sum .corpus-work/*.zip | tee .corpus-work/archive-checksums.txt
-            .corpus-work/download-status.txt
       - name: Parse archives and create isolated staging artifact
         run: if [ -f .corpus-work/ssa.zip ]; then python scripts/audit_official_name_archives.py --insee .corpus-work/insee.zip --ssa .corpus-work/ssa.zip --out .corpus-work/output; else python scripts/audit_official_name_archives.py --insee .corpus-work/insee.zip --out .corpus-work/output; fi
       - uses: actions/upload-artifact@v4
@@ -43,6 +42,7 @@ jobs:
           name: nameforge-official-corpus-preproduction
           path: |
             .corpus-work/archive-checksums.txt
+            .corpus-work/download-status.txt
             .corpus-work/output/report.md
             .corpus-work/output/corpus-audit.json
             .corpus-work/output/staging-corpus.jsonl
