@@ -996,7 +996,9 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       : phraseBank;
     // A keyword that matches no curated phrase falls through to the procedural pipeline below.
     if (matching.length > 0) {
-      const fresh = matching.filter((p) => !recentNames.some((r) => r.toLowerCase() === p.toLowerCase()));
+      const fresh = matching.filter((p) => !recentNames.some((r) =>
+        r.normalize('NFC').toLocaleLowerCase() === p.normalize('NFC').toLocaleLowerCase()
+      ));
       const shuffle = (list: string[]): string[] => {
         const copy = [...list];
         for (let i = copy.length - 1; i > 0; i--) {
@@ -1005,11 +1007,9 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
         }
         return copy;
       };
-      // Phrases not seen recently come first; recent ones only top up the batch when needed.
-      const pool = [
-        ...shuffle(fresh),
-        ...shuffle(matching.filter((p) => !fresh.includes(p))),
-      ];
+      // Never recycle a recently shown curated phrase just to fill the requested quantity.
+      // A smaller honest batch is preferable to artificial repetition.
+      const pool = shuffle(fresh);
       for (const phrase of pool.slice(0, quantity)) {
         const phraseMeta = buildProfessionalMetadata(phrase, targetGenerator, resolved.label || targetStyle, length);
         out.push({
