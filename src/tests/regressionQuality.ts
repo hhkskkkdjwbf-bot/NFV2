@@ -189,6 +189,25 @@ for (const { generator, lang } of localizedTitleCases) {
     }
   }
 }
+// 11. Japanese names must not receive romanized title fragments.
+for (const generator of ['fantasy', 'elf', 'dragon', 'kingdom']) {
+  for (let batch = 0; batch < 12; batch++) {
+    const names = generateNames({
+      generator: generator as any,
+      genLanguage: 'ja' as any,
+      quantity: 20,
+      seed: `japanese-title-regression-${generator}-${batch}`,
+    });
+    for (const item of names) {
+      check(
+        `Japanese title vocabulary stays in Japanese for ${generator}`,
+        !/[A-Za-z]/.test(item.name),
+        `→ "${item.name}"`,
+      );
+    }
+  }
+}
+
 console.log(`Quality regression: ${passed} checks passed, ${failures.length} failed (${generated} names scanned).`);
 if (failures.length) {
   console.log([...new Set(failures)].slice(0, 40).join('\n'));
