@@ -28,6 +28,12 @@ export interface StagedCorpusRecord {
   attribution: string;
   transliterationOf?: string;
   nativeScriptAttested: boolean;
+  sourceGender?: 'male' | 'female';
+  sourceOrigin?: string;
+  sourceMeaning?: string;
+  sourceShortForms?: string[];
+  sourceInternationalForms?: string[];
+  humanReviewStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface CorpusValidationResult {

@@ -1,0 +1,38 @@
+name: Native name bank preproduction
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_russian_native_bank.py'
+      - 'scripts/tests/test_prepare_russian_native_bank.py'
+      - 'docs/corpus-preproduction/raw/ru/**'
+      - 'docs/corpus-preproduction/staged/ru/**'
+      - '.github/workflows/native-bank-preproduction.yml'
+permissions:
+  contents: read
+jobs:
+  russian-preproduction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Unit-test the conversion contract
+        run: python -m unittest scripts/tests/test_prepare_russian_native_bank.py
+      - name: Verify reproducible conversion from pinned source
+        run: python scripts/prepare_russian_native_bank.py --check-only
+      - name: Generate and verify SHA-256 manifest
+        run: |
+          cd docs/corpus-preproduction/staged/ru
+          sha256sum names.jsonl README.md > SHA256SUMS
+          sha256sum -c SHA256SUMS
+      - name: Upload isolated preproduction corpus
+        uses: actions/upload-artifact@v4
+        with:
+          name: nameforge-ru-native-bank-preproduction
+          path: docs/corpus-preproduction/staged/ru/
+          if-no-files-found: error
+          retention-days: 30

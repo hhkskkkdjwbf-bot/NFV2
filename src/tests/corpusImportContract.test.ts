@@ -47,6 +47,7 @@ const nativeBase: StagedCorpusRecord = {
 
 const nativeCases: Array<[string, StagedCorpusRecord, boolean, boolean]> = [
   ['accept a Japanese native-script preproduction record without runtime approval', nativeBase, true, false],
+  ['accept a Russian native attestation while keeping it out of public runtime', { ...nativeBase, id: 'native-ru-001', sourceId: 'nen-ru-names', sourceRecordId: 'aleksandr', displayName: 'Александр', languageContext: 'ru', script: 'Cyrl', sourceGender: 'male', sourceOrigin: 'древнегреческое', sourceMeaning: 'защитник людей', sourceInternationalForms: ['Alexander'], humanReviewStatus: 'pending' }, true, false],
   ['reject Latin script for Japanese native-name attestation', { ...nativeBase, script: 'Latn' }, false, false],
   ['reject romanized form marked as native-script attested', { ...nativeBase, nativeScriptAttested: false }, false, false],
   ['reject unsupported language from controlled ten-language scope', { ...nativeBase, languageContext: 'fr-FR' }, false, false],

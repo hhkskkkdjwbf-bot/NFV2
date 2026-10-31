@@ -39,3 +39,11 @@ const packageJson = readFileSync(new URL('../package.json', import.meta.url), 'u
 assert.ok(packageJson.includes('npx tsx scripts/generate-seo-pages.ts'), 'both production build scripts should generate static SEO pages');
 
 console.log('Dynamic SEO metadata checks passed: 28 locales and social metadata updates are covered.');
+
+const corpusScript = readFileSync(new URL('./prepare_russian_native_bank.py', import.meta.url), 'utf8');
+assert.ok(corpusScript.includes('EXPECTED_SHA256'), 'Russian conversion must pin raw source checksum');
+assert.ok(corpusScript.includes('runtimeEligible'), 'Russian staged records must carry runtime gate');
+assert.ok(corpusScript.includes('sourceInternationalForms'), 'international forms must remain separate');
+const corpusWorkflow = readFileSync(new URL('../.github/workflows/native-bank-preproduction.yml', import.meta.url), 'utf8');
+assert.ok(corpusWorkflow.includes('python scripts/prepare_russian_native_bank.py --check-only'), 'CI must verify reproducible conversion');
+console.log('Native corpus preproduction checks passed.');
