@@ -61,6 +61,16 @@ checks.push(['Simplified and Traditional Chinese script tags remain distinct', g
 checks.push(['Regional locale maps to its base generation language', resolveGenerationLanguage('es-MX') === 'es']);
 checks.push(['Unknown region is not silently accepted as a supported locale', getRegionalLocaleProfile('en-AU') === undefined]);
 
+checks.push(['BCP 47 script and region casing resolves French Canadian', getRegionalLocaleProfile('FR-latn-ca')?.tag === 'fr-CA']);
+checks.push(['BCP 47 Unicode extensions do not break locale resolution', getRegionalLocaleProfile('en-GB-u-ca-gregory')?.tag === 'en-GB']);
+checks.push(['Chinese region infers Simplified script for Singapore', getRegionalLocaleProfile('zh-SG')?.script === 'Hans']);
+checks.push(['Chinese region infers Traditional script for Hong Kong', getRegionalLocaleProfile('zh-HK')?.script === 'Hant']);
+checks.push(['Explicit Chinese script takes precedence over region', getRegionalLocaleProfile('zh-Hant-CN')?.script === 'Hant']);
+checks.push(['BCP 47 private-use suffix does not change the base language', resolveGenerationLanguage('pt-BR-x-local') === 'pt']);
+checks.push(['Malformed empty BCP 47 subtags are rejected', resolveGenerationLanguage('en--GB') === undefined]);
+checks.push(['Malformed language subtags are rejected', resolveGenerationLanguage('english-US') === undefined]);
+
+
 
 const sampleRiskLexicon = [{
   id: 'test-risk-1', language: 'en' as const, term: 'badword', level: 'high' as const,
