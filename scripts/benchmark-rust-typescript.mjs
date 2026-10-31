@@ -7,14 +7,14 @@ import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sizes = [10_000, 100_000, 1_000_000];
-const alphabet = ['Élodie','E\\u0301lodie','محمد','مُحَمَّد','東京','京都','A+B','Name Forge','नाम','김민준','Zoë','Zoë-2','Δημήτρης','Иван'];
+const alphabet = ['Élodie','E\u0301lodie','محمد','مُحَمَّد','東京','京都','A+B','Name Forge','नाम','김민준','Zoë','Zoë-2','Δημήτρης','Иван'];
 const inputPath = path.join(root, 'artifacts/rust-benchmark/input.json');
 const reportPath = path.join(root, 'artifacts/rust-benchmark/report.json');
 const rustBin = path.join(root, 'rust/target/release/nameforge-bench');
 
 function key(value) {
   return Array.from(value.normalize('NFC'), ch => ch.toLowerCase()).join('')
-    .replace(/[^\\p{L}\\p{M}\\p{N}\\p{S}]+/gu, ' ').trim().replace(/\\s+/g, ' ');
+    .replace(/[^\p{L}\p{M}\p{N}\p{S}]+/gu, ' ').trim().replace(/\s+/g, ' ');
 }
 function distance(a, b) {
   const left = Array.from(key(a)), right = Array.from(key(b));
@@ -66,8 +66,8 @@ function runTimed(command, args, label) {
     cwd: root, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024,
   });
   const elapsedMs = performance.now() - start;
-  if (result.status !== 0) throw new Error(`${label} failed: ${result.stderr} ${result.stdout}`);
-  const rssLine = result.stderr.trim().split('\\n').at(-1);
+  if (result.status !== 0) throw new Error(\`\${label} failed: \${result.stderr} \${result.stdout}\`);
+  const rssLine = result.stderr.trim().split('\n').at(-1);
   const maxRssKb = Number(rssLine);
   return { elapsedMs: Number(elapsedMs.toFixed(2)), maxRssKb: Number.isFinite(maxRssKb) ? maxRssKb : null, stdout: result.stdout.trim() };
 }
@@ -92,11 +92,11 @@ if (process.argv[2] === '--typescript-worker') {
       input_count: size, parity,
       typescript: { elapsed_ms: ts.elapsedMs, max_rss_kb: ts.maxRssKb },
       rust: { elapsed_ms: rust.elapsedMs, max_rss_kb: rust.maxRssKb },
-      results: { typescript: tsResult, rust },
+      results: { typescript: tsResult, rust: rustResult },
     });
     console.log(JSON.stringify(report.runs.at(-1)));
-    if (!parity) throw new Error(`Rust/TypeScript parity failure for ${size} names`);
+    if (!parity) throw new Error(\`Rust/TypeScript parity failure for \${size} names\`);
   }
   await writeFile(reportPath, JSON.stringify(report, null, 2), 'utf8');
-  console.log(`Benchmark report: ${path.relative(root, reportPath)}`);
+  console.log(\`Benchmark report: \${path.relative(root, reportPath)}\`);
 }
