@@ -41,11 +41,15 @@ jobs:
         run: npm run audit:generators
       - name: Run raw-output deep instrumentation
         run: npm run audit:generators:deep
+      - name: Build balanced human-review queue for all 28 languages
+        run: npm run review:linguistic
       - name: Upload baseline reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: nameforge-generator-quality-baseline
-          path: artifacts/generator-quality-audit/
+          path: |
+            artifacts/generator-quality-audit/
+            artifacts/linguistic-human-review/
           if-no-files-found: warn
           retention-days: 30
