@@ -124,6 +124,11 @@ try {
           }
 
           const faqSection = page.getByTestId('home-faq-section');
+          // The FAQ is intentionally deferred until it approaches the viewport.
+          // Bring it into view before asserting its contents so this QA check
+          // validates the lazy-loading contract instead of expecting eager rendering.
+          await faqSection.scrollIntoViewIfNeeded();
+          await page.waitForTimeout(150);
           const faqItems = faqSection.locator('div.space-y-3 > div');
           const faqButtons = faqItems.locator('button');
           const faqCount = await faqButtons.count();
