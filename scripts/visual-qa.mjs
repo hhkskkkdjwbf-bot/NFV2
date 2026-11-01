@@ -376,7 +376,7 @@ try {
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
     if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
-    const tabs = page.locator('[role="tablist"] > button[role="tab"]');
+    const tabs = page.locator('[data-testid="creative-studio-tabs"] > button[role="tab"]');
     if (await tabs.count() !== 4) failures.push('creative-studio-navigation: expected exactly four tool tabs, found ' + await tabs.count());
     const usernameTab = page.getByRole('tab', { name: 'Username Designer' });
     await usernameTab.click();
