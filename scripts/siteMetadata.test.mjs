@@ -55,3 +55,11 @@ assert.ok(serviceWorker.includes('nameforge-static-v1'), 'hashed assets should u
 assert.ok(serviceWorker.includes("request.mode === 'navigate'"), 'HTML navigation should use network-first cache strategy');
 assert.ok(serviceWorker.includes('HASHED_ASSET.test(url.pathname)'), 'only content-hashed static assets should use cache-first');
 console.log('Offline cache checks passed: versioned hashed assets and network-first HTML.');
+
+const generatorDetail = readFileSync(new URL('../src/views/GeneratorDetailView.tsx', import.meta.url), 'utf8');
+const generatorEngine = readFileSync(new URL('../src/services/generatorEngine.ts', import.meta.url), 'utf8');
+assert.ok(generatorDetail.includes('id="nameforge-seed"'), 'generator page should expose the reproducibility seed');
+assert.ok(generatorDetail.includes('seed: seed.trim() || undefined'), 'generator page should pass a non-empty seed to the engine');
+assert.ok(generatorDetail.includes('The same seed and settings reproduce the same batch'), 'seed UI should explain reproducibility');
+assert.ok(generatorEngine.includes('activeRandom = mulberry32(hashSeed(options.seed))'), 'seeded generation should use the deterministic PRNG');
+console.log('Reproducible generation UI checks passed.');
