@@ -63,3 +63,17 @@ assert.ok(generatorDetail.includes('seed: seed.trim() || undefined'), 'generator
 assert.ok(generatorDetail.includes('The same seed and settings reproduce the same batch'), 'seed UI should explain reproducibility');
 assert.ok(generatorEngine.includes('activeRandom = mulberry32(hashSeed(options.seed))'), 'seeded generation should use the deterministic PRNG');
 console.log('Reproducible generation UI checks passed.');
+
+const generatorCatalogue = readFileSync(new URL('../src/views/GeneratorsListView.tsx', import.meta.url), 'utf8');
+assert.ok(generatorCatalogue.includes('searchInDescriptions'), 'advanced generator search should allow searching descriptions');
+assert.ok(generatorCatalogue.includes("sortMode === 'alphabetical'"), 'generator catalogue should support alphabetical sorting');
+assert.ok(generatorCatalogue.includes('sortMode === \'relevance\''), 'generator catalogue should support relevance sorting');
+
+const projectStorage = readFileSync(new URL('../src/services/storage.ts', import.meta.url), 'utf8');
+const projectWorkspace = readFileSync(new URL('../src/components/ProjectWorkspace.tsx', import.meta.url), 'utf8');
+assert.ok(projectStorage.includes('export function createSavedProject'), 'users should be able to save named project snapshots');
+assert.ok(projectStorage.includes('export function restoreSavedProject'), 'saved project snapshots should be restorable');
+assert.ok(projectStorage.includes('version: 3'), 'new JSON backups should use schema version 3');
+assert.ok(projectStorage.includes('Version de sauvegarde non prise en charge'), 'unsupported backup versions should be rejected');
+assert.ok(projectWorkspace.includes('Add to my workspace'), 'saved projects should be accessible from the personal workspace');
+console.log('Phase 4 workspace checks passed: multi-criteria search, saved projects, and versioned backups.');
