@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         run: npm install
       - name: Install Chromium for Playwright and Lighthouse
@@ -33,7 +33,8 @@ jobs:
         run: |
           mkdir -p artifacts
           npm audit --json > artifacts/npm-audit.json || true
-          node -e "const a=require('./artifacts/npm-audit.json'); console.log('npm audit:', JSON.stringify(a.metadata?.vulnerabilities ?? {})); for (const [name, item] of Object.entries(a.vulnerabilities ?? {})) console.log(name + ': ' + item.severity + ', direct=' + item.isDirect + ', fixAvailable=' + JSON.stringify(item.fixAvailable));"
+          node -e "const fs=require('fs'); let a; try { a=JSON.parse(fs.readFileSync('artifacts/npm-audit.json','utf8')); } catch (e) { console.error('npm audit did not return valid JSON:', e.message); process.exit(1); } const counts=a.metadata?.vulnerabilities; if (!counts) { console.error('npm audit response is missing vulnerability metadata'); process.exit(1); } console.log('npm audit:', JSON.stringify(counts)); for (const [name, item] of Object.entries(a.vulnerabilities ?? {})) console.log(name + ': ' + item.severity + ', direct=' + item.isDirect + ', range=' + item.range + ', fixAvailable=' + JSON.stringify(item.fixAvailable)); if ((counts.total ?? 0) > 0) { console.error('Dependency audit failed: vulnerabilities remain.'); process.exit(1); }"
+          npm ls lighthouse puppeteer-core @sentry/node --depth=1
       - name: Type-check
         run: npm run lint
       - name: Run regression tests
@@ -111,7 +112,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Install dependencies
         run: npm install
       - name: Install Chromium for Lighthouse
