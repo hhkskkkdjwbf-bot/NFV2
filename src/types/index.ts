@@ -421,6 +421,17 @@ export interface StorageStats {
   history: number;
 }
 
+export interface SavedProject {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  names: SavedNameEntry[];
+  collections: NamedCollection[];
+  history: HistoryEntry[];
+}
+
 export interface ExportBundle {
   version: number;
   appName: string;
@@ -428,6 +439,7 @@ export interface ExportBundle {
   names: SavedNameEntry[];
   collections: NamedCollection[];
   history: HistoryEntry[];
+  projects?: SavedProject[];
   settings?: AppSettings;
 }
 
