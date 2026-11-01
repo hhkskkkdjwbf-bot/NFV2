@@ -372,7 +372,7 @@ try {
 
   // Verify the unified workspace navigation, deep links and state retention.
   {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
     if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
@@ -391,6 +391,17 @@ try {
     const visibleNavItems = page.locator('header nav').getByRole('button', { name: /Creative Studio/ });
     if (await visibleNavItems.count() !== 1) failures.push('creative-studio-navigation: desktop navigation does not expose one consolidated Creative Studio entry');
     await page.close();
+
+    const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    await mobilePage.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
+    await mobilePage.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
+    await mobilePage.getByRole('button', { name: 'Menu' }).click();
+    const mobileMenu = mobilePage.locator('#nameforge-mobile-menu');
+    if (await mobileMenu.getByRole('button', { name: 'Creative Studio' }).count() !== 1) failures.push('creative-studio-navigation: mobile menu does not expose one consolidated Creative Studio entry');
+    for (const obsoleteLabel of ['Username Designer', 'Bio & Caption Studio', 'Symbols & Text Art']) {
+      if (await mobileMenu.getByRole('button', { name: obsoleteLabel }).count()) failures.push('creative-studio-navigation: obsolete standalone mobile link remains (' + obsoleteLabel + ')');
+    }
+    await mobilePage.close();
   }
 
   // Exercise the interactive Text Art workflow end-to-end in a real browser.
