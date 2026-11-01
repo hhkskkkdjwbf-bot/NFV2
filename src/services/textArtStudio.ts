@@ -32,11 +32,11 @@ export const TEXT_ART_ITEMS: TextArtItem[] = [
 export const SYMBOL_FAVORITES_KEY = 'nameforge.text-art.favorites.v1';
 
 export function filterTextArtItems(items: TextArtItem[], query: string, category: SymbolCategory | 'all' = 'all', favorites: string[] = [], favoritesOnly = false): TextArtItem[] {
-  const normalized = query.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLocaleLowerCase();
+  const normalized = query.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
   return items.filter((item) => {
     const matchesCategory = category === 'all' || item.category === category;
     const matchesFavorite = !favoritesOnly || favorites.includes(item.id);
-    const searchable = [item.label, item.id, item.value, ...item.keywords].join(' ').normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLocaleLowerCase();
+    const searchable = [item.label, item.id, item.value, ...item.keywords].join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase();
     return matchesCategory && matchesFavorite && (!normalized || searchable.includes(normalized));
   });
 }
@@ -68,7 +68,7 @@ export interface TextArtStyle {
 }
 
 function cssString(value: string): string {
-  return value.replace(/\\\\/g, '\\\\\\\\').replace(/"/g, '\\\\"').replace(/[\\r\\n\\0]/g, ' ');
+  return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/[\r\n\0]/g, ' ');
 }
 
 export function generateTextArtCss(style: TextArtStyle): string {
@@ -82,5 +82,5 @@ export function generateTextArtCss(style: TextArtStyle): string {
     `  line-height: ${Math.max(0.8, Math.min(3, style.lineHeight))};`,
     `  text-align: ${style.textAlign};`,
     '}',
-  ].join('\\n');
+  ].join('\n');
 }
