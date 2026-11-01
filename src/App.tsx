@@ -9,6 +9,7 @@ const MyNamesView = lazy(() => import('./views/MyNamesView').then((module) => ({
 const StyleStudioView = lazy(() => import('./views/StyleStudioView').then((module) => ({ default: module.StyleStudioView })));
 const UsernameDesignerView = lazy(() => import('./views/UsernameDesignerView').then((module) => ({ default: module.UsernameDesignerView })));
 const BioCaptionStudioView = lazy(() => import('./views/BioCaptionStudioView').then((module) => ({ default: module.BioCaptionStudioView })));
+const TextArtStudioView = lazy(() => import('./views/TextArtStudioView').then((module) => ({ default: module.TextArtStudioView })));
 import { GeneratorId } from './types';
 import { GENERATORS_METADATA, ALL_GENERATORS_LIST } from './data/generators';
 import { applySettingsToDOM, getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from './services/settings';
@@ -74,6 +75,7 @@ export const App: React.FC = () => {
       setCurrentView('my-names');
       return;
     }
+    if (hash === 'text-art-studio' || hash === 'symbols-text-art' || hash === 'symboles-text-art') { setCurrentView('text-art-studio'); return; }
     if (hash === 'bio-caption-studio' || hash === 'bio-studio' || hash === 'caption-studio') { setCurrentView('bio-caption-studio'); return; }
     if (hash === 'username-designer' || hash === 'username-generator' || hash === 'pseudo-generator') { setCurrentView('username-designer'); return; }
     if (hash === 'style-studio' || hash === 'atelier-style' || hash === 'text-styler') {
@@ -134,6 +136,10 @@ export const App: React.FC = () => {
       }
       setCurrentView('style-studio');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'text-art-studio') {
+      window.location.hash = '/text-art-studio';
+      setCurrentView('text-art-studio');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'bio-caption-studio') {
       window.location.hash = '/bio-caption-studio';
       setCurrentView('bio-caption-studio');
@@ -170,6 +176,7 @@ export const App: React.FC = () => {
       'style-studio': `${labels.pageTitles.styleStudio} — NameForge`,
       'username-designer': `Username Designer — NameForge`,
       'bio-caption-studio': `Bio & Caption Studio — NameForge`,
+      'text-art-studio': `Symbols & Text Art — NameForge`,
     };
     const generatorMeta = currentView === 'generator-detail' ? GENERATORS_METADATA[currentGenerator] : undefined;
     const generatorTitle = generatorMeta
@@ -178,7 +185,9 @@ export const App: React.FC = () => {
     const title = currentView === 'generator-detail'
       ? `${generatorTitle} | NameForge`
       : titles[currentView] || 'NameForge';
-    const description = currentView === 'username-designer'
+    const description = currentView === 'text-art-studio'
+      ? 'Browse searchable symbols and kaomojis, save favorites, preview styled HTML text, export CSS and create PNG banners.'
+      : currentView === 'username-designer'
       ? 'Create gaming, fantasy, minimal and elegant usernames with custom prefixes, suffixes, length limits and character validation.'
       : currentView === 'bio-caption-studio'
         ? 'Create and customize social media bios and captions with templates, decorative separators, line breaks and character counting.'
@@ -233,6 +242,7 @@ export const App: React.FC = () => {
             )}
             {currentView === 'username-designer' && <UsernameDesignerView />}
             {currentView === 'bio-caption-studio' && <BioCaptionStudioView />}
+            {currentView === 'text-art-studio' && <TextArtStudioView />}
           </Suspense>
         )}
       </main>
