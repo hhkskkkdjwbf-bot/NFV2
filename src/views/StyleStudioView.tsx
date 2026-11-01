@@ -437,14 +437,71 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
           ========================================================================= */}
       {activeTab === 'unicode' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <p className="text-xs sm:text-sm text-slate-400">
-              {getStudioLabel(settings.language, 'unicodeHint')}
-            </p>
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row gap-3">
+              <label className="relative flex-1">
+                <span className="sr-only">{getStudioLabel(settings.language, 'styleSearchLabel')}</span>
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="search"
+                  value={styleSearch}
+                  onChange={(event) => setStyleSearch(event.target.value)}
+                  placeholder={getStudioLabel(settings.language, 'styleSearchPlaceholder')}
+                  className="w-full rounded-xl border border-slate-700 bg-[#090d19] py-3 ps-11 pe-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-purple-500"
+                />
+              </label>
+              <label className="flex items-center gap-2 rounded-xl border border-slate-700 bg-[#090d19] px-3">
+                <span className="text-xs font-semibold text-slate-400">{getStudioLabel(settings.language, 'filterCategory')}</span>
+                <select
+                  value={styleCategory}
+                  onChange={(event) => setStyleCategory(event.target.value as typeof styleCategory)}
+                  className="min-w-32 bg-transparent py-3 text-sm font-semibold text-white outline-none"
+                >
+                  <option value="all">{getStudioLabel(settings.language, 'allCategories')}</option>
+                  <option value="formal">Formal</option>
+                  <option value="creative">Creative</option>
+                  <option value="gothic">Gothic</option>
+                  <option value="symbols">Symbols</option>
+                  <option value="fun">Fun</option>
+                </select>
+              </label>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p className="text-xs sm:text-sm text-slate-400">
+                {getStudioLabel(settings.language, 'unicodeHint')} · {visibleUnicodeStyles.length}/{UNICODE_STYLES.length}
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={selectVisibleStyles} disabled={visibleUnicodeStyles.length === 0}
+                  className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold text-slate-300 transition hover:border-purple-500 hover:text-white disabled:opacity-40">
+                  {getStudioLabel(settings.language, 'selectVisible')}
+                </button>
+                <button type="button"
+                  onClick={() => void handleCopyMultiple(UNICODE_STYLES.filter((style) => selectedStyleIds.includes(style.id)), 'bulk-copy')}
+                  disabled={selectedStyleIds.length === 0}
+                  className="rounded-lg bg-purple-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-40">
+                  {copiedId === 'bulk-copy' ? getStudioLabel(settings.language, 'copied') : getStudioLabel(settings.language, 'copySelected')} ({selectedStyleIds.length})
+                </button>
+                <button type="button" onClick={() => void handleCopyMultiple(visibleUnicodeStyles, 'visible-copy')}
+                  disabled={visibleUnicodeStyles.length === 0}
+                  className="rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-bold text-cyan-200 transition hover:bg-cyan-500/20 disabled:opacity-40">
+                  {copiedId === 'visible-copy' ? getStudioLabel(settings.language, 'copied') : getStudioLabel(settings.language, 'copyVisible')}
+                </button>
+                <button type="button" onClick={clearVisibleSelection}
+                  disabled={!visibleUnicodeStyles.some((style) => selectedStyleIds.includes(style.id))}
+                  className="rounded-lg px-2 py-2 text-xs font-semibold text-slate-500 transition hover:text-slate-200 disabled:opacity-30">
+                  {getStudioLabel(settings.language, 'clearSelection')}
+                </button>
+              </div>
+            </div>
           </div>
 
+          {visibleUnicodeStyles.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-700 px-6 py-12 text-center text-sm text-slate-400">
+              {getStudioLabel(settings.language, 'noStylesFound')}
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {UNICODE_STYLES.map((style) => {
+            {visibleUnicodeStyles.map((style) => {
               const styledText = style.transform(inputText || 'NameForge');
               const isCopied = copiedId === style.id;
 
