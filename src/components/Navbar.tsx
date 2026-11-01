@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
-import { Bookmark, Menu, X, ChevronDown, Settings, Search, Globe, Dices, Wand2 } from 'lucide-react';
+import { Bookmark, Menu, X, ChevronDown, Settings, Search, Globe, Dices, Wand2, FileText } from 'lucide-react';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId } from '../types';
 import { getSavedNames, subscribeToStorage } from '../services/storage';
@@ -63,6 +63,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
   const navText = navCopy[settings.language] || navCopy.en;
   const usernameDesignerLabel = settings.language === 'fr' ? 'Créateur de pseudos' : settings.language === 'ar' ? 'مصمم الأسماء' : 'Username Designer';
+  const bioCaptionLabel = settings.language === 'fr' ? 'Studio Bio & Légendes' : settings.language === 'ar' ? 'استوديو النبذة والتعليقات' : 'Bio & Caption Studio';
 
   const updateCount = () => {
     const list = getSavedNames();
@@ -243,6 +244,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{usernameDesignerLabel}</span>
             </button>
 
+            <button
+              onClick={() => onNavigate('bio-caption-studio')}
+              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${currentView === 'bio-caption-studio' ? 'text-white border-b-2 border-cyan-400 pb-1' : 'text-slate-400 hover:text-white'}`}
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-300" />
+              <span>{bioCaptionLabel}</span>
+            </button>
+
             {/* My Names with Live Counter */}
             <button
               onClick={() => onNavigate('my-names')}
@@ -368,6 +377,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Wand2 className="w-4 h-4 text-pink-400" />
               <span>{navText.mobileStudio}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onNavigate('bio-caption-studio');
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-emerald-300 hover:bg-slate-800 flex items-center gap-2"
+            >
+              <FileText className="w-4 h-4 text-emerald-300" />
+              <span>{bioCaptionLabel}</span>
             </button>
 
             <button
