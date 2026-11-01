@@ -67,7 +67,7 @@ console.log('Reproducible generation UI checks passed.');
 const generatorCatalogue = readFileSync(new URL('../src/views/GeneratorsListView.tsx', import.meta.url), 'utf8');
 assert.ok(generatorCatalogue.includes('searchInDescriptions'), 'advanced generator search should allow searching descriptions');
 assert.ok(generatorCatalogue.includes("sortMode === 'alphabetical'"), 'generator catalogue should support alphabetical sorting');
-assert.ok(generatorCatalogue.includes('sortMode === \'relevance\''), 'generator catalogue should support relevance sorting');
+assert.ok(generatorCatalogue.includes("useState<'relevance' | 'alphabetical'>"), 'generator catalogue should expose relevance and alphabetical sort modes');
 
 const projectStorage = readFileSync(new URL('../src/services/storage.ts', import.meta.url), 'utf8');
 const projectWorkspace = readFileSync(new URL('../src/components/ProjectWorkspace.tsx', import.meta.url), 'utf8');
