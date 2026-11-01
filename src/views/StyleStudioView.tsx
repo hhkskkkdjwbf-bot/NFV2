@@ -14,6 +14,8 @@ import {
   Image as ImageIcon,
   ArrowLeft,
   Share2,
+  Search,
+  CheckSquare,
 } from 'lucide-react';
 import {
   UNICODE_STYLES,
@@ -22,6 +24,10 @@ import {
   renderStyledTextToCanvas,
   downloadCanvasAsPng,
   generateSvgCode,
+  generateCssCode,
+  splitGraphemes,
+  filterUnicodeStyles,
+  UnicodeStyleOption,
 } from '../services/textStyler';
 import { GeneratorId } from '../types';
 import { getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from '../services/settings';
@@ -95,6 +101,9 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
   const [selectedTexture, setSelectedTexture] = useState(TEXTURE_FILLS[0].id);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedGeneral, setCopiedGeneral] = useState(false);
+  const [styleSearch, setStyleSearch] = useState('');
+  const [styleCategory, setStyleCategory] = useState<'all' | UnicodeStyleOption['category']>('all');
+  const [selectedStyleIds, setSelectedStyleIds] = useState<string[]>([]);
 
   // Canvas Studio Controls
   const [fontSize, setFontSize] = useState<number>(48);
@@ -104,6 +113,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
   const [exportScale, setExportScale] = useState<number>(2);
   const [svgCopied, setSvgCopied] = useState(false);
   const [cssCopied, setCssCopied] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [settings, setSettings] = useState(getAppSettings);
@@ -122,6 +132,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   // Keep Unicode styling, visual effects, textures and HD exports on one shared text source.
   const selectedUnicode = UNICODE_STYLES.find((style) => style.id === selectedUnicodeStyle);
+  const visibleUnicodeStyles = filterUnicodeStyles(UNICODE_STYLES, styleSearch, styleCategory);
   const canvasText = selectedUnicode ? selectedUnicode.transform(inputText || 'NameForge') : (inputText || 'NameForge');
 
   // Redraw canvas whenever parameters change
@@ -141,11 +152,13 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   const handleCopyText = async (textToCopy: string, id: string) => {
     try {
+      setCopyError(null);
       await copyToClipboard(textToCopy);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1500);
     } catch (e) {
       console.error('Failed to copy', e);
+      setCopyError(e instanceof Error ? e.message : 'Copy failed. Please try again.');
     }
   };
 
@@ -156,8 +169,12 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   const copyToClipboard = async (value: string): Promise<void> => {
     if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(value);
-      return;
+      try {
+        await navigator.clipboard.writeText(value);
+        return;
+      } catch {
+        // Try the legacy fallback when clipboard permissions/API access fail.
+      }
     }
 
     // Clipboard API may be unavailable on older browsers or non-secure origins.
@@ -167,12 +184,52 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
     document.body.appendChild(textarea);
-    textarea.select();
-    const copied = document.execCommand('copy');
-    textarea.remove();
-    if (!copied) {
-      throw new Error('Clipboard copy is not supported in this browser.');
+    try {
+      textarea.focus();
+      textarea.select();
+      const copied = document.execCommand('copy');
+      if (!copied) {
+        throw new Error('Clipboard copy is not supported in this browser.');
+      }
+    } finally {
+      textarea.remove();
     }
+  };
+
+  const handleCopyMultiple = async (styles: UnicodeStyleOption[], statusId: string) => {
+    if (styles.length === 0) return;
+    try {
+      setCopyError(null);
+      const combinedText = styles
+        .map((style) => style.transform(inputText || 'NameForge'))
+        .join('\n');
+      await copyToClipboard(combinedText);
+      setCopiedId(statusId);
+      window.setTimeout(() => setCopiedId(null), 1500);
+    } catch (e) {
+      console.error('Failed to copy multiple styles', e);
+      setCopyError(e instanceof Error ? e.message : 'Multiple copy failed. Please try again.');
+    }
+  };
+
+  const toggleStyleSelection = (styleId: string) => {
+    setSelectedStyleIds((current) =>
+      current.includes(styleId)
+        ? current.filter((id) => id !== styleId)
+        : [...current, styleId]
+    );
+  };
+
+  const selectVisibleStyles = () => {
+    setSelectedStyleIds((current) => Array.from(new Set([
+      ...current,
+      ...visibleUnicodeStyles.map((style) => style.id),
+    ])));
+  };
+
+  const clearVisibleSelection = () => {
+    const visibleIds = new Set(visibleUnicodeStyles.map((style) => style.id));
+    setSelectedStyleIds((current) => current.filter((id) => !visibleIds.has(id)));
   };
 
   const handleCopySvg = async () => {
@@ -186,36 +243,26 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
       letterSpacing
     );
     try {
+      setCopyError(null);
       await copyToClipboard(code);
       setSvgCopied(true);
       setTimeout(() => setSvgCopied(false), 1500);
     } catch (e) {
       console.error('Failed to copy SVG', e);
+      setCopyError(e instanceof Error ? e.message : 'SVG copy failed. Please try again.');
     }
   };
 
   const handleCopyCss = async () => {
-    const currentEffect = VISUAL_EFFECTS.find((e) => e.id === selectedEffect) || VISUAL_EFFECTS[0];
-    const currentTexture = TEXTURE_FILLS.find((texture) => texture.id === selectedTexture) || TEXTURE_FILLS[0];
-    const cssCode = `/* NameForge Styled Typography: ${currentEffect.name} + ${currentTexture.name} */
-.styled-text {
-  font-family: ${fontFamily};
-  font-size: ${fontSize}px;
-  font-weight: 800;
-  letter-spacing: ${letterSpacing}px;
-  background: ${currentTexture.cssBackground};
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(${currentEffect.textShadowCSS.split(',')[0]});
-}`;
+    const cssCode = generateCssCode(fontSize, fontFamily, letterSpacing, selectedEffect, selectedTexture);
     try {
+      setCopyError(null);
       await copyToClipboard(cssCode);
       setCssCopied(true);
       setTimeout(() => setCssCopied(false), 1500);
     } catch (e) {
-      console.error(e);
+      console.error('Failed to copy CSS', e);
+      setCopyError(e instanceof Error ? e.message : 'CSS copy failed. Please try again.');
     }
   };
 
@@ -264,14 +311,13 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
               type="text"
               dir={isRtl ? 'rtl' : 'ltr'}
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => setInputText(splitGraphemes(e.target.value).slice(0, 60).join(''))}
               placeholder={getStudioLabel(settings.language, 'inputPlaceholder')}
               className={`w-full px-5 py-4 rounded-2xl bg-[#090d19] border border-slate-700 text-lg sm:text-xl font-bold text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition shadow-inner ${isRtl ? 'text-end ps-12' : 'text-start pe-12'}`}
-              maxLength={60}
               aria-describedby="styler-input-counter"
             />
             <span id="styler-input-counter" aria-live="polite" className="absolute bottom-1 end-4 text-[10px] text-slate-500">
-              {inputText.length}/60
+              {splitGraphemes(inputText).length}/60
             </span>
             {inputText && (
               <button
@@ -320,6 +366,12 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
           ))}
         </div>
       </div>
+
+      {copyError && (
+        <p role="alert" aria-live="assertive" className="mb-6 rounded-xl border border-red-500/40 bg-red-950/30 px-4 py-3 text-sm text-red-200">
+          {copyError}
+        </p>
+      )}
 
       {/* Tabs Navigation */}
       <div role="tablist" aria-label={getStudioLabel(settings.language, 'title')} className="flex items-center gap-2 border-b border-slate-800 pb-4 mb-8 overflow-x-auto scrollbar-none">
@@ -385,14 +437,71 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
           ========================================================================= */}
       {activeTab === 'unicode' && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <p className="text-xs sm:text-sm text-slate-400">
-              {getStudioLabel(settings.language, 'unicodeHint')}
-            </p>
+          <div className="space-y-4">
+            <div className="flex flex-col md:flex-row gap-3">
+              <label className="relative flex-1">
+                <span className="sr-only">{getStudioLabel(settings.language, 'styleSearchLabel')}</span>
+                <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="search"
+                  value={styleSearch}
+                  onChange={(event) => setStyleSearch(event.target.value)}
+                  placeholder={getStudioLabel(settings.language, 'styleSearchPlaceholder')}
+                  className="w-full rounded-xl border border-slate-700 bg-[#090d19] py-3 ps-11 pe-4 text-sm text-white placeholder-slate-500 outline-none transition focus:border-purple-500"
+                />
+              </label>
+              <label className="flex items-center gap-2 rounded-xl border border-slate-700 bg-[#090d19] px-3">
+                <span className="text-xs font-semibold text-slate-400">{getStudioLabel(settings.language, 'filterCategory')}</span>
+                <select
+                  value={styleCategory}
+                  onChange={(event) => setStyleCategory(event.target.value as typeof styleCategory)}
+                  className="min-w-32 bg-transparent py-3 text-sm font-semibold text-white outline-none"
+                >
+                  <option value="all">{getStudioLabel(settings.language, 'allCategories')}</option>
+                  <option value="formal">Formal</option>
+                  <option value="creative">Creative</option>
+                  <option value="gothic">Gothic</option>
+                  <option value="symbols">Symbols</option>
+                  <option value="fun">Fun</option>
+                </select>
+              </label>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <p className="text-xs sm:text-sm text-slate-400">
+                {getStudioLabel(settings.language, 'unicodeHint')} · {visibleUnicodeStyles.length}/{UNICODE_STYLES.length}
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={selectVisibleStyles} disabled={visibleUnicodeStyles.length === 0}
+                  className="rounded-lg border border-slate-700 px-3 py-2 text-xs font-bold text-slate-300 transition hover:border-purple-500 hover:text-white disabled:opacity-40">
+                  {getStudioLabel(settings.language, 'selectVisible')}
+                </button>
+                <button type="button"
+                  onClick={() => void handleCopyMultiple(UNICODE_STYLES.filter((style) => selectedStyleIds.includes(style.id)), 'bulk-copy')}
+                  disabled={selectedStyleIds.length === 0}
+                  className="rounded-lg bg-purple-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-40">
+                  {copiedId === 'bulk-copy' ? getStudioLabel(settings.language, 'copied') : getStudioLabel(settings.language, 'copySelected')} ({selectedStyleIds.length})
+                </button>
+                <button type="button" onClick={() => void handleCopyMultiple(visibleUnicodeStyles, 'visible-copy')}
+                  disabled={visibleUnicodeStyles.length === 0}
+                  className="rounded-lg border border-cyan-500/40 bg-cyan-500/10 px-3 py-2 text-xs font-bold text-cyan-200 transition hover:bg-cyan-500/20 disabled:opacity-40">
+                  {copiedId === 'visible-copy' ? getStudioLabel(settings.language, 'copied') : getStudioLabel(settings.language, 'copyVisible')}
+                </button>
+                <button type="button" onClick={clearVisibleSelection}
+                  disabled={!visibleUnicodeStyles.some((style) => selectedStyleIds.includes(style.id))}
+                  className="rounded-lg px-2 py-2 text-xs font-semibold text-slate-500 transition hover:text-slate-200 disabled:opacity-30">
+                  {getStudioLabel(settings.language, 'clearSelection')}
+                </button>
+              </div>
+            </div>
           </div>
 
+          {visibleUnicodeStyles.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-700 px-6 py-12 text-center text-sm text-slate-400">
+              {getStudioLabel(settings.language, 'noStylesFound')}
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {UNICODE_STYLES.map((style) => {
+            {visibleUnicodeStyles.map((style) => {
               const styledText = style.transform(inputText || 'NameForge');
               const isCopied = copiedId === style.id;
 
@@ -406,9 +515,21 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                       <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
                         {style.name}
                       </span>
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
-                        {style.category}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+                          {style.category}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleStyleSelection(style.id)}
+                          aria-pressed={selectedStyleIds.includes(style.id)}
+                          aria-label={`${getStudioLabel(settings.language, 'selectStyle')} ${style.name}`}
+                          title={getStudioLabel(settings.language, 'selectStyle')}
+                          className={`rounded-lg p-1.5 transition ${selectedStyleIds.includes(style.id) ? 'bg-purple-500/20 text-purple-200' : 'text-slate-500 hover:bg-slate-800 hover:text-white'}`}
+                        >
+                          <CheckSquare className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
 
                     <div id={`studio-style-${style.id}-preview`} className="text-xl sm:text-2xl font-medium text-white break-words py-2 group-hover:text-cyan-200 transition">
@@ -439,6 +560,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
               );
             })}
           </div>
+          )}
         </div>
       )}
 
@@ -491,7 +613,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                       className="text-3xl sm:text-4xl font-black tracking-tight"
                       style={effect.cssStyle}
                     >
-                      {inputText || 'NameForge'}
+                      {canvasText}
                     </span>
                   </div>
 
@@ -573,7 +695,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                           filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))',
                         }}
                       >
-                        {inputText || 'NameForge'}
+                        {canvasText}
                       </span>
                     </div>
                   </div>

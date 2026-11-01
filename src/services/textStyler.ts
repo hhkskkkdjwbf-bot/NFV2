@@ -42,6 +42,7 @@ const CHAR_MAPS: Record<string, { upper: number; lower: number; digits?: number 
   italicSerif: { upper: 0x1d434, lower: 0x1d44e },
   italicSans: { upper: 0x1d608, lower: 0x1d622 },
   boldItalic: { upper: 0x1d468, lower: 0x1d482 },
+  boldSansItalic: { upper: 0x1d63c, lower: 0x1d656 },
   fraktur: { upper: 0x1d504, lower: 0x1d51e },
   boldFraktur: { upper: 0x1d56c, lower: 0x1d586 },
   script: { upper: 0x1d49c, lower: 0x1d4b6 },
@@ -250,9 +251,9 @@ const INVERTED_MAP: Record<string, string> = {
 };
 
 function toInverted(text: string): string {
-  return Array.from(text)
+  return splitGraphemes(text)
     .reverse()
-    .map((c) => INVERTED_MAP[c] || c)
+    .map((cluster) => INVERTED_MAP[cluster] || cluster)
     .join('');
 }
 
@@ -276,6 +277,27 @@ function toFullwidth(text: string): string {
     .join('');
 }
 
+
+// Superscript and subscript mappings intentionally leave unsupported characters unchanged.
+const SUPERSCRIPT_MAP: Record<string, string> = {
+  a:'ᵃ', b:'ᵇ', c:'ᶜ', d:'ᵈ', e:'ᵉ', f:'ᶠ', g:'ᵍ', h:'ʰ', i:'ⁱ', j:'ʲ',
+  k:'ᵏ', l:'ˡ', m:'ᵐ', n:'ⁿ', o:'ᵒ', p:'ᵖ', r:'ʳ', s:'ˢ', t:'ᵗ', u:'ᵘ',
+  v:'ᵛ', w:'ʷ', x:'ˣ', y:'ʸ', z:'ᶻ',
+  A:'ᴬ', B:'ᴮ', D:'ᴰ', E:'ᴱ', G:'ᴳ', H:'ᴴ', I:'ᴵ', J:'ᴶ', K:'ᴷ', L:'ᴸ',
+  M:'ᴹ', N:'ᴺ', O:'ᴼ', P:'ᴾ', R:'ᴿ', T:'ᵀ', U:'ᵁ', V:'ⱽ', W:'ᵂ',
+  '0':'⁰', '1':'¹', '2':'²', '3':'³', '4':'⁴', '5':'⁵', '6':'⁶', '7':'⁷', '8':'⁸', '9':'⁹',
+  '+':'⁺', '-':'⁻', '=':'⁼', '(':'⁽', ')':'⁾',
+};
+const SUBSCRIPT_MAP: Record<string, string> = {
+  a:'ₐ', e:'ₑ', h:'ₕ', i:'ᵢ', j:'ⱼ', k:'ₖ', l:'ₗ', m:'ₘ', n:'ₙ', o:'ₒ',
+  p:'ₚ', r:'ᵣ', s:'ₛ', t:'ₜ', u:'ᵤ', v:'ᵥ', x:'ₓ',
+  '0':'₀', '1':'₁', '2':'₂', '3':'₃', '4':'₄', '5':'₅', '6':'₆', '7':'₇', '8':'₈', '9':'₉',
+  '+':'₊', '-':'₋', '=':'₌', '(':'₍', ')':'₎',
+};
+const mapUnicodeCharacters = (text: string, mapping: Record<string, string>): string =>
+  splitGraphemes(text).map((cluster) => mapping[cluster] || cluster).join('');
+const toThinSpaced = (text: string): string => splitGraphemes(text).join('\u2009');
+
 export const UNICODE_STYLES: UnicodeStyleOption[] = [
   {
     id: 'bold-sans',
@@ -292,11 +314,25 @@ export const UNICODE_STYLES: UnicodeStyleOption[] = [
     transform: (t) => mapChars(t, 'boldSerif'),
   },
   {
+    id: 'italic-serif',
+    name: 'Italic Serif Editorial',
+    category: 'formal',
+    sample: '𝐼𝑡𝑎𝑙𝑖𝑐 𝑆𝑒𝑟𝑖𝑓',
+    transform: (t) => mapChars(t, 'italicSerif'),
+  },
+  {
     id: 'italic-sans',
     name: 'Italic Sans Dynamic',
     category: 'formal',
     sample: '𝘐𝘵𝘢𝘭𝘪𝘤 𝘚𝘢𝘯𝘴',
     transform: (t) => mapChars(t, 'italicSans'),
+  },
+  {
+    id: 'bold-sans-italic',
+    name: 'Bold Italic Sans',
+    category: 'formal',
+    sample: '𝙎𝙩𝙧𝙤𝙣𝙜 𝙎𝙖𝙣𝙨',
+    transform: (t) => mapChars(t, 'boldSansItalic'),
   },
   {
     id: 'bold-italic',
@@ -386,6 +422,27 @@ export const UNICODE_STYLES: UnicodeStyleOption[] = [
     transform: (t) => toCombining(t, 0x0332),
   },
   {
+    id: 'superscript',
+    name: 'Superscript',
+    category: 'symbols',
+    sample: 'ᴺᵃᵐᵉ ¹²³',
+    transform: (t) => mapUnicodeCharacters(t, SUPERSCRIPT_MAP),
+  },
+  {
+    id: 'subscript',
+    name: 'Subscript',
+    category: 'symbols',
+    sample: 'H₂O · CO₂',
+    transform: (t) => mapUnicodeCharacters(t, SUBSCRIPT_MAP),
+  },
+  {
+    id: 'thin-spaced',
+    name: 'Thin Spaced Letters',
+    category: 'creative',
+    sample: 'N a m e F o r g e',
+    transform: toThinSpaced,
+  },
+  {
     id: 'vaporwave',
     name: 'Vaporwave Fullwidth',
     category: 'fun',
@@ -435,6 +492,27 @@ export const UNICODE_STYLES: UnicodeStyleOption[] = [
     transform: (t) => `【 ${t} 】`,
   },
 ];
+
+
+export type UnicodeStyleFilterCategory = 'all' | UnicodeStyleOption['category'];
+
+function normalizeStyleSearch(value: string): string {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().trim();
+}
+
+/** Search styles by name, id or category and optionally constrain the category. */
+export function filterUnicodeStyles(
+  styles: UnicodeStyleOption[],
+  query = '',
+  category: UnicodeStyleFilterCategory = 'all'
+): UnicodeStyleOption[] {
+  const needle = normalizeStyleSearch(query);
+  return styles.filter((style) => {
+    const matchesCategory = category === 'all' || style.category === category;
+    const searchable = normalizeStyleSearch(`${style.name} ${style.id} ${style.category}`);
+    return matchesCategory && (!needle || searchable.includes(needle));
+  });
+}
 
 /* =====================================================================
    2. VISUAL CSS PRESETS & GLOWS
@@ -825,7 +903,8 @@ export function renderStyledTextToCanvas(
 
   // Measure text
   const metrics = ctx.measureText(text);
-  const textWidth = metrics.width + Math.max(0, Array.from(text).length - 1) * letterSpacing * scale;
+  const graphemeCount = splitGraphemes(text).length;
+  const textWidth = metrics.width + Math.max(0, graphemeCount - 1) * letterSpacing * scale;
   const paddingX = 60 * scale;
   const paddingY = 50 * scale;
   const width = Math.max(300 * scale, Math.ceil(textWidth + paddingX * 2));
@@ -937,6 +1016,36 @@ export function downloadCanvasAsPng(canvas: HTMLCanvasElement, filename: string)
 }
 
 /**
+ * Generates reusable CSS using the complete visual-effect filter.
+ * Do not split textShadowCSS: rgba() values contain commas, and splitting
+ * that string can truncate a color and produce invalid CSS.
+ */
+export function generateCssCode(
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
+  effectId: string,
+  textureId: string
+): string {
+  const effect = VISUAL_EFFECTS.find((item) => item.id === effectId) || VISUAL_EFFECTS[0];
+  const texture = TEXTURE_FILLS.find((item) => item.id === textureId) || TEXTURE_FILLS[0];
+
+  return `/* NameForge Styled Typography: ${effect.name} + ${texture.name} */
+.styled-text {
+  font-family: ${fontFamily};
+  font-size: ${fontSize}px;
+  font-weight: 800;
+  letter-spacing: ${letterSpacing}px;
+  background: ${texture.cssBackground};
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: ${effect.cssStyle.filter || 'none'};
+}`;
+}
+
+/**
  * Generates an SVG vector representation of the styled text
  */
 export function generateSvgCode(
@@ -951,7 +1060,7 @@ export function generateSvgCode(
   const effect = VISUAL_EFFECTS.find((e) => e.id === effectId) || VISUAL_EFFECTS[0];
   const texture = TEXTURE_FILLS.find((t) => t.id === textureId) || TEXTURE_FILLS[0];
   // Estimate a canvas wide enough for long labels instead of clipping them in a fixed 800px SVG.
-  const characters = Array.from(text);
+  const characters = splitGraphemes(text);
   const width = Math.max(320, Math.ceil(characters.length * fontSize * 0.78 + Math.max(0, characters.length - 1) * letterSpacing + 120));
   const height = Math.max(160, Math.ceil(fontSize * 2.8));
   const colors = effect.gradientCSS.match(/#[0-9a-fA-F]{3,8}/g) || ['#ffffff', '#8b5cf6'];

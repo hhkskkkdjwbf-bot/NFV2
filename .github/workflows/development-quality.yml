@@ -1,0 +1,64 @@
+name: Development quality gate
+
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: development-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test-audit:
+    name: Type-check, tests, build, browser QA and Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Chromium for Playwright and Lighthouse
+        run: npx playwright install --with-deps chromium
+
+      - name: Type-check
+        run: npm run lint
+
+      - name: Run regression tests
+        run: npm test
+
+      - name: Audit localization coverage
+        run: mkdir -p artifacts/i18n && npm run audit:i18n -- --json > artifacts/i18n/localization-coverage.json
+
+      - name: Build for GitHub Pages
+        run: npm run build:gh-pages
+
+      - name: Run Playwright browser QA
+        run: npm run test:browser
+
+      - name: Run Lighthouse audit against the local production build
+        run: npm run audit:lighthouse
+        env:
+          LIGHTHOUSE_BASE_URL: http://127.0.0.1:4173/
+
+      - name: Upload QA and Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: development-quality-reports
+          path: artifacts/
+          if-no-files-found: ignore
+          retention-days: 14
