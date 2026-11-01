@@ -5,12 +5,14 @@ import {
   ImportResult,
   NamedCollection,
   SavedNameEntry,
+  SavedProject,
   StorageStats,
 } from '../types';
 
 const STORAGE_KEY = 'nameforge_saved_names';
 const COLLECTIONS_KEY = 'nameforge_collections';
 const HISTORY_KEY = 'nameforge_generation_history';
+const PROJECTS_KEY = 'nameforge_saved_projects';
 
 function safeTrim(v: unknown): string {
   if (v === null || typeof v === 'undefined') return '';
@@ -530,6 +532,104 @@ export function clearGenerationHistory(): void {
 }
 
 /* =====================================================================
+   SAVED PROJECT SNAPSHOTS
+===================================================================== */
+
+function normalizeSavedProject(raw: unknown): SavedProject | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const item = raw as Partial<SavedProject>;
+  const name = safeTrim(item.name);
+  if (!name || !Array.isArray(item.names) || !Array.isArray(item.collections) || !Array.isArray(item.history)) return null;
+  const now = new Date().toISOString();
+  const names = item.names.map((entry) => normalizeEntry(entry)).filter((entry): entry is SavedNameEntry => !!entry);
+  const collections = item.collections
+    .filter((collection) => collection && typeof collection === 'object' && !Array.isArray(collection))
+    .map((collection) => ({
+      id: safeTrim(collection.id) || generateId(),
+      name: safeTrim(collection.name),
+      description: safeTrim(collection.description),
+      color: safeTrim(collection.color) || '#8b5cf6',
+      createdAt: safeTrim(collection.createdAt) || now,
+    }))
+    .filter((collection) => collection.name);
+  const history = item.history
+    .map((entry) => normalizeHistoryEntry(entry))
+    .filter((entry): entry is HistoryEntry => !!entry);
+  return {
+    id: safeTrim(item.id) || generateId(),
+    name,
+    description: safeTrim(item.description),
+    createdAt: safeTrim(item.createdAt) || now,
+    updatedAt: safeTrim(item.updatedAt) || now,
+    names,
+    collections,
+    history,
+  };
+}
+
+export function getSavedProjects(): SavedProject[] {
+  try {
+    const raw = localStorage.getItem(PROJECTS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map(normalizeSavedProject).filter((project): project is SavedProject => !!project)
+      .sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
+  } catch {
+    return [];
+  }
+}
+
+function saveSavedProjects(projects: SavedProject[]): boolean {
+  try {
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    notifyStorageChange();
+    return true;
+  } catch (error) {
+    console.error('Error saving NameForge projects', error);
+    return false;
+  }
+}
+
+export function createSavedProject(name: string, description = ''): SavedProject | null {
+  const cleanName = safeTrim(name);
+  if (!cleanName) return null;
+  const now = new Date().toISOString();
+  const project: SavedProject = {
+    id: generateId(),
+    name: cleanName,
+    description: safeTrim(description),
+    createdAt: now,
+    updatedAt: now,
+    names: getSavedNames(),
+    collections: getCollections(),
+    history: getGenerationHistory(),
+  };
+  const projects = getSavedProjects();
+  projects.unshift(project);
+  return saveSavedProjects(projects) ? project : null;
+}
+
+export function deleteSavedProject(id: string): boolean {
+  return saveSavedProjects(getSavedProjects().filter((project) => project.id !== id));
+}
+
+/** Restore a snapshot by merging its data into the current workspace; current data is never erased. */
+export function restoreSavedProject(id: string): ImportResult {
+  const project = getSavedProjects().find((item) => item.id === id);
+  if (!project) {
+    return { success: false, added: 0, updated: 0, skipped: 0, errors: ['Projet introuvable.'] };
+  }
+  return importDataJSON(JSON.stringify({
+    version: 2,
+    names: project.names,
+    collections: project.collections,
+    history: project.history,
+  }));
+}
+
+
+/* =====================================================================
    STATS & CLEAR ALL
 ===================================================================== */
 
@@ -569,12 +669,13 @@ export function clearAllSavedNames(): boolean {
 
 export function exportDataJSON(): string {
   const bundle: ExportBundle = {
-    version: 2,
+    version: 3,
     appName: 'NameForge',
     exportedAt: new Date().toISOString(),
     names: getSavedNames(),
     collections: getCollections(),
     history: getGenerationHistory(),
+    projects: getSavedProjects(),
   };
   return JSON.stringify(bundle, null, 2);
 }
@@ -632,6 +733,17 @@ export function importDataJSON(jsonStr: string): ImportResult {
       result.errors.push('Format de fichier JSON invalide.');
       return result;
     }
+    if (!Array.isArray(parsed)) {
+      const version = Number(parsed.version ?? 1);
+      if (!Number.isInteger(version) || version < 1 || version > 3) {
+        result.errors.push('Version de sauvegarde non prise en charge. Versions acceptées : 1 à 3.');
+        return result;
+      }
+      if (parsed.projects !== undefined && !Array.isArray(parsed.projects)) {
+        result.errors.push('La liste des projets du fichier est invalide.');
+        return result;
+      }
+    }
 
     // Validate the payload shape before writing anything to localStorage.
     // Legacy exports containing only an array of names remain supported.
@@ -655,12 +767,16 @@ export function importDataJSON(jsonStr: string): ImportResult {
           .map((item: unknown) => normalizeHistoryEntry(item))
           .filter((item: HistoryEntry | null): item is HistoryEntry => item !== null)
       : [];
+    const importedProjects: SavedProject[] = !Array.isArray(parsed) && Array.isArray(parsed.projects)
+      ? parsed.projects.map(normalizeSavedProject).filter((project: SavedProject | null): project is SavedProject => !!project)
+      : [];
 
     // Snapshot the affected keys so a quota/security error cannot leave a half-imported backup.
     const previousStorage = {
       names: localStorage.getItem(STORAGE_KEY),
       collections: localStorage.getItem(COLLECTIONS_KEY),
       history: localStorage.getItem(HISTORY_KEY),
+      projects: localStorage.getItem(PROJECTS_KEY),
     };
     const rollbackImport = () => {
       const restore = (key: string, value: string | null) => {
@@ -674,6 +790,7 @@ export function importDataJSON(jsonStr: string): ImportResult {
       restore(STORAGE_KEY, previousStorage.names);
       restore(COLLECTIONS_KEY, previousStorage.collections);
       restore(HISTORY_KEY, previousStorage.history);
+      restore(PROJECTS_KEY, previousStorage.projects);
     };
     const failImport = (message: string): ImportResult => {
       rollbackImport();
@@ -825,6 +942,24 @@ export function importDataJSON(jsonStr: string): ImportResult {
         notifyStorageChange();
       } catch {
         return failImport("Impossible de restaurer l'historique. Les modifications de cet import ont été annulées.");
+      }
+    }
+
+    if (importedProjects.length > 0) {
+      const currentProjects = getSavedProjects();
+      const knownProjectIds = new Set(currentProjects.map((project) => project.id));
+      const knownProjectNames = new Set(currentProjects.map((project) => project.name.toLocaleLowerCase()));
+      for (const project of importedProjects) {
+        if (knownProjectIds.has(project.id) || knownProjectNames.has(project.name.toLocaleLowerCase())) {
+          result.skipped++;
+          continue;
+        }
+        currentProjects.push(project);
+        knownProjectIds.add(project.id);
+        knownProjectNames.add(project.name.toLocaleLowerCase());
+      }
+      if (!saveSavedProjects(currentProjects)) {
+        return failImport('Impossible d’enregistrer les projets importés. Aucune modification n’a été conservée.');
       }
     }
 
