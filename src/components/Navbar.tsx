@@ -61,7 +61,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     he: { catalog: 'קטלוג', random: 'אקראי', randomTitle: 'פתיחת מחולל אקראי', studio: 'סטודיו סגנון', mobileRandom: 'מחולל אקראי (🎲 הפתיעו אותי)', mobileStudio: 'סטודיו סגנון (Unicode ו-Canvas HD)', menu: 'תפריט', language: 'שפה:', languages: 'שפות', all: 'הכול', generators: 'מחוללי NameForge', families: { fantasy: 'פנטזיה ומיתוסים', business: 'עסקים ופרויקטים', creative: 'יצירה ומדיה', innovation: 'חדשנות וטכנולוגיה' } },
     tr: { catalog: 'Katalog', random: 'Rastgele', randomTitle: 'Rastgele oluşturucu aç', studio: 'Stil Stüdyosu', mobileRandom: 'Rastgele oluşturucu (🎲 Şaşırt beni)', mobileStudio: 'Stil Stüdyosu (Unicode ve HD Canvas)', menu: 'Menü', language: 'Dil:', languages: 'dil', all: 'Tümü', generators: 'NameForge oluşturucuları', families: { fantasy: 'Fantastik ve mitler', business: 'İşletmeler ve projeler', creative: 'Yaratıcılık ve medya', innovation: 'Yenilik ve teknoloji' } },
   };
-  const navText = navCopy[settings.language] || navCopy.en;\n  const usernameDesignerLabel = settings.language === 'fr' ? 'Créateur de pseudos' : settings.language === 'ar' ? 'مصمم الأسماء' : 'Username Designer';
+  const navText = navCopy[settings.language] || navCopy.en;
+  const usernameDesignerLabel = settings.language === 'fr' ? 'Créateur de pseudos' : settings.language === 'ar' ? 'مصمم الأسماء' : 'Username Designer';
 
   const updateCount = () => {
     const list = getSavedNames();
