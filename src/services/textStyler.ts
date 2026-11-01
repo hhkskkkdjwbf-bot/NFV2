@@ -497,7 +497,7 @@ export const UNICODE_STYLES: UnicodeStyleOption[] = [
 export type UnicodeStyleFilterCategory = 'all' | UnicodeStyleOption['category'];
 
 function normalizeStyleSearch(value: string): string {
-  return value.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLocaleLowerCase().trim();
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().trim();
 }
 
 /** Search styles by name, id or category and optionally constrain the category. */
