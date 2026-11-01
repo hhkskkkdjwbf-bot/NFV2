@@ -25,9 +25,9 @@ for (const assetPath of assetPaths) {
 const browser = await chromium.launch({ headless: true });
 try {
   const routes = [
-    { hash: '#/username-designer', title: { en: 'Username Designer', fr: 'Créateur de pseudos', ar: 'مصمم أسماء المستخدمين' } },
-    { hash: '#/bio-caption-studio', title: { en: 'Bio & Caption Studio', fr: 'Studio Bio & Légendes', ar: 'استوديو النبذة والتعليقات' } },
-    { hash: '#/text-art-studio', title: { en: 'Symbols & Text Art', fr: 'Symboles & Text Art', ar: 'الرموز وفن النصوص' } },
+    { hash: '#/username-designer', tab: { en: 'Username Designer', fr: 'Créateur de pseudos', ar: 'مصمم أسماء المستخدمين' } },
+    { hash: '#/bio-caption-studio', tab: { en: 'Bio & Captions', fr: 'Bio & légendes', ar: 'النبذة والتعليقات' } },
+    { hash: '#/text-art-studio', tab: { en: 'Symbols & Art', fr: 'Symboles & Art', ar: 'الرموز والفن النصي' } },
   ];
   for (const language of ['en', 'fr', 'ar']) {
     for (const route of routes) {
@@ -41,6 +41,7 @@ try {
       }, language);
       const pageResponse = await page.goto(baseUrl + route.hash, { waitUntil: 'networkidle', timeout: 60000 });
       const heading = (await page.locator('h1').first().innerText().catch(() => '')).trim();
+      const selectedTab = (await page.locator('[data-testid="creative-studio-tabs"] [role="tab"][aria-selected="true"]').innerText().catch(() => '')).trim();
       const state = await page.evaluate(() => ({
         lang: document.documentElement.lang,
         dir: document.documentElement.dir,
@@ -50,7 +51,8 @@ try {
       }));
       const label = language + ' ' + route.hash;
       if (!pageResponse || pageResponse.status() >= 400) failures.push(label + ': route failed to load');
-      if (heading !== route.title[language]) failures.push(label + ': expected heading "' + route.title[language] + '", got "' + heading + '"');
+      if (heading !== ({ en: 'Creative Studio', fr: 'Studio créatif', ar: 'الاستوديو الإبداعي' })[language]) failures.push(label + ': incorrect Creative Studio heading "' + heading + '"');
+      if (selectedTab !== route.tab[language]) failures.push(label + ': expected selected tab "' + route.tab[language] + '", got "' + selectedTab + '"');
       if (state.lang !== language) failures.push(label + ': html lang is ' + state.lang);
       if (state.dir !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push(label + ': incorrect document direction ' + state.dir);
       if (state.width > state.viewport + 2) failures.push(label + ': horizontal overflow at 390px');
@@ -71,10 +73,12 @@ try {
     width: document.documentElement.scrollWidth,
     viewport: window.innerWidth,
     heading: document.querySelector('h1')?.textContent?.trim() || '',
+    selectedTab: document.querySelector('[data-testid="creative-studio-tabs"] [role="tab"][aria-selected="true"]')?.textContent?.trim() || '',
   }));
   if (rtlState.dir !== 'rtl') failures.push('Arabic narrow-mobile page is not RTL');
   if (rtlState.width > rtlState.viewport + 2) failures.push('Arabic Text Art page overflows at 320px');
-  if (rtlState.heading !== 'الرموز وفن النصوص') failures.push('Arabic Text Art heading is not translated on the published site');
+  if (rtlState.heading !== 'الاستوديو الإبداعي') failures.push('Arabic Creative Studio heading is not translated on the published site');
+  if (rtlState.selectedTab !== 'الرموز والفن النصي') failures.push('Arabic Symbols & Art tab is not translated or not selected on the published site');
   checks.push({ type: 'rtl-mobile', ...rtlState });
   await rtlPage.close();
 } finally {
