@@ -40,6 +40,9 @@ jobs:
       - name: Run regression tests
         run: npm test
 
+      - name: Audit localization coverage
+        run: mkdir -p artifacts/i18n && npm run audit:i18n -- --json > artifacts/i18n/localization-coverage.json
+
       - name: Build for GitHub Pages
         run: npm run build:gh-pages
 
