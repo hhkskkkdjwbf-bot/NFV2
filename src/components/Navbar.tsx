@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
-import { Bookmark, Menu, X, ChevronDown, Settings, Search, Globe, Dices, Wand2, FileText, Shapes } from 'lucide-react';
+import { Bookmark, Menu, X, ChevronDown, Settings, Search, Globe, Dices, Wand2 } from 'lucide-react';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId } from '../types';
 import { getSavedNames, subscribeToStorage } from '../services/storage';
@@ -62,9 +62,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     tr: { catalog: 'Katalog', random: 'Rastgele', randomTitle: 'Rastgele oluşturucu aç', studio: 'Stil Stüdyosu', mobileRandom: 'Rastgele oluşturucu (🎲 Şaşırt beni)', mobileStudio: 'Stil Stüdyosu (Unicode ve HD Canvas)', menu: 'Menü', language: 'Dil:', languages: 'dil', all: 'Tümü', generators: 'NameForge oluşturucuları', families: { fantasy: 'Fantastik ve mitler', business: 'İşletmeler ve projeler', creative: 'Yaratıcılık ve medya', innovation: 'Yenilik ve teknoloji' } },
   };
   const navText = navCopy[settings.language] || navCopy.en;
-  const usernameDesignerLabel = settings.language === 'fr' ? 'Créateur de pseudos' : settings.language === 'ar' ? 'مصمم الأسماء' : 'Username Designer';
-  const bioCaptionLabel = settings.language === 'fr' ? 'Studio Bio & Légendes' : settings.language === 'ar' ? 'استوديو النبذة والتعليقات' : 'Bio & Caption Studio';
-  const textArtLabel = settings.language === 'fr' ? 'Symboles & Text Art' : settings.language === 'ar' ? 'الرموز وفن النصوص' : 'Symbols & Text Art';
 
   const updateCount = () => {
     const list = getSavedNames();
