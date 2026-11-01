@@ -346,6 +346,11 @@ try {
           width: document.documentElement.scrollWidth,
           viewport: window.innerWidth,
           text: (document.body?.innerText || '').trim(),
+          overflowElements: [...document.querySelectorAll('body *')].map((el) => {
+            const rect = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            return { tag: el.tagName.toLowerCase(), id: el.id, className: typeof el.className === 'string' ? el.className : '', text: (el.textContent || '').trim().slice(0, 70), left: Math.round(rect.left), right: Math.round(rect.right), width: Math.round(rect.width), scrollWidth: el.scrollWidth, clientWidth: el.clientWidth, overflowX: style.overflowX };
+          }).filter((item) => item.right > window.innerWidth + 1 || item.left < -1 || item.scrollWidth > item.clientWidth + 2).slice(0, 12),
         }));
         const label = 'studio-' + view.name + '-' + language + '-' + viewport.name;
         const screenshot = outputDir + '/' + label + '.png';
@@ -355,7 +360,7 @@ try {
         if (state.lang !== language) failures.push(label + ': html lang mismatch (' + state.lang + ')');
         const expectedDir = language === 'ar' ? 'rtl' : 'ltr';
         if (state.dir !== expectedDir) failures.push(label + ': expected document direction ' + expectedDir + ', got ' + state.dir);
-        if (state.width > state.viewport + 2) failures.push(label + ': horizontal overflow (' + state.width + 'px vs ' + state.viewport + 'px)');
+        if (state.width > state.viewport + 2) failures.push(label + ': horizontal overflow (' + state.width + 'px vs ' + state.viewport + 'px); elements=' + JSON.stringify(state.overflowElements));
         if (state.text.length < 100) failures.push(label + ': incomplete studio content');
         if (pageErrors.length) failures.push(label + ': JavaScript page errors: ' + pageErrors.join(' | '));
         results.push({ view: view.name, language, viewport: viewport.name, status: response?.status() ?? null, heading, htmlLang: state.lang, htmlDir: state.dir, documentWidth: state.width, viewportWidth: state.viewport, pageErrors, screenshot });
