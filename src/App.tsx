@@ -222,6 +222,7 @@ export const App: React.FC = () => {
             {currentView === 'style-studio' && (
               <StyleStudioView onNavigate={handleNavigate} initialText={styleStudioText} />
             )}
+            {currentView === 'username-designer' && <UsernameDesignerView />}
           </Suspense>
         )}
       </main>
