@@ -52,6 +52,8 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
   const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchInDescriptions, setSearchInDescriptions] = useState(true);
+  const [sortMode, setSortMode] = useState<'relevance' | 'alphabetical'>('relevance');
   const [language, setLanguage] = useState<LanguageCode>(() => getAppSettings().language);
 
   useEffect(() => subscribeToSettings((settings) => setLanguage(settings.language)), []);
@@ -65,19 +67,44 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
       gen.id,
       getLocalizedGeneratorTitle(gen.id, language, gen.title),
       gen.title,
-      getLocalizedGeneratorDescription(gen, language),
       getLocalizedGeneratorShortTitle(gen.id, language, gen.shortTitle),
       gen.shortTitle,
       gen.badge,
+      gen.category,
+    ];
+    const descriptiveFields = [
+      getLocalizedGeneratorDescription(gen, language),
       gen.generatorTitle,
       gen.generatorSubtitle,
       gen.guideTitle,
-      gen.category,
+      ...(gen.guide || []).flatMap((item) => [item.h, item.p]),
+      ...(gen.cards || []).flatMap((item) => [item.h, item.p]),
     ];
+    const searchableFields = searchInDescriptions ? [...coreFields, ...descriptiveFields] : coreFields;
     const matchesSearch = !query || searchableFields.some((field) =>
       normalizeSearchText(String(field || '')).includes(query)
     );
     return matchesSearch && (selectedCategory === 'all' || gen.category === selectedCategory);
+  }).sort((a, b) => {
+    if (sortMode === 'alphabetical') {
+      return getLocalizedGeneratorTitle(a.id, language, a.title).localeCompare(
+        getLocalizedGeneratorTitle(b.id, language, b.title), language
+      );
+    }
+    if (!query) return getLocalizedGeneratorTitle(a.id, language, a.title).localeCompare(
+      getLocalizedGeneratorTitle(b.id, language, b.title), language
+    );
+    const score = (gen: typeof a) => {
+      const title = normalizeSearchText(getLocalizedGeneratorTitle(gen.id, language, gen.title));
+      const id = normalizeSearchText(gen.id);
+      if (title === query || id === query) return 3;
+      if (title.startsWith(query) || id.startsWith(query)) return 2;
+      if (title.includes(query) || id.includes(query)) return 1;
+      return 0;
+    };
+    return score(b) - score(a) || getLocalizedGeneratorTitle(a.id, language, a.title).localeCompare(
+      getLocalizedGeneratorTitle(b.id, language, b.title), language
+    );
   });
 
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(language);
@@ -112,6 +139,19 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
               </button>
             ))}
           </div>
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-2">
+          <label className="inline-flex items-center gap-2 text-xs text-slate-400">
+            <input type="checkbox" checked={searchInDescriptions} onChange={(event) => setSearchInDescriptions(event.target.checked)} className="accent-purple-500" />
+            {language === 'fr' ? 'Inclure les descriptions et guides' : language === 'ar' ? 'تضمين الأوصاف والأدلة' : 'Search descriptions and guides'}
+          </label>
+          <label className="inline-flex items-center gap-2 text-xs text-slate-400">
+            <span>{language === 'fr' ? 'Trier :' : language === 'ar' ? 'ترتيب:' : 'Sort:'}</span>
+            <select value={sortMode} onChange={(event) => setSortMode(event.target.value as 'relevance' | 'alphabetical')} className="h-9 rounded-lg border border-slate-700 bg-[#0a0f1d] px-3 text-xs text-white focus:outline-none focus:border-purple-500">
+              <option value="relevance">{language === 'fr' ? 'Pertinence' : language === 'ar' ? 'الصلة' : 'Relevance'}</option>
+              <option value="alphabetical">{language === 'fr' ? 'Alphabétique' : language === 'ar' ? 'أبجدي' : 'Alphabetical'}</option>
+            </select>
+          </label>
         </div>
         <div className="flex items-center justify-between px-2 text-xs text-slate-400 font-medium">
           <span>{t.shown} <strong className="text-white">{filtered.length}</strong> {t.of} {ALL_GENERATORS_LIST.length} {t.generatorWord}</span>
