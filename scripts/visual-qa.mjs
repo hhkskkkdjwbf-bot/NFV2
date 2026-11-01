@@ -32,6 +32,7 @@ try {
   const viewports = [
     { name: 'desktop', width: 1440, height: 1000 },
     { name: 'mobile', width: 390, height: 844 },
+    { name: 'mobile-narrow', width: 320, height: 740 },
   ];
   const themes = ['light', 'dark'];
   const pages = [
@@ -40,6 +41,9 @@ try {
     { name: 'generator-detail', hash: '#/generator/fantasy' },
     { name: 'my-names', hash: '#/my-names' },
     { name: 'style-studio', hash: '#/style-studio' },
+    { name: 'username-designer', hash: '#/username-designer' },
+    { name: 'bio-caption-studio', hash: '#/bio-caption-studio' },
+    { name: 'text-art-studio', hash: '#/text-art-studio' },
   ];
 
   for (const viewport of viewports) {
@@ -316,6 +320,77 @@ try {
         await page.close();
       }
     }
+  }
+
+  // Focused responsive and translation coverage for the three newly added studios.
+  const studioPages = [
+    { name: 'username-designer', hash: '#/username-designer', titles: { fr: 'Créateur de pseudos', en: 'Username Designer', ar: 'مصمم أسماء المستخدمين' } },
+    { name: 'bio-caption-studio', hash: '#/bio-caption-studio', titles: { fr: 'Studio Bio & Légendes', en: 'Bio & Caption Studio', ar: 'استوديو النبذة والتعليقات' } },
+    { name: 'text-art-studio', hash: '#/text-art-studio', titles: { fr: 'Symboles & Text Art', en: 'Symbols & Text Art', ar: 'الرموز وفن النصوص' } },
+  ];
+  for (const language of ['fr', 'en', 'ar']) {
+    for (const viewport of [{ name: 'mobile-320', width: 320, height: 740 }, { name: 'mobile-390', width: 390, height: 844 }]) {
+      for (const view of studioPages) {
+        const page = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, reducedMotion: 'reduce' });
+        const pageErrors = [];
+        page.on('pageerror', (error) => pageErrors.push(error.message));
+        await page.addInitScript((selectedLanguage) => {
+          localStorage.setItem('nameforge_settings', JSON.stringify({ language: selectedLanguage, theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' }));
+        }, language);
+        const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
+        await page.waitForTimeout(250);
+        const heading = (await page.locator('h1').first().innerText().catch(() => '')).trim();
+        const state = await page.evaluate(() => ({
+          lang: document.documentElement.lang,
+          dir: document.documentElement.dir,
+          width: document.documentElement.scrollWidth,
+          viewport: window.innerWidth,
+          text: (document.body?.innerText || '').trim(),
+        }));
+        const label = 'studio-' + view.name + '-' + language + '-' + viewport.name;
+        const screenshot = outputDir + '/' + label + '.png';
+        await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' });
+        if (!response || response.status() >= 400) failures.push(label + ': HTTP response failed');
+        if (heading !== view.titles[language]) failures.push(label + ': translated h1 mismatch; expected "' + view.titles[language] + '", got "' + heading + '"');
+        if (state.lang !== language) failures.push(label + ': html lang mismatch (' + state.lang + ')');
+        const expectedDir = language === 'ar' ? 'rtl' : 'ltr';
+        if (state.dir !== expectedDir) failures.push(label + ': expected document direction ' + expectedDir + ', got ' + state.dir);
+        if (state.width > state.viewport + 2) failures.push(label + ': horizontal overflow (' + state.width + 'px vs ' + state.viewport + 'px)');
+        if (state.text.length < 100) failures.push(label + ': incomplete studio content');
+        if (pageErrors.length) failures.push(label + ': JavaScript page errors: ' + pageErrors.join(' | '));
+        results.push({ view: view.name, language, viewport: viewport.name, status: response?.status() ?? null, heading, htmlLang: state.lang, htmlDir: state.dir, documentWidth: state.width, viewportWidth: state.viewport, pageErrors, screenshot });
+        await page.close();
+      }
+    }
+  }
+
+  // Exercise the interactive Text Art workflow end-to-end in a real browser.
+  {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
+    await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
+    await page.goto(baseUrl + '#/text-art-studio', { waitUntil: 'networkidle', timeout: 45000 });
+    const symbol = page.locator('button[title="Sparkle"]').first();
+    if (!(await symbol.count())) failures.push('text-art-interaction: Sparkle symbol button is missing');
+    else {
+      await symbol.click();
+      const textEditor = page.locator('textarea').first();
+      if (!(await textEditor.inputValue()).includes('✦')) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
+      const favorite = page.locator('button[aria-label="Add to favorites"]').first();
+      if (await favorite.count()) {
+        await favorite.click();
+        if (!(await page.locator('button[aria-label="Remove favorite"]').count())) failures.push('text-art-interaction: favorite toggle did not update its accessible state');
+      } else failures.push('text-art-interaction: favorite control is missing');
+      const cssPreview = page.locator('pre').filter({ hasText: '.nameforge-text-art' });
+      if (!(await cssPreview.count())) failures.push('text-art-interaction: generated CSS preview is missing');
+      const pngButton = page.getByRole('button', { name: /Export PNG/ });
+      if (await pngButton.count()) {
+        const downloadPromise = page.waitForEvent('download', { timeout: 10000 });
+        await pngButton.click();
+        const download = await downloadPromise;
+        if (!download.suggestedFilename().endsWith('.png')) failures.push('text-art-interaction: PNG export did not produce a PNG download');
+      } else failures.push('text-art-interaction: PNG export button is missing');
+    }
+    await page.close();
   }
 
 } finally {
