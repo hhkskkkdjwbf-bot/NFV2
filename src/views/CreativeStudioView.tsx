@@ -42,7 +42,7 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
     };
   }, []);
 
-  const locale = language === 'fr' || language === 'ar' ? language : 'en';
+  const locale: 'en' | 'fr' | 'ar' = language === 'fr' ? 'fr' : language === 'ar' ? 'ar' : 'en';
   const copy = {
     en: { eyebrow: 'NAMEFORGE CREATIVE WORKSPACE', title: 'Creative Studio', subtitle: 'One place to shape your name, profile and visual identity.', tools: 'Creative tools', active: 'Selected tool' },
     fr: { eyebrow: 'ESPACE CRÉATIF NAMEFORGE', title: 'Studio créatif', subtitle: 'Un seul espace pour façonner votre pseudo, votre profil et votre identité visuelle.', tools: 'Outils créatifs', active: 'Outil sélectionné' },
