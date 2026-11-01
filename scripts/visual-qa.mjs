@@ -376,8 +376,8 @@ try {
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
     if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
-    const tabs = page.getByRole('tab');
-    if (await tabs.count() !== 4) failures.push('creative-studio-navigation: expected exactly four tool tabs');
+    const tabs = page.locator('[role="tablist"] > button[role="tab"]');
+    if (await tabs.count() !== 4) failures.push('creative-studio-navigation: expected exactly four tool tabs, found ' + await tabs.count());
     const usernameTab = page.getByRole('tab', { name: 'Username Designer' });
     await usernameTab.click();
     const baseWord = page.getByLabel('Base word (optional)');
@@ -409,11 +409,11 @@ try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     await page.goto(baseUrl + '#/text-art-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    const symbol = page.locator('button[title="Sparkle"]').first();
+    const symbol = page.locator('#creative-studio-panel').locator('button[title="Sparkle"]:visible').first();
     if (!(await symbol.count())) failures.push('text-art-interaction: Sparkle symbol button is missing');
     else {
       await symbol.click();
-      const textEditor = page.locator('textarea').first();
+      const textEditor = page.locator('#creative-studio-panel').locator('textarea:visible').first();
       if (!(await textEditor.inputValue()).includes('✦')) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
       const favorite = page.locator('button[aria-label="Add to favorites"]').first();
       if (await favorite.count()) {
