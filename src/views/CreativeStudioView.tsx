@@ -71,7 +71,7 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
         </header>
 
-        <nav role="tablist" aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
+        <nav role="tablist" data-testid="creative-studio-tabs" aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
             const selected = activeTool === tool.id;
