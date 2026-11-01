@@ -1,7 +1,7 @@
 import { ALL_GENERATORS_LIST, GENERATORS_METADATA } from '../data/generators';
 import { SUBCATEGORIES_DATA } from '../data/subcategories';
 import { generateNames, isTooSimilar, calculateLevenshteinDistance, scoreCandidate } from '../services/generatorEngine';
-import { generateSvgCode, splitGraphemes } from '../services/textStyler';
+import { generateCssCode, generateSvgCode, splitGraphemes, UNICODE_STYLES, VISUAL_EFFECTS } from '../services/textStyler';
 import { ATTESTED_BABY_NAMES } from '../data/attestedBabyNames';
 import { normalizeSearchText } from '../services/search';
 import { getLocalizedGeneratorDescription, hasLocalizedGeneratorDescription, LOCALIZED_GENERATOR_DESCRIPTION_LANGUAGES } from '../i18n/generatorContent';
@@ -932,6 +932,27 @@ const graphemeSamples = ['e\u0301', '👍🏽', '👩‍💻', '🇩🇿'];
 assert(
   graphemeSamples.every((sample) => splitGraphemes(sample).length === 1),
   'Canvas spacing and SVG sizing treat multi-code-point visible characters as one grapheme'
+);
+
+// Grapheme clusters remain intact when the upside-down style reverses text.
+const invertedStyle = UNICODE_STYLES.find((style) => style.id === 'inverted');
+const familyEmoji = '👨‍👩‍👧‍👦';
+assert(
+  splitGraphemes(familyEmoji).length === 1 &&
+    invertedStyle?.transform(`A${familyEmoji}B`) === `B${familyEmoji}∀`,
+  'Upside-down transformation reverses visible characters without splitting ZWJ emoji'
+);
+assert(
+  splitGraphemes('🇩🇿🇫🇷').length === 2,
+  'Consecutive regional-indicator flags are grouped in pairs'
+);
+
+// CSS export must preserve the full preset filter, including rgba() commas.
+const neonCss = generateCssCode(48, 'Arial, sans-serif', 2, 'cyber-neon', 'carbon-weave');
+assert(
+  neonCss.includes(`filter: ${VISUAL_EFFECTS.find((effect) => effect.id === 'cyber-neon')?.cssStyle.filter};`) &&
+    !neonCss.includes('rgba(0);'),
+  'CSS export keeps the complete visual filter instead of truncating rgba() colors'
 );
 
 // Test 43: SVG width expands for longer text instead of staying fixed.
