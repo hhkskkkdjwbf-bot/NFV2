@@ -224,41 +224,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>🎲 {navText.random}</span>
             </button>
 
-            {/* Typography / Style Studio */}
+            {/* Unified Creative Studio */}
             <button
-              onClick={() => onNavigate('style-studio')}
+              onClick={() => onNavigate('creative-studio')}
+              aria-current={currentView === 'creative-studio' ? 'page' : undefined}
               className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${
-                currentView === 'style-studio'
+                currentView === 'creative-studio'
                   ? 'text-white border-b-2 border-purple-500 pb-1'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <Wand2 className="w-3.5 h-3.5 text-pink-400" />
-              <span>{navText.studio}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('username-designer')}
-              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${currentView === 'username-designer' ? 'text-white border-b-2 border-cyan-400 pb-1' : 'text-slate-400 hover:text-white'}`}
-            >
-              <Dices className="w-3.5 h-3.5 text-cyan-300" />
-              <span>{usernameDesignerLabel}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('bio-caption-studio')}
-              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${currentView === 'bio-caption-studio' ? 'text-white border-b-2 border-cyan-400 pb-1' : 'text-slate-400 hover:text-white'}`}
-            >
-              <FileText className="w-3.5 h-3.5 text-emerald-300" />
-              <span>{bioCaptionLabel}</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('text-art-studio')}
-              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${currentView === 'text-art-studio' ? 'text-white border-b-2 border-fuchsia-400 pb-1' : 'text-slate-400 hover:text-white'}`}
-            >
-              <Shapes className="w-3.5 h-3.5 text-fuchsia-300" />
-              <span>{textArtLabel}</span>
+              <Wand2 className="w-3.5 h-3.5 text-fuchsia-400" />
+              <span>{settings.language === 'fr' ? 'Studio créatif' : settings.language === 'ar' ? 'الاستوديو الإبداعي' : 'Creative Studio'}</span>
             </button>
 
             {/* My Names with Live Counter */}
@@ -368,46 +345,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => {
-                onNavigate('username-designer');
+                onNavigate('creative-studio');
                 setMobileMenuOpen(false);
               }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-cyan-300 hover:bg-slate-800 flex items-center gap-2"
-            >
-              <Dices className="w-4 h-4 text-cyan-300" />
-              <span>{usernameDesignerLabel}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                onNavigate('style-studio');
-                setMobileMenuOpen(false);
-              }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-pink-300 hover:bg-slate-800 flex items-center gap-2"
-            >
-              <Wand2 className="w-4 h-4 text-pink-400" />
-              <span>{navText.mobileStudio}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                onNavigate('bio-caption-studio');
-                setMobileMenuOpen(false);
-              }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-emerald-300 hover:bg-slate-800 flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4 text-emerald-300" />
-              <span>{bioCaptionLabel}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                onNavigate('text-art-studio');
-                setMobileMenuOpen(false);
-              }}
+              aria-current={currentView === 'creative-studio' ? 'page' : undefined}
               className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-fuchsia-300 hover:bg-slate-800 flex items-center gap-2"
             >
-              <Shapes className="w-4 h-4 text-fuchsia-300" />
-              <span>{textArtLabel}</span>
+              <Wand2 className="w-4 h-4 text-fuchsia-400" />
+              <span>{settings.language === 'fr' ? 'Studio créatif' : settings.language === 'ar' ? 'الاستوديو الإبداعي' : 'Creative Studio'}</span>
             </button>
 
             <button
