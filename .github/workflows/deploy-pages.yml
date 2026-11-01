@@ -59,34 +59,43 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-test-audit
     steps:
-      - name: Close abandoned in-progress Pages deployments
+      - name: Close stale in-progress Pages deployments
         uses: actions/github-script@v7
         with:
           script: |
             const { owner, repo } = context.repo;
+            // The Pages API may return deployments from different environments.
+            // Scan all pages so a legacy deployment cannot be hidden by an
+            // environment filter. The SHA below is the orphan reported by GitHub.
+            const orphanedSha = 'd30a74c32e62ea6a2b2e4ad1e5e67424c6316707';
             const deployments = await github.paginate(github.rest.repos.listDeployments, {
-              owner, repo, environment: 'github-pages', per_page: 100
+              owner, repo, per_page: 100
             });
+            let inspected = 0;
             let closed = 0;
             for (const deployment of deployments) {
+              const isPagesDeployment =
+                deployment.environment === 'github-pages' ||
+                deployment.sha === orphanedSha;
+              if (!isPagesDeployment) continue;
+              inspected += 1;
               const statuses = await github.rest.repos.listDeploymentStatuses({
                 owner, repo, deployment_id: deployment.id, per_page: 1
               });
               const latest = statuses.data[0];
-              if (latest?.state !== 'in_progress') continue;
+              if (latest?.state !== 'in_progress' && latest?.state !== 'queued') continue;
               await github.rest.repos.createDeploymentStatus({
                 owner, repo, deployment_id: deployment.id, state: 'inactive',
-                description: 'Closed automatically before the next NameForge Pages release.',
+                description: 'Closed stale Pages deployment before the next NameForge release.',
                 auto_inactive: false
               });
               closed += 1;
-              core.info(`Closed abandoned Pages deployment ${deployment.id} (${deployment.sha}).`);
+              core.info(`Closed stale Pages deployment ${deployment.id}; sha=${deployment.sha}; environment=${deployment.environment}; previous_state=${latest.state}.`);
             }
-            core.info(`Closed ${closed} abandoned Pages deployment(s).`);
+            core.info(`Inspected ${inspected} Pages deployment(s); closed ${closed} active deployment(s).`);
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
 
   post-deploy-audit:
     runs-on: ubuntu-latest
