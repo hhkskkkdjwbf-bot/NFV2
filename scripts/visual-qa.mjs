@@ -90,7 +90,7 @@ try {
               backgroundImage: style.backgroundImage,
               value: select.value,
             };
-          }),
+          }).filter((select) => select.visible),
           pressedChoiceCount: document.querySelectorAll('button[aria-pressed], button[aria-selected]').length,
           visiblePressedChoiceCount: [...document.querySelectorAll('button[aria-pressed], button[aria-selected]')].filter((button) => {
             const rect = button.getBoundingClientRect();
