@@ -28,6 +28,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: generator-quality-audit
+  cancel-in-progress: false
+
 jobs:
   baseline:
     runs-on: ubuntu-latest
@@ -39,8 +43,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Install dependencies
-        run: npm install
+      - name: Install locked dependencies
+        run: npm ci
       - name: Type-check
         run: npm run lint
       - name: Detect optional offline linguistic tools
