@@ -142,6 +142,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
   }), []);
   const [quantity, setQuantity] = useState(9);
   const [keyword, setKeyword] = useState('');
+  const [seed, setSeed] = useState('');
   const [results, setResults] = useState<GeneratedName[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const generationTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -266,6 +267,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
         genLanguage: effectiveGenLanguage,
         quantity,
         keyword,
+        seed: seed.trim() || undefined,
       });
       setResults(generated);
       setIsGenerating(false);
@@ -292,6 +294,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
     selectedGenLanguage,
     quantity,
     keyword,
+    seed,
   ]);
 
   useEffect(() => {
@@ -401,6 +404,33 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
               onGenerate={handleGenerate}
               isGenerating={isGenerating}
             />
+          </div>
+
+          <div className="mb-5 rounded-2xl border border-slate-800 bg-[#0b1222] p-4">
+            <label htmlFor="nameforge-seed" className="mb-2 block text-xs font-bold text-slate-200">
+              {language === 'fr' ? 'Graine de génération (facultative)' : language === 'ar' ? 'بذرة التوليد (اختيارية)' : 'Generation seed (optional)'}
+            </label>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                id="nameforge-seed"
+                type="text"
+                value={seed}
+                onChange={(event) => setSeed(event.target.value)}
+                placeholder={language === 'fr' ? 'Ex. : mon-projet-2026' : 'e.g. my-project-2026'}
+                maxLength={120}
+                className="h-10 min-w-0 flex-1 rounded-xl border border-slate-700 bg-[#070d19] px-3 text-sm text-white placeholder:text-slate-500 focus:border-purple-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setSeed(typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : Math.random().toString(36).slice(2, 12))}
+                className="rounded-xl border border-purple-500/40 bg-purple-500/10 px-3 py-2 text-xs font-bold text-purple-200 hover:bg-purple-500/20"
+              >
+                {language === 'fr' ? 'Nouvelle graine' : language === 'ar' ? 'بذرة جديدة' : 'New seed'}
+              </button>
+            </div>
+            <p className="mt-2 text-[11px] leading-relaxed text-slate-400">
+              {language === 'fr' ? 'La même graine et les mêmes réglages reproduisent le même lot. Laissez vide pour une génération aléatoire.' : language === 'ar' ? 'نفس البذرة ونفس الإعدادات تعيدان إنشاء المجموعة نفسها. اتركه فارغًا للتوليد العشوائي.' : 'The same seed and settings reproduce the same batch. Leave empty for normal random generation.'}
+            </p>
           </div>
 
           {/* Batch Actions Bar */}
