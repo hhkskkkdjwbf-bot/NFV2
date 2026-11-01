@@ -7,6 +7,7 @@ const GeneratorsListView = lazy(() => import('./views/GeneratorsListView').then(
 const GeneratorDetailView = lazy(() => import('./views/GeneratorDetailView').then((module) => ({ default: module.GeneratorDetailView })));
 const MyNamesView = lazy(() => import('./views/MyNamesView').then((module) => ({ default: module.MyNamesView })));
 const StyleStudioView = lazy(() => import('./views/StyleStudioView').then((module) => ({ default: module.StyleStudioView })));
+const UsernameDesignerView = lazy(() => import('./views/UsernameDesignerView').then((module) => ({ default: module.UsernameDesignerView })));
 import { GeneratorId } from './types';
 import { GENERATORS_METADATA, ALL_GENERATORS_LIST } from './data/generators';
 import { applySettingsToDOM, getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from './services/settings';
@@ -72,6 +73,7 @@ export const App: React.FC = () => {
       setCurrentView('my-names');
       return;
     }
+    if (hash === 'username-designer' || hash === 'username-generator' || hash === 'pseudo-generator') { setCurrentView('username-designer'); return; }
     if (hash === 'style-studio' || hash === 'atelier-style' || hash === 'text-styler') {
       setCurrentView('style-studio');
       return;
@@ -130,6 +132,10 @@ export const App: React.FC = () => {
       }
       setCurrentView('style-studio');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === 'username-designer') {
+      window.location.hash = '/username-designer';
+      setCurrentView('username-designer');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'generator-detail' && generatorId) {
       const gId = generatorId as GeneratorId;
       window.location.hash = `/generator/${gId}`;
@@ -156,6 +162,7 @@ export const App: React.FC = () => {
       generators: `${labels.pageTitles.generators} (${ALL_GENERATORS_LIST.length}) — NameForge`,
       'my-names': `${labels.pageTitles.myNames} — NameForge`,
       'style-studio': `${labels.pageTitles.styleStudio} — NameForge`,
+      'username-designer': `Username Designer — NameForge`,
     };
     const generatorMeta = currentView === 'generator-detail' ? GENERATORS_METADATA[currentGenerator] : undefined;
     const generatorTitle = generatorMeta
@@ -164,11 +171,13 @@ export const App: React.FC = () => {
     const title = currentView === 'generator-detail'
       ? `${generatorTitle} | NameForge`
       : titles[currentView] || 'NameForge';
-    const description = getSeoDescription(
-      currentView as 'home' | 'generators' | 'my-names' | 'style-studio' | 'generator-detail',
-      settings.language,
-      generatorTitle
-    );
+    const description = currentView === 'username-designer'
+      ? 'Create gaming, fantasy, minimal and elegant usernames with custom prefixes, suffixes, length limits and character validation.'
+      : getSeoDescription(
+          currentView as 'home' | 'generators' | 'my-names' | 'style-studio' | 'generator-detail',
+          settings.language,
+          generatorTitle
+        );
 
     document.title = title;
     setMetaContent('meta[name="description"]', description);
