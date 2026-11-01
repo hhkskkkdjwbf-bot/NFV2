@@ -39,6 +39,7 @@ import {
 import { GeneratorId, HistoryEntry, NamedCollection, SavedNameEntry, StorageStats } from '../types';
 import { NoteModal } from '../components/NoteModal';
 import { CollectionModal } from '../components/CollectionModal';
+import { ProjectWorkspace } from '../components/ProjectWorkspace';
 import { CompareModal } from '../components/CompareModal';
 import { ALL_GENERATORS_LIST } from '../data/generators';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
@@ -360,6 +361,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
 
   return (
     <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={currentLanguage} className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 py-10 space-y-8 text-start">
+      <ProjectWorkspace />
       {/* Hidden file input for import */}
       <input
         type="file"
