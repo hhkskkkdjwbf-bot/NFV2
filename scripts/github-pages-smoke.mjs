@@ -12,7 +12,7 @@ if (!/nameforge/i.test(html)) failures.push('Published HTML does not contain the
 
 const assetPaths = [
   ...[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map((match) => match[1]),
-  ...[...html.matchAll(/<link[^>]+href=["']([^"']+\\.css(?:\\?[^"']*)?)["']/gi)].map((match) => match[1]),
+  ...[...html.matchAll(/<link[^>]+href=["']([^"']+\.css(?:\?[^"']*)?)["']/gi)].map((match) => match[1]),
 ];
 if (assetPaths.length === 0) failures.push('No JavaScript or CSS assets were found in the published HTML');
 for (const assetPath of assetPaths) {
