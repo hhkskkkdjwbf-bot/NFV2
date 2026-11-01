@@ -127,7 +127,7 @@ export const UsernameDesignerView: React.FC = () => {
           <span className="inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-500/10 px-4 py-2 text-xs font-bold tracking-[0.2em] text-purple-300">
             <Sparkles className="h-4 w-4" /> {t.eyebrow}
           </span>
-          <h1 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">{t.title}</h1>
+          <h2 className="mt-5 text-4xl font-black tracking-tight text-white sm:text-5xl">{t.title}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-400">{t.subtitle}</p>
         </div>
 
