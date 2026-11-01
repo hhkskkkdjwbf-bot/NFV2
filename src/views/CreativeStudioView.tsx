@@ -65,7 +65,7 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
         </header>
 
-        <nav aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
+        <nav role="tablist" aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
           {TOOLS.map((tool) => {
             const Icon = tool.icon;
             const selected = activeTool === tool.id;
@@ -85,10 +85,10 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
         </nav>
 
         <div id="creative-studio-panel" role="tabpanel" aria-label={TOOLS.find((tool) => tool.id === activeTool)?.labels[locale]} className="min-w-0">
-          {activeTool === 'text-styles' && <StyleStudioView onNavigate={onNavigate} initialText={initialText} />}
-          {activeTool === 'username' && <UsernameDesignerView />}
-          {activeTool === 'bio-caption' && <BioCaptionStudioView />}
-          {activeTool === 'symbols-art' && <TextArtStudioView />}
+          <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={initialText} /></div>
+          <div hidden={activeTool !== 'username'}><UsernameDesignerView /></div>
+          <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView /></div>
+          <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView /></div>
         </div>
       </div>
     </section>
