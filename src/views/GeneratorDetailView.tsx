@@ -316,6 +316,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
     selectedGender,
     selectedGenLanguage,
     quantity,
+    seed,
   ]);
 
   // Keep all supported right-to-left scripts aligned with the app's language registry.
