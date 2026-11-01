@@ -22,6 +22,8 @@ import {
   renderStyledTextToCanvas,
   downloadCanvasAsPng,
   generateSvgCode,
+  generateCssCode,
+  splitGraphemes,
 } from '../services/textStyler';
 import { GeneratorId } from '../types';
 import { getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from '../services/settings';
@@ -104,6 +106,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
   const [exportScale, setExportScale] = useState<number>(2);
   const [svgCopied, setSvgCopied] = useState(false);
   const [cssCopied, setCssCopied] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [settings, setSettings] = useState(getAppSettings);
@@ -141,11 +144,13 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   const handleCopyText = async (textToCopy: string, id: string) => {
     try {
+      setCopyError(null);
       await copyToClipboard(textToCopy);
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 1500);
     } catch (e) {
       console.error('Failed to copy', e);
+      setCopyError(e instanceof Error ? e.message : 'Copy failed. Please try again.');
     }
   };
 
@@ -156,8 +161,12 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   const copyToClipboard = async (value: string): Promise<void> => {
     if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(value);
-      return;
+      try {
+        await navigator.clipboard.writeText(value);
+        return;
+      } catch {
+        // Try the legacy fallback when clipboard permissions/API access fail.
+      }
     }
 
     // Clipboard API may be unavailable on older browsers or non-secure origins.
@@ -167,11 +176,15 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
     document.body.appendChild(textarea);
-    textarea.select();
-    const copied = document.execCommand('copy');
-    textarea.remove();
-    if (!copied) {
-      throw new Error('Clipboard copy is not supported in this browser.');
+    try {
+      textarea.focus();
+      textarea.select();
+      const copied = document.execCommand('copy');
+      if (!copied) {
+        throw new Error('Clipboard copy is not supported in this browser.');
+      }
+    } finally {
+      textarea.remove();
     }
   };
 
@@ -186,36 +199,26 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
       letterSpacing
     );
     try {
+      setCopyError(null);
       await copyToClipboard(code);
       setSvgCopied(true);
       setTimeout(() => setSvgCopied(false), 1500);
     } catch (e) {
       console.error('Failed to copy SVG', e);
+      setCopyError(e instanceof Error ? e.message : 'SVG copy failed. Please try again.');
     }
   };
 
   const handleCopyCss = async () => {
-    const currentEffect = VISUAL_EFFECTS.find((e) => e.id === selectedEffect) || VISUAL_EFFECTS[0];
-    const currentTexture = TEXTURE_FILLS.find((texture) => texture.id === selectedTexture) || TEXTURE_FILLS[0];
-    const cssCode = `/* NameForge Styled Typography: ${currentEffect.name} + ${currentTexture.name} */
-.styled-text {
-  font-family: ${fontFamily};
-  font-size: ${fontSize}px;
-  font-weight: 800;
-  letter-spacing: ${letterSpacing}px;
-  background: ${currentTexture.cssBackground};
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(${currentEffect.textShadowCSS.split(',')[0]});
-}`;
+    const cssCode = generateCssCode(fontSize, fontFamily, letterSpacing, selectedEffect, selectedTexture);
     try {
+      setCopyError(null);
       await copyToClipboard(cssCode);
       setCssCopied(true);
       setTimeout(() => setCssCopied(false), 1500);
     } catch (e) {
-      console.error(e);
+      console.error('Failed to copy CSS', e);
+      setCopyError(e instanceof Error ? e.message : 'CSS copy failed. Please try again.');
     }
   };
 
@@ -264,14 +267,13 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
               type="text"
               dir={isRtl ? 'rtl' : 'ltr'}
               value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
+              onChange={(e) => setInputText(splitGraphemes(e.target.value).slice(0, 60).join(''))}
               placeholder={getStudioLabel(settings.language, 'inputPlaceholder')}
               className={`w-full px-5 py-4 rounded-2xl bg-[#090d19] border border-slate-700 text-lg sm:text-xl font-bold text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 transition shadow-inner ${isRtl ? 'text-end ps-12' : 'text-start pe-12'}`}
-              maxLength={60}
               aria-describedby="styler-input-counter"
             />
             <span id="styler-input-counter" aria-live="polite" className="absolute bottom-1 end-4 text-[10px] text-slate-500">
-              {inputText.length}/60
+              {splitGraphemes(inputText).length}/60
             </span>
             {inputText && (
               <button
@@ -320,6 +322,12 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
           ))}
         </div>
       </div>
+
+      {copyError && (
+        <p role="alert" aria-live="assertive" className="mb-6 rounded-xl border border-red-500/40 bg-red-950/30 px-4 py-3 text-sm text-red-200">
+          {copyError}
+        </p>
+      )}
 
       {/* Tabs Navigation */}
       <div role="tablist" aria-label={getStudioLabel(settings.language, 'title')} className="flex items-center gap-2 border-b border-slate-800 pb-4 mb-8 overflow-x-auto scrollbar-none">
@@ -491,7 +499,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                       className="text-3xl sm:text-4xl font-black tracking-tight"
                       style={effect.cssStyle}
                     >
-                      {inputText || 'NameForge'}
+                      {canvasText}
                     </span>
                   </div>
 
@@ -573,7 +581,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                           filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.8))',
                         }}
                       >
-                        {inputText || 'NameForge'}
+                        {canvasText}
                       </span>
                     </div>
                   </div>
