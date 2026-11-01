@@ -1,7 +1,7 @@
 {
   "name": "NameForge — Professional Name Generators",
   "short_name": "NameForge",
-  "description": "234+ free name generators for brands, characters, fantasy worlds, gaming and creative projects, in 25 languages.",
+  "description": "234+ free name generators for brands, characters, fantasy worlds, gaming and creative projects. Interface available in 82 languages, with 28 fully translated languages.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
