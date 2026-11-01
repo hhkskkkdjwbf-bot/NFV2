@@ -77,3 +77,8 @@ assert.ok(projectStorage.includes('version: 3'), 'new JSON backups should use sc
 assert.ok(projectStorage.includes('Version de sauvegarde non prise en charge'), 'unsupported backup versions should be rejected');
 assert.ok(projectWorkspace.includes('Add to my workspace'), 'saved projects should be accessible from the personal workspace');
 console.log('Phase 4 workspace checks passed: multi-criteria search, saved projects, and versioned backups.');
+
+
+const seoGenerator = readFileSync(new URL('../scripts/generate-seo-pages.ts', import.meta.url), 'utf8');
+assert.ok(seoGenerator.includes("const SITE_URL = 'https://hhkskkkdjwbf-bot.github.io/NFV2'"), 'SEO landing pages must use the current GitHub Pages origin');
+console.log('SEO deployment-origin check passed.');
