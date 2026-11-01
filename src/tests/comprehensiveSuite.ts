@@ -1,7 +1,7 @@
 import { ALL_GENERATORS_LIST, GENERATORS_METADATA } from '../data/generators';
 import { SUBCATEGORIES_DATA } from '../data/subcategories';
 import { generateNames, isTooSimilar, calculateLevenshteinDistance, scoreCandidate } from '../services/generatorEngine';
-import { generateCssCode, generateSvgCode, splitGraphemes, UNICODE_STYLES, VISUAL_EFFECTS } from '../services/textStyler';
+import { generateCssCode, generateSvgCode, splitGraphemes } from '../services/textStyler';
 import { ATTESTED_BABY_NAMES } from '../data/attestedBabyNames';
 import { normalizeSearchText } from '../services/search';
 import { getLocalizedGeneratorDescription, hasLocalizedGeneratorDescription, LOCALIZED_GENERATOR_DESCRIPTION_LANGUAGES } from '../i18n/generatorContent';
