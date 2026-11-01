@@ -61,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     he: { catalog: 'קטלוג', random: 'אקראי', randomTitle: 'פתיחת מחולל אקראי', studio: 'סטודיו סגנון', mobileRandom: 'מחולל אקראי (🎲 הפתיעו אותי)', mobileStudio: 'סטודיו סגנון (Unicode ו-Canvas HD)', menu: 'תפריט', language: 'שפה:', languages: 'שפות', all: 'הכול', generators: 'מחוללי NameForge', families: { fantasy: 'פנטזיה ומיתוסים', business: 'עסקים ופרויקטים', creative: 'יצירה ומדיה', innovation: 'חדשנות וטכנולוגיה' } },
     tr: { catalog: 'Katalog', random: 'Rastgele', randomTitle: 'Rastgele oluşturucu aç', studio: 'Stil Stüdyosu', mobileRandom: 'Rastgele oluşturucu (🎲 Şaşırt beni)', mobileStudio: 'Stil Stüdyosu (Unicode ve HD Canvas)', menu: 'Menü', language: 'Dil:', languages: 'dil', all: 'Tümü', generators: 'NameForge oluşturucuları', families: { fantasy: 'Fantastik ve mitler', business: 'İşletmeler ve projeler', creative: 'Yaratıcılık ve medya', innovation: 'Yenilik ve teknoloji' } },
   };
-  const navText = navCopy[settings.language] || navCopy.en;
+  const navText = navCopy[settings.language] || navCopy.en;\n  const usernameDesignerLabel = settings.language === 'fr' ? 'Créateur de pseudos' : settings.language === 'ar' ? 'مصمم الأسماء' : 'Username Designer';
 
   const updateCount = () => {
     const list = getSavedNames();
@@ -234,6 +234,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{navText.studio}</span>
             </button>
 
+            <button
+              onClick={() => onNavigate('username-designer')}
+              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${currentView === 'username-designer' ? 'text-white border-b-2 border-cyan-400 pb-1' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Dices className="w-3.5 h-3.5 text-cyan-300" />
+              <span>{usernameDesignerLabel}</span>
+            </button>
+
             {/* My Names with Live Counter */}
             <button
               onClick={() => onNavigate('my-names')}
@@ -337,6 +345,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Dices className="w-4 h-4 text-amber-400" />
               <span>{navText.mobileRandom}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                onNavigate('username-designer');
+                setMobileMenuOpen(false);
+              }}
+              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-cyan-300 hover:bg-slate-800 flex items-center gap-2"
+            >
+              <Dices className="w-4 h-4 text-cyan-300" />
+              <span>{usernameDesignerLabel}</span>
             </button>
 
             <button
