@@ -250,9 +250,9 @@ const INVERTED_MAP: Record<string, string> = {
 };
 
 function toInverted(text: string): string {
-  return Array.from(text)
+  return splitGraphemes(text)
     .reverse()
-    .map((c) => INVERTED_MAP[c] || c)
+    .map((cluster) => INVERTED_MAP[cluster] || cluster)
     .join('');
 }
 
@@ -825,7 +825,8 @@ export function renderStyledTextToCanvas(
 
   // Measure text
   const metrics = ctx.measureText(text);
-  const textWidth = metrics.width + Math.max(0, Array.from(text).length - 1) * letterSpacing * scale;
+  const graphemeCount = splitGraphemes(text).length;
+  const textWidth = metrics.width + Math.max(0, graphemeCount - 1) * letterSpacing * scale;
   const paddingX = 60 * scale;
   const paddingY = 50 * scale;
   const width = Math.max(300 * scale, Math.ceil(textWidth + paddingX * 2));
@@ -937,6 +938,36 @@ export function downloadCanvasAsPng(canvas: HTMLCanvasElement, filename: string)
 }
 
 /**
+ * Generates reusable CSS using the complete visual-effect filter.
+ * Do not split textShadowCSS: rgba() values contain commas, and splitting
+ * that string can truncate a color and produce invalid CSS.
+ */
+export function generateCssCode(
+  fontSize: number,
+  fontFamily: string,
+  letterSpacing: number,
+  effectId: string,
+  textureId: string
+): string {
+  const effect = VISUAL_EFFECTS.find((item) => item.id === effectId) || VISUAL_EFFECTS[0];
+  const texture = TEXTURE_FILLS.find((item) => item.id === textureId) || TEXTURE_FILLS[0];
+
+  return `/* NameForge Styled Typography: ${effect.name} + ${texture.name} */
+.styled-text {
+  font-family: ${fontFamily};
+  font-size: ${fontSize}px;
+  font-weight: 800;
+  letter-spacing: ${letterSpacing}px;
+  background: ${texture.cssBackground};
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: ${effect.cssStyle.filter || 'none'};
+}`;
+}
+
+/**
  * Generates an SVG vector representation of the styled text
  */
 export function generateSvgCode(
@@ -951,7 +982,7 @@ export function generateSvgCode(
   const effect = VISUAL_EFFECTS.find((e) => e.id === effectId) || VISUAL_EFFECTS[0];
   const texture = TEXTURE_FILLS.find((t) => t.id === textureId) || TEXTURE_FILLS[0];
   // Estimate a canvas wide enough for long labels instead of clipping them in a fixed 800px SVG.
-  const characters = Array.from(text);
+  const characters = splitGraphemes(text);
   const width = Math.max(320, Math.ceil(characters.length * fontSize * 0.78 + Math.max(0, characters.length - 1) * letterSpacing + 120));
   const height = Math.max(160, Math.ceil(fontSize * 2.8));
   const colors = effect.gradientCSS.match(/#[0-9a-fA-F]{3,8}/g) || ['#ffffff', '#8b5cf6'];
