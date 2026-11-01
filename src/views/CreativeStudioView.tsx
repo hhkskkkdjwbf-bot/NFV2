@@ -32,9 +32,14 @@ function readToolFromHash(): CreativeTool {
 export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialText, onNavigate }) => {
   const [language, setLanguage] = useState(getAppSettings().language);
   const [activeTool, setActiveTool] = useState<CreativeTool>(readToolFromHash);
+  const [visitedTools, setVisitedTools] = useState<CreativeTool[]>(() => [readToolFromHash()]);
   useEffect(() => {
     const unsubscribe = subscribeToSettings((settings) => setLanguage(settings.language));
-    const syncTool = () => setActiveTool(readToolFromHash());
+    const syncTool = () => {
+      const nextTool = readToolFromHash();
+      setActiveTool(nextTool);
+      setVisitedTools((current) => current.includes(nextTool) ? current : [...current, nextTool]);
+    };
     window.addEventListener('hashchange', syncTool);
     return () => {
       unsubscribe();
@@ -51,6 +56,7 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
 
   const selectTool = (tool: CreativeTool) => {
     setActiveTool(tool);
+    setVisitedTools((current) => current.includes(tool) ? current : [...current, tool]);
     window.location.hash = '/creative-studio/' + tool;
   };
 
@@ -85,10 +91,10 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
         </nav>
 
         <div id="creative-studio-panel" role="tabpanel" aria-label={TOOLS.find((tool) => tool.id === activeTool)?.labels[locale]} className="min-w-0">
-          <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={initialText} /></div>
-          <div hidden={activeTool !== 'username'}><UsernameDesignerView /></div>
-          <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView /></div>
-          <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView /></div>
+          {visitedTools.includes('text-styles') && <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={initialText} /></div>}
+          {visitedTools.includes('username') && <div hidden={activeTool !== 'username'}><UsernameDesignerView /></div>}
+          {visitedTools.includes('bio-caption') && <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView /></div>}
+          {visitedTools.includes('symbols-art') && <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView /></div>}
         </div>
       </div>
     </section>
