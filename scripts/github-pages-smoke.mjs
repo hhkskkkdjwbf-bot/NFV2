@@ -73,7 +73,7 @@ try {
     width: document.documentElement.scrollWidth,
     viewport: window.innerWidth,
     heading: document.querySelector('h1')?.textContent?.trim() || '',
-    selectedTab: document.querySelector('[data-testid="creative-studio-tabs"] [role="tab"][aria-selected="true"]')?.textContent?.trim() || '',
+    selectedTab: document.querySelector('[data-testid="creative-studio-tabs"] [role="tab"][aria-selected="true"]')?.innerText?.trim() || '',
   }));
   if (rtlState.dir !== 'rtl') failures.push('Arabic narrow-mobile page is not RTL');
   if (rtlState.width > rtlState.viewport + 2) failures.push('Arabic Text Art page overflows at 320px');
