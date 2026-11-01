@@ -939,7 +939,7 @@ const invertedStyle = UNICODE_STYLES.find((style) => style.id === 'inverted');
 const familyEmoji = '👨‍👩‍👧‍👦';
 assert(
   splitGraphemes(familyEmoji).length === 1 &&
-    invertedStyle?.transform(`A${familyEmoji}B`) === `B${familyEmoji}∀`,
+    invertedStyle?.transform(`A${familyEmoji}B`) === `𐐒${familyEmoji}∀`,
   'Upside-down transformation reverses visible characters without splitting ZWJ emoji'
 );
 assert(
