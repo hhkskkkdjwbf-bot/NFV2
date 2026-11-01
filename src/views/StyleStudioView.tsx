@@ -288,12 +288,12 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
       {/* Hero Title */}
       <div className="text-center max-w-3xl mx-auto mb-10">
-        <h1 className="nf-animated-heading text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+        <h2 className="nf-animated-heading text-3xl sm:text-5xl font-black tracking-tight leading-tight">
           {getStudioLabel(settings.language, 'heroTitle')}{' '}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">
             {getStudioLabel(settings.language, 'heroAccent')}
           </span>
-        </h1>
+        </h2>
         <p className="mt-3 text-sm sm:text-base text-slate-300 leading-relaxed">
           {getStudioLabel(settings.language, 'heroDescription')}
         </p>

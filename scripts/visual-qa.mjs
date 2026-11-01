@@ -40,6 +40,7 @@ try {
     { name: 'catalog', hash: '#/generators' },
     { name: 'generator-detail', hash: '#/generator/fantasy' },
     { name: 'my-names', hash: '#/my-names' },
+    { name: 'creative-studio', hash: '#/creative-studio' },
     { name: 'style-studio', hash: '#/style-studio' },
     { name: 'username-designer', hash: '#/username-designer' },
     { name: 'bio-caption-studio', hash: '#/bio-caption-studio' },
@@ -89,7 +90,7 @@ try {
               backgroundImage: style.backgroundImage,
               value: select.value,
             };
-          }),
+          }).filter((select) => select.visible),
           pressedChoiceCount: document.querySelectorAll('button[aria-pressed], button[aria-selected]').length,
           visiblePressedChoiceCount: [...document.querySelectorAll('button[aria-pressed], button[aria-selected]')].filter((button) => {
             const rect = button.getBoundingClientRect();
@@ -339,7 +340,7 @@ try {
         }, language);
         const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
         await page.waitForTimeout(250);
-        const heading = (await page.locator('h1').first().innerText().catch(() => '')).trim();
+        const heading = (await page.getByRole('heading', { name: view.titles[language] }).first().innerText().catch(() => '')).trim();
         const state = await page.evaluate(() => ({
           lang: document.documentElement.lang,
           dir: document.documentElement.dir,
@@ -369,16 +370,50 @@ try {
     }
   }
 
+  // Verify the unified workspace navigation, deep links and state retention.
+  {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
+    const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
+    if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
+    const tabs = page.locator('[data-testid="creative-studio-tabs"] > button[role="tab"]');
+    if (await tabs.count() !== 4) failures.push('creative-studio-navigation: expected exactly four tool tabs, found ' + await tabs.count());
+    const usernameTab = page.getByRole('tab', { name: 'Username Designer' });
+    await usernameTab.click();
+    const baseWord = page.getByLabel('Base word (optional)');
+    if (await baseWord.count()) await baseWord.fill('Nova');
+    else failures.push('creative-studio-navigation: username base-word field is missing');
+    if (!(await usernameTab.getAttribute('aria-selected') === 'true')) failures.push('creative-studio-navigation: username tab did not become selected');
+    await page.getByRole('tab', { name: 'Bio & Captions' }).click();
+    await usernameTab.click();
+    if (await baseWord.count() && await baseWord.inputValue() !== 'Nova') failures.push('creative-studio-navigation: switching tabs discarded the username draft');
+    if (!page.url().includes('/creative-studio/username')) failures.push('creative-studio-navigation: selected tool is not reflected in the URL');
+    const visibleNavItems = page.locator('header nav').getByRole('button', { name: /Creative Studio/ });
+    if (await visibleNavItems.count() !== 1) failures.push('creative-studio-navigation: desktop navigation does not expose one consolidated Creative Studio entry');
+    await page.close();
+
+    const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    await mobilePage.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
+    await mobilePage.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
+    await mobilePage.getByRole('button', { name: 'Menu' }).click();
+    const mobileMenu = mobilePage.locator('#nameforge-mobile-menu');
+    if (await mobileMenu.getByRole('button', { name: 'Creative Studio' }).count() !== 1) failures.push('creative-studio-navigation: mobile menu does not expose one consolidated Creative Studio entry');
+    for (const obsoleteLabel of ['Username Designer', 'Bio & Caption Studio', 'Symbols & Text Art']) {
+      if (await mobileMenu.getByRole('button', { name: obsoleteLabel }).count()) failures.push('creative-studio-navigation: obsolete standalone mobile link remains (' + obsoleteLabel + ')');
+    }
+    await mobilePage.close();
+  }
+
   // Exercise the interactive Text Art workflow end-to-end in a real browser.
   {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     await page.goto(baseUrl + '#/text-art-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    const symbol = page.locator('button[title="Sparkle"]').first();
+    const symbol = page.locator('#creative-studio-panel').locator('button[title="Sparkle"]:visible').first();
     if (!(await symbol.count())) failures.push('text-art-interaction: Sparkle symbol button is missing');
     else {
       await symbol.click();
-      const textEditor = page.locator('textarea').first();
+      const textEditor = page.locator('#creative-studio-panel').locator('textarea:visible').first();
       if (!(await textEditor.inputValue()).includes('✦')) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
       const favorite = page.locator('button[aria-label="Add to favorites"]').first();
       if (await favorite.count()) {
