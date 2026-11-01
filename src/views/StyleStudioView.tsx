@@ -14,6 +14,8 @@ import {
   Image as ImageIcon,
   ArrowLeft,
   Share2,
+  Search,
+  CheckSquare,
 } from 'lucide-react';
 import {
   UNICODE_STYLES,
@@ -24,6 +26,8 @@ import {
   generateSvgCode,
   generateCssCode,
   splitGraphemes,
+  filterUnicodeStyles,
+  UnicodeStyleOption,
 } from '../services/textStyler';
 import { GeneratorId } from '../types';
 import { getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from '../services/settings';
@@ -97,6 +101,9 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
   const [selectedTexture, setSelectedTexture] = useState(TEXTURE_FILLS[0].id);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [copiedGeneral, setCopiedGeneral] = useState(false);
+  const [styleSearch, setStyleSearch] = useState('');
+  const [styleCategory, setStyleCategory] = useState<'all' | UnicodeStyleOption['category']>('all');
+  const [selectedStyleIds, setSelectedStyleIds] = useState<string[]>([]);
 
   // Canvas Studio Controls
   const [fontSize, setFontSize] = useState<number>(48);
@@ -125,6 +132,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
 
   // Keep Unicode styling, visual effects, textures and HD exports on one shared text source.
   const selectedUnicode = UNICODE_STYLES.find((style) => style.id === selectedUnicodeStyle);
+  const visibleUnicodeStyles = filterUnicodeStyles(UNICODE_STYLES, styleSearch, styleCategory);
   const canvasText = selectedUnicode ? selectedUnicode.transform(inputText || 'NameForge') : (inputText || 'NameForge');
 
   // Redraw canvas whenever parameters change
@@ -186,6 +194,42 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
     } finally {
       textarea.remove();
     }
+  };
+
+  const handleCopyMultiple = async (styles: UnicodeStyleOption[], statusId: string) => {
+    if (styles.length === 0) return;
+    try {
+      setCopyError(null);
+      const combinedText = styles
+        .map((style) => style.transform(inputText || 'NameForge'))
+        .join('\n');
+      await copyToClipboard(combinedText);
+      setCopiedId(statusId);
+      window.setTimeout(() => setCopiedId(null), 1500);
+    } catch (e) {
+      console.error('Failed to copy multiple styles', e);
+      setCopyError(e instanceof Error ? e.message : 'Multiple copy failed. Please try again.');
+    }
+  };
+
+  const toggleStyleSelection = (styleId: string) => {
+    setSelectedStyleIds((current) =>
+      current.includes(styleId)
+        ? current.filter((id) => id !== styleId)
+        : [...current, styleId]
+    );
+  };
+
+  const selectVisibleStyles = () => {
+    setSelectedStyleIds((current) => Array.from(new Set([
+      ...current,
+      ...visibleUnicodeStyles.map((style) => style.id),
+    ])));
+  };
+
+  const clearVisibleSelection = () => {
+    const visibleIds = new Set(visibleUnicodeStyles.map((style) => style.id));
+    setSelectedStyleIds((current) => current.filter((id) => !visibleIds.has(id)));
   };
 
   const handleCopySvg = async () => {
@@ -414,9 +458,21 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
                       <span className="text-xs font-bold text-purple-300 uppercase tracking-wider">
                         {style.name}
                       </span>
-                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
-                        {style.category}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">
+                          {style.category}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleStyleSelection(style.id)}
+                          aria-pressed={selectedStyleIds.includes(style.id)}
+                          aria-label={`${getStudioLabel(settings.language, 'selectStyle')} ${style.name}`}
+                          title={getStudioLabel(settings.language, 'selectStyle')}
+                          className={`rounded-lg p-1.5 transition ${selectedStyleIds.includes(style.id) ? 'bg-purple-500/20 text-purple-200' : 'text-slate-500 hover:bg-slate-800 hover:text-white'}`}
+                        >
+                          <CheckSquare className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
 
                     <div id={`studio-style-${style.id}-preview`} className="text-xl sm:text-2xl font-medium text-white break-words py-2 group-hover:text-cyan-200 transition">
@@ -447,6 +503,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
               );
             })}
           </div>
+          )}
         </div>
       )}
 
