@@ -55,8 +55,12 @@ export function getBioCaptionTemplates(language: string, kind?: BioCaptionKind):
 
 export function countBioCaptionCharacters(value: string): number {
   const normalized = value.normalize('NFC');
-  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
-    const Segmenter = Intl.Segmenter;
+  const Segmenter = (Intl as unknown as {
+    Segmenter?: new (locales?: string | string[], options?: { granularity: 'grapheme' }) => {
+      segment: (input: string) => Iterable<unknown>;
+    };
+  }).Segmenter;
+  if (typeof Segmenter === 'function') {
     return Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(normalized)).length;
   }
   return Array.from(normalized).length;
