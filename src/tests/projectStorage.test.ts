@@ -13,6 +13,7 @@ Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: m
 Object.defineProperty(globalThis, 'window', {
   configurable: true,
   value: {
+    localStorage: memory,
     dispatchEvent: () => true,
     addEventListener: () => undefined,
     removeEventListener: () => undefined,
