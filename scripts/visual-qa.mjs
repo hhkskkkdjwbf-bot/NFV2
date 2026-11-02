@@ -416,20 +416,22 @@ try {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     await page.goto(baseUrl + '#/text-art-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    const symbol = page.locator('#creative-studio-panel').locator('button[title="Sparkle"]:visible').first();
-    if (!(await symbol.count())) failures.push('text-art-interaction: Sparkle symbol button is missing');
+    const artSection = page.getByTestId('creative-section-symbols-art');
+    const symbol = artSection.locator('button[title]:visible').first();
+    if (!(await symbol.count())) failures.push('text-art-interaction: symbol insertion button is missing');
     else {
+      const symbolValue = (await symbol.innerText()).trim();
       await symbol.click();
-      const textEditor = page.locator('#creative-studio-panel').locator('textarea:visible').first();
-      if (!(await textEditor.inputValue()).includes('✦')) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
-      const favorite = page.locator('button[aria-label="Add to favorites"]').first();
+      const textEditor = artSection.locator('textarea:visible').first();
+      if (!(await textEditor.inputValue()).includes(symbolValue)) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
+      const favorite = artSection.locator('button[aria-label="Add to favorites"]').first();
       if (await favorite.count()) {
         await favorite.click();
-        if (!(await page.locator('button[aria-label="Remove favorite"]').count())) failures.push('text-art-interaction: favorite toggle did not update its accessible state');
+        if (!(await artSection.locator('button[aria-label="Remove favorite"]').count())) failures.push('text-art-interaction: favorite toggle did not update its accessible state');
       } else failures.push('text-art-interaction: favorite control is missing');
-      const cssPreview = page.locator('pre').filter({ hasText: '.nameforge-text-art' });
+      const cssPreview = artSection.locator('pre').filter({ hasText: '.nameforge-text-art' });
       if (!(await cssPreview.count())) failures.push('text-art-interaction: generated CSS preview is missing');
-      const pngButton = page.getByRole('button', { name: /Export PNG/ });
+      const pngButton = artSection.getByRole('button', { name: /Export PNG/ });
       if (await pngButton.count()) {
         const downloadPromise = page.waitForEvent('download', { timeout: 10000 });
         await pngButton.click();
