@@ -1,5 +1,5 @@
 declare const process: { exitCode?: number };
-import { generateNames } from '../services/generatorEngine';
+import { generateNames, transliterateAnimeToKatakana } from '../services/generatorEngine';
 import { getScriptsInText } from '../services/linguisticRules';
 import { SUBCATEGORIES_DATA } from '../data/subcategories';
 import { SUBCATEGORIES_BATCH_B } from '../data/generatorsBatchB';
@@ -38,6 +38,49 @@ if (!academy || academy.suffixes.some((token) => ['High', 'Academy', 'Institute'
   failures.push('anime_school/academy: non-Japanese school suffixes remain in the Japanese-inspired bank');
 }
 console.log('Checked Anime lexical-bank separation and school naming vocabulary');
+
+const romajiFixtures: Array<[string, string]> = [
+  ['Haruto', 'ハルト'],
+  ['Shinobu', 'シノブ'],
+  ['Ryu', 'リュウ'],
+  ['Zankoku', 'ザンコク'],
+  ['Kage', 'カゲ'],
+];
+for (const [source, expected] of romajiFixtures) {
+  const actual = transliterateAnimeToKatakana(source);
+  if (actual !== expected) failures.push(`romaji/${source}: expected ${expected}, received ${actual || '(rejected)'}`);
+}
+for (const unsupported of ['Kenz', 'Kael', 'Vex', 'Hoshino!']) {
+  if (transliterateAnimeToKatakana(unsupported) !== '') {
+    failures.push(`romaji/${unsupported}: unsupported spelling must be rejected, not partially transliterated`);
+  }
+}
+console.log('Checked strict romaji-to-katakana fixtures and fail-closed handling');
+
+// Exercise every main Anime subcategory through the real generation pipeline.
+// This verifies that each bank can produce Japanese-script candidates; it does
+// not claim native-speaker approval or semantic naturalness.
+for (const style of Object.keys(animeLexicons || {})) {
+  const results = generateNames({
+    generator: 'anime',
+    style,
+    genLanguage: 'ja',
+    quantity: 4,
+    seed: `anime-ja-subcategory-${style}`,
+  });
+  if (results.length === 0) {
+    failures.push(`anime/${style}/ja: no candidates survived strict Japanese transliteration`);
+    continue;
+  }
+  for (const result of results) {
+    const scripts = getScriptsInText(result.name);
+    if (!scripts.length || scripts.some((script) => !['Katakana', 'Hiragana', 'Han'].includes(script))) {
+      failures.push(`anime/${style}/ja: unexpected script in "${result.name}" [${scripts.join(',')}]`);
+    }
+  }
+  console.log(`PASS anime/${style}/ja: ${results.length} generated candidates; Japanese scripts only`);
+}
+
 
 // Category-specific Arabic output must not be replaced by generic personal-name
 // roots (including religious compounds) across unrelated generators.
