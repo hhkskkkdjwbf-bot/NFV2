@@ -1,10 +1,17 @@
 import type { GenLanguageCode } from '../types';
 
 export type PhoneticReadiness = 'partial-segmentation' | 'reference-data-required';
+export type SpecializedPhoneticPipeline = {
+  status: 'experimental';
+  generationEnabled: true;
+  scope: 'anime-romaji-to-katakana';
+  limitations: readonly string[];
+};
 export interface LanguagePhoneticReadiness {
   language: GenLanguageCode;
   readiness: PhoneticReadiness;
   generationEnabled: false;
+  specializedPipelines?: readonly SpecializedPhoneticPipeline[];
   requiredEvidence: readonly ('pronunciation-lexicon' | 'syllabification' | 'stress' | 'tones' | 'phonological-alternations' | 'native-review')[];
   limitation: string;
 }
@@ -26,7 +33,7 @@ export const LANGUAGE_PHONETIC_READINESS: Record<string, LanguagePhoneticReadine
   pt: { language: 'pt', readiness: 'reference-data-required', generationEnabled: false, requiredEvidence: [...LATIN_REQUIREMENTS, 'tones'], limitation: 'European/Brazilian vowel reduction, stress and regional pronunciation need separate data.' },
   ar: { language: 'ar', readiness: 'reference-data-required', generationEnabled: false, requiredEvidence: ['pronunciation-lexicon', 'syllabification', 'stress', 'phonological-alternations', 'native-review'], limitation: 'Short vowels, dialect, hamza and name-specific vocalization require reliable source data.' },
   tr: { language: 'tr', readiness: 'reference-data-required', generationEnabled: false, requiredEvidence: LATIN_REQUIREMENTS, limitation: 'Vowel harmony helper exists, but stress, syllabification and exceptions are not fully integrated.' },
-  ja: { language: 'ja', readiness: 'partial-segmentation', generationEnabled: false, requiredEvidence: ['pronunciation-lexicon', 'stress', 'native-review'], limitation: 'Mora segmentation exists; kanji readings and pitch accent remain unresolved.' },
+  ja: { language: 'ja', readiness: 'partial-segmentation', generationEnabled: false, specializedPipelines: [{ status: 'experimental', generationEnabled: true, scope: 'anime-romaji-to-katakana', limitations: ['Only the Anime generator uses this restricted pipeline.', 'It converts a limited curated romaji vocabulary to katakana; it is not a general Japanese phonetic engine.', 'Kanji readings, pitch accent, lexical authenticity, naturalness and category fit are not certified.', 'Unsupported spellings are rejected rather than partially converted.'] }], requiredEvidence: ['pronunciation-lexicon', 'stress', 'native-review'], limitation: 'General Japanese phonetic generation remains disabled. Mora segmentation is available; kanji readings and pitch accent remain unresolved. A restricted experimental Anime romaji-to-katakana pipeline is separately enabled and is not a general Japanese engine.' },
   ko: { language: 'ko', readiness: 'partial-segmentation', generationEnabled: false, requiredEvidence: ['pronunciation-lexicon', 'phonological-alternations', 'native-review'], limitation: 'Hangul block decomposition exists; liaison, tensification and other sound changes remain unresolved.' },
   zh: { language: 'zh', readiness: 'reference-data-required', generationEnabled: false, requiredEvidence: ['pronunciation-lexicon', 'tones', 'native-review'], limitation: 'Character readings, tones and regional Mandarin/Cantonese distinctions require lexical references.' },
   ru: { language: 'ru', readiness: 'reference-data-required', generationEnabled: false, requiredEvidence: SCRIPT_REQUIREMENTS, limitation: 'Stress, vowel reduction, palatalization and inflectional alternations need modelling.' },
