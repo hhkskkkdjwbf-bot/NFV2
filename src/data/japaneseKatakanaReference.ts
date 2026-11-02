@@ -97,5 +97,4 @@ export const JAPANESE_KATAKANA_REFERENCE: readonly JapaneseKatakanaReferenceCase
   { romaji: 'Mio', katakana: 'ミオ' },
   { romaji: 'Haru', katakana: 'ハル' },
   { romaji: 'Aki', katakana: 'アキ' },
-  { romaji: 'Hikaru', katakana: 'ヒカル' },
 ] as const;
