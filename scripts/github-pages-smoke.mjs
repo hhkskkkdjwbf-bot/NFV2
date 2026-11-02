@@ -51,7 +51,7 @@ try {
       }));
       const label = language + ' ' + route.hash;
       if (!pageResponse || pageResponse.status() >= 400) failures.push(label + ': route failed to load');
-      if (heading !== ({ en: 'Creative Studio', fr: 'Studio créatif', ar: 'الاستوديو الإبداعي' })[language]) failures.push(label + ': incorrect Creative Studio heading "' + heading + '"');
+      if (heading !== ({ en: 'Name Designer Studio', fr: 'Studio de personnalisation des noms', ar: 'استوديو تصميم الأسماء' })[language]) failures.push(label + ': incorrect Name Designer Studio heading "' + heading + '"');
       if (selectedTab !== route.tab[language]) failures.push(label + ': expected selected tab "' + route.tab[language] + '", got "' + selectedTab + '"');
       if (state.lang !== language) failures.push(label + ': html lang is ' + state.lang);
       if (state.dir !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push(label + ': incorrect document direction ' + state.dir);
@@ -77,7 +77,7 @@ try {
   }));
   if (rtlState.dir !== 'rtl') failures.push('Arabic narrow-mobile page is not RTL');
   if (rtlState.width > rtlState.viewport + 2) failures.push('Arabic Text Art page overflows at 320px');
-  if (rtlState.heading !== 'الاستوديو الإبداعي') failures.push('Arabic Creative Studio heading is not translated on the published site');
+  if (rtlState.heading !== 'استوديو تصميم الأسماء') failures.push('Arabic Name Designer Studio heading is not translated on the published site');
   if (rtlState.selectedTab !== 'الرموز والفن النصي') failures.push('Arabic Symbols & Art tab is not translated or not selected on the published site');
   checks.push({ type: 'rtl-mobile', ...rtlState });
   await rtlPage.close();
