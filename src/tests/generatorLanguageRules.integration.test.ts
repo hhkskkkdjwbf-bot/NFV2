@@ -46,6 +46,20 @@ const romajiFixtures: Array<[string, string]> = [
   ['Zankoku', 'ザンコク'],
   ['Kage', 'カゲ'],
   ['Hoshi no', 'ホシ ノ'],
+  // Core Hepburn digraphs and special syllables.
+  ['Shiori', 'シオリ'],
+  ['Chika', 'チカ'],
+  ['Tsukiyo', 'ツキヨ'],
+  ['Fubuki', 'フブキ'],
+  ['Jiro', 'ジロ'],
+  ['Kyoko', 'キョコ'],
+  ['Shuya', 'シュヤ'],
+  // Moraic n, explicit n' disambiguation, and gemination.
+  ['Kanna', 'カンナ'],
+  ["Kin'ya", 'キンヤ'],
+  ["Shin'ichi", 'シンイチ'],
+  ['Gakkou', 'ガッコウ'],
+  ['Kitte', 'キッテ'],
 ];
 for (const [source, expected] of romajiFixtures) {
   const actual = transliterateAnimeToKatakana(source);
