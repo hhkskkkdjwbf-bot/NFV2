@@ -95,6 +95,7 @@ export const StyleStudioView: React.FC<StyleStudioViewProps> = ({
   onNavigate,
 }) => {
   const [inputText, setInputText] = useState(initialText);
+  useEffect(() => { if (initialText) setInputText(initialText); }, [initialText]);
   const [activeTab, setActiveTab] = useState<'unicode' | 'effects' | 'textures' | 'export'>('unicode');
   const [selectedEffect, setSelectedEffect] = useState(VISUAL_EFFECTS[0].id);
   const [selectedUnicodeStyle, setSelectedUnicodeStyle] = useState<string | null>(null);
