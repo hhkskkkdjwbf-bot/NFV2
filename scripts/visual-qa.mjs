@@ -325,9 +325,9 @@ try {
 
   // Focused responsive and translation coverage for the three newly added studios.
   const studioPages = [
-    { name: 'username-designer', hash: '#/username-designer', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
-    { name: 'bio-caption-studio', hash: '#/bio-caption-studio', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
-    { name: 'text-art-studio', hash: '#/text-art-studio', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
+    { name: 'username-designer', hash: '#/username-designer', titles: { fr: 'Studio de création de noms', en: 'Name Designer Studio', ar: 'استوديو تصميم الأسماء' } },
+    { name: 'bio-caption-studio', hash: '#/bio-caption-studio', titles: { fr: 'Studio de création de noms', en: 'Name Designer Studio', ar: 'استوديو تصميم الأسماء' } },
+    { name: 'text-art-studio', hash: '#/text-art-studio', titles: { fr: 'Studio de création de noms', en: 'Name Designer Studio', ar: 'استوديو تصميم الأسماء' } },
   ];
   for (const language of ['fr', 'en', 'ar']) {
     for (const viewport of [{ name: 'mobile-320', width: 320, height: 740 }, { name: 'mobile-390', width: 390, height: 844 }]) {
@@ -370,76 +370,59 @@ try {
     }
   }
 
-  // Verify the unified workspace, shared starting text, section anchors and responsive navigation.
+  // Verify the single-canvas workspace and real cross-tool interactions.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    const pageErrors = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
-
-    const sharedName = page.getByTestId('creative-studio-shared-name');
-    if (await sharedName.count()) await sharedName.fill('Nova');
-    else failures.push('creative-studio-navigation: shared name field is missing');
-
-    const expectedSections = ['text-styles', 'username', 'bio-caption', 'symbols-art'];
-    for (const section of expectedSections) {
-      const panel = page.getByTestId('creative-section-' + section);
-      if (await panel.count() !== 1) failures.push('creative-studio-navigation: missing unified section ' + section);
+    if (!response || response.status() >= 400) failures.push('creative-studio: workspace failed to load');
+    const nameInput = page.getByTestId('unified-name-input');
+    const preview = page.getByTestId('designer-live-preview');
+    if (!(await nameInput.count())) failures.push('creative-studio: shared name input is missing');
+    if (!(await preview.count())) failures.push('creative-studio: live canvas is missing');
+    if (await nameInput.count() && await preview.count()) {
+      await nameInput.fill('Nova');
+      const initialPreview = (await preview.innerText()).trim();
+      if (!initialPreview) failures.push('creative-studio: live canvas did not render the shared name');
+      await page.getByRole('button', { name: 'Symbols & art' }).click();
+      const symbol = page.locator('aside').last().locator('button[title]:visible').first();
+      if (!(await symbol.count())) failures.push('creative-studio: searchable symbol library is missing');
+      else {
+        await symbol.click();
+        const withSymbol = (await preview.innerText()).trim();
+        if (withSymbol === initialPreview) failures.push('creative-studio: selecting a symbol did not update the shared canvas');
+      }
+      await page.getByRole('button', { name: 'Nicknames' }).click();
+      await page.getByRole('button', { name: 'Generate suggestions' }).click();
+      const applyButton = page.getByRole('button', { name: 'Apply' }).first();
+      if (!(await applyButton.count())) failures.push('creative-studio: nickname generation returned no applicable result');
+      else {
+        await applyButton.click();
+        if (!(await preview.innerText()).trim()) failures.push('creative-studio: applying a nickname emptied the canvas');
+      }
+      await page.getByRole('button', { name: 'Bio & captions' }).click();
+      const beforeBio = (await preview.innerText()).trim();
+      const template = page.locator('main').getByRole('button').filter({ hasText: /Personal intro|Content creator|Small business/ }).first();
+      if (await template.count()) {
+        await template.click();
+        if ((await preview.innerText()).trim() !== beforeBio) failures.push('creative-studio: choosing a bio template overwrote the main name canvas');
+      } else failures.push('creative-studio: bio templates are missing');
     }
-
-    const usernameJump = page.getByRole('button', { name: /Username design/ });
-    if (!(await usernameJump.count())) failures.push('creative-studio-navigation: username section shortcut is missing');
-    else {
-      await usernameJump.click();
-      if (!page.url().includes('/creative-studio/username')) failures.push('creative-studio-navigation: username section did not update the deep link');
-      if (!(await page.getByTestId('creative-section-username').isVisible())) failures.push('creative-studio-navigation: username section is not visible after shortcut');
-    }
-
-    const desktopNav = page.locator('header nav').getByRole('button', { name: /Creative Studio/ });
-    if (await desktopNav.count() > 1) failures.push('creative-studio-navigation: duplicate desktop Creative Studio entries found');
+    if (pageErrors.length) failures.push('creative-studio: JavaScript errors: ' + pageErrors.join(' | '));
     await page.close();
 
-    const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-    await mobilePage.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
-    await mobilePage.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    await mobilePage.getByRole('button', { name: 'Menu' }).click();
-    const mobileMenu = mobilePage.locator('#nameforge-mobile-menu');
-    if (await mobileMenu.getByRole('button', { name: 'Creative Studio' }).count() !== 1) failures.push('creative-studio-navigation: mobile menu does not expose one consolidated Creative Studio entry');
-    for (const obsoleteLabel of ['Username Designer', 'Bio & Caption Studio', 'Symbols & Text Art']) {
-      if (await mobileMenu.getByRole('button', { name: obsoleteLabel }).count()) failures.push('creative-studio-navigation: obsolete standalone mobile link remains (' + obsoleteLabel + ')');
+    for (const viewport of [{ name: 'mobile-320', width: 320, height: 740 }, { name: 'mobile-390', width: 390, height: 844 }]) {
+      const mobile = await browser.newPage({ viewport: { width: viewport.width, height: viewport.height }, reducedMotion: 'reduce' });
+      await mobile.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
+      await mobile.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
+      const width = await mobile.evaluate(() => ({ document: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+      if (width.document > width.viewport + 2) failures.push('creative-studio-' + viewport.name + ': horizontal overflow');
+      if (!(await mobile.getByTestId('unified-name-input').isVisible())) failures.push('creative-studio-' + viewport.name + ': shared name input is not visible');
+      if (!(await mobile.getByTestId('designer-live-preview').isVisible())) failures.push('creative-studio-' + viewport.name + ': live canvas is not visible');
+      await mobile.close();
     }
-    await mobilePage.close();
-  }
-
-  // Exercise the interactive Text Art workflow end-to-end in a real browser.
-  {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true });
-    await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
-    await page.goto(baseUrl + '#/text-art-studio', { waitUntil: 'networkidle', timeout: 45000 });
-    const artSection = page.getByTestId('creative-section-symbols-art');
-    const symbol = artSection.locator('button[title]:visible').first();
-    if (!(await symbol.count())) failures.push('text-art-interaction: symbol insertion button is missing');
-    else {
-      const symbolValue = (await symbol.innerText()).trim();
-      await symbol.click();
-      const textEditor = artSection.locator('textarea:visible').first();
-      if (!(await textEditor.inputValue()).includes(symbolValue)) failures.push('text-art-interaction: clicking a symbol did not insert it into the editor');
-      const favorite = artSection.locator('button[aria-label="Add to favorites"]').first();
-      if (await favorite.count()) {
-        await favorite.click();
-        if (!(await artSection.locator('button[aria-label="Remove favorite"]').count())) failures.push('text-art-interaction: favorite toggle did not update its accessible state');
-      } else failures.push('text-art-interaction: favorite control is missing');
-      const cssPreview = artSection.locator('pre').filter({ hasText: '.nameforge-text-art' });
-      if (!(await cssPreview.count())) failures.push('text-art-interaction: generated CSS preview is missing');
-      const pngButton = artSection.getByRole('button', { name: /Export PNG/ });
-      if (await pngButton.count()) {
-        const downloadPromise = page.waitForEvent('download', { timeout: 10000 });
-        await pngButton.click();
-        const download = await downloadPromise;
-        if (!download.suggestedFilename().endsWith('.png')) failures.push('text-art-interaction: PNG export did not produce a PNG download');
-      } else failures.push('text-art-interaction: PNG export button is missing');
-    }
-    await page.close();
   }
 
 } finally {
