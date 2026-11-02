@@ -45,6 +45,7 @@ const romajiFixtures: Array<[string, string]> = [
   ['Ryu', 'リュ'],
   ['Zankoku', 'ザンコク'],
   ['Kage', 'カゲ'],
+  ['Hoshi no', 'ホシ ノ'],
 ];
 for (const [source, expected] of romajiFixtures) {
   const actual = transliterateAnimeToKatakana(source);
@@ -72,7 +73,12 @@ for (const style of Object.keys(animeLexicons || {})) {
     failures.push(`anime/${style}/ja: no candidates survived strict Japanese transliteration`);
     continue;
   }
+  const uniqueNames = new Set(results.map((result) => result.name.normalize('NFC')));
+  if (uniqueNames.size !== results.length) failures.push(`anime/${style}/ja: duplicate names in deterministic batch`);
   for (const result of results) {
+    if (!result.disclaimer?.includes('not verified or attested Japanese names')) {
+      failures.push(`anime/${style}/ja: experimental Japanese disclaimer missing`);
+    }
     const scripts = getScriptsInText(result.name);
     if (!scripts.length || scripts.some((script) => !['Katakana', 'Hiragana', 'Han'].includes(script))) {
       failures.push(`anime/${style}/ja: unexpected script in "${result.name}" [${scripts.join(',')}]`);
