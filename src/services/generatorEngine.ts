@@ -75,43 +75,64 @@ function transliterateLatinToArabic(value: string): string {
   }).join('').normalize('NFC');
 }
 
-/** Small deterministic romaji-to-katakana converter for the anime vocabulary. */
-function transliterateAnimeToKatakana(value: string): string {
+/**
+ * Strict Hepburn-style romaji to katakana conversion for the Anime vocabulary.
+ * Unknown sequences fail closed: silently dropping a consonant would falsify
+ * the source pronunciation and create misleading Japanese-looking output.
+ */
+export function transliterateAnimeToKatakana(value: string): string {
   const syllables: Record<string, string> = {
     kya: 'キャ', kyu: 'キュ', kyo: 'キョ', sha: 'シャ', shu: 'シュ', sho: 'ショ',
     cha: 'チャ', chu: 'チュ', cho: 'チョ', nya: 'ニャ', nyu: 'ニュ', nyo: 'ニョ',
-    hya: 'ヒャ', hyu: 'ヒュ', hyo: 'ヒョ', rya: 'リャ', ryu: 'リュ', ryo: 'リョ',
-    gya: 'ギャ', gyu: 'ギュ', gyo: 'ギョ', ja: 'ジャ', ju: 'ジュ', jo: 'ジョ',
+    hya: 'ヒャ', hyu: 'ヒュ', hyo: 'ヒョ', mya: 'ミャ', myu: 'ミュ', myo: 'ミョ',
+    rya: 'リャ', ryu: 'リュ', ryo: 'リョ', gya: 'ギャ', gyu: 'ギュ', gyo: 'ギョ',
+    ja: 'ジャ', ju: 'ジュ', jo: 'ジョ',
     shi: 'シ', chi: 'チ', tsu: 'ツ', fu: 'フ', ji: 'ジ',
-    ka: 'カ', ki: 'キ', ku: 'ク', ke: 'ケ', ko: 'コ', sa: 'サ', si: 'シ', su: 'ス', se: 'セ', so: 'ソ',
-    ta: 'タ', ti: 'チ', tu: 'ツ', te: 'テ', to: 'ト', na: 'ナ', ni: 'ニ', nu: 'ヌ', ne: 'ネ', no: 'ノ',
+    ka: 'カ', ki: 'キ', ku: 'ク', ke: 'ケ', ko: 'コ', sa: 'サ', su: 'ス', se: 'セ', so: 'ソ',
+    ta: 'タ', te: 'テ', to: 'ト', na: 'ナ', ni: 'ニ', nu: 'ヌ', ne: 'ネ', no: 'ノ',
     ha: 'ハ', hi: 'ヒ', he: 'ヘ', ho: 'ホ', ma: 'マ', mi: 'ミ', mu: 'ム', me: 'メ', mo: 'モ',
     ya: 'ヤ', yu: 'ユ', yo: 'ヨ', ra: 'ラ', ri: 'リ', ru: 'ル', re: 'レ', ro: 'ロ',
     wa: 'ワ', wo: 'ヲ', ga: 'ガ', gi: 'ギ', gu: 'グ', ge: 'ゲ', go: 'ゴ',
-    za: 'ザ', zi: 'ジ', zu: 'ズ', ze: 'ゼ', zo: 'ゾ', da: 'ダ', di: 'ヂ', du: 'ヅ', de: 'デ', do: 'ド',
+    za: 'ザ', zu: 'ズ', ze: 'ゼ', zo: 'ゾ', da: 'ダ', de: 'デ', do: 'ド',
     ba: 'バ', bi: 'ビ', bu: 'ブ', be: 'ベ', bo: 'ボ', pa: 'パ', pi: 'ピ', pu: 'プ', pe: 'ペ', po: 'ポ',
-    a: 'ア', i: 'イ', u: 'ウ', e: 'エ', o: 'オ', n: 'ン',
+    a: 'ア', i: 'イ', u: 'ウ', e: 'エ', o: 'オ',
   };
-  return String(value ?? '').split(/(\s+)/u).map((part) => {
-    if (!/\p{Script=Latin}/u.test(part)) return part;
-    let remaining = part.toLocaleLowerCase().replace(/[^a-z]/g, '');
+  const input = String(value ?? '').normalize('NFC').trim().toLowerCase();
+  if (!input || !/^[a-z]+(?:\\s+[a-z]+)*$/u.test(input)) return '';
+
+  return input.split(/\\s+/u).map((part) => {
+    let remaining = part;
     let output = '';
     while (remaining.length) {
-      if (remaining.length > 1 && remaining[0] === remaining[1] && !'aeioun'.includes(remaining[0])) {
+      if (remaining.startsWith("n'")) {
+        output += 'ン';
+        remaining = remaining.slice(2);
+        continue;
+      }
+      if (remaining.length > 1 && remaining[0] === remaining[1] &&
+          !'aeioun'.includes(remaining[0])) {
         output += 'ッ';
         remaining = remaining.slice(1);
         continue;
       }
-      const key = [remaining.slice(0, 3), remaining.slice(0, 2), remaining.slice(0, 1)].find((candidate) => syllables[candidate]);
-      if (!key) {
+      const key = [remaining.slice(0, 3), remaining.slice(0, 2), remaining.slice(0, 1)]
+        .find((candidate) => syllables[candidate]);
+      if (key) {
+        output += syllables[key];
+        remaining = remaining.slice(key.length);
+        continue;
+      }
+      if (remaining[0] === 'n' &&
+          (remaining.length === 1 || !'aiueoy'.includes(remaining[1]))) {
+        output += 'ン';
         remaining = remaining.slice(1);
         continue;
       }
-      output += syllables[key];
-      remaining = remaining.slice(key.length);
+      // Never discard an unsupported letter or invent a partial transliteration.
+      return '';
     }
     return output;
-  }).join('');
+  }).join(' ');
 }
 
 /* =====================================================================
