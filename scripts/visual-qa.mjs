@@ -325,9 +325,9 @@ try {
 
   // Focused responsive and translation coverage for the three newly added studios.
   const studioPages = [
-    { name: 'username-designer', hash: '#/username-designer', titles: { fr: 'Créateur de pseudos', en: 'Username Designer', ar: 'مصمم أسماء المستخدمين' } },
-    { name: 'bio-caption-studio', hash: '#/bio-caption-studio', titles: { fr: 'Studio Bio & Légendes', en: 'Bio & Caption Studio', ar: 'استوديو النبذة والتعليقات' } },
-    { name: 'text-art-studio', hash: '#/text-art-studio', titles: { fr: 'Symboles & Text Art', en: 'Symbols & Text Art', ar: 'الرموز وفن النصوص' } },
+    { name: 'username-designer', hash: '#/username-designer', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
+    { name: 'bio-caption-studio', hash: '#/bio-caption-studio', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
+    { name: 'text-art-studio', hash: '#/text-art-studio', titles: { fr: 'Studio ultime de création de noms', en: 'Ultimate Name Designer Studio', ar: 'استوديو تصميم الأسماء المتكامل' } },
   ];
   for (const language of ['fr', 'en', 'ar']) {
     for (const viewport of [{ name: 'mobile-320', width: 320, height: 740 }, { name: 'mobile-390', width: 390, height: 844 }]) {
@@ -370,30 +370,33 @@ try {
     }
   }
 
-  // Verify the unified workspace navigation, deep links and state retention.
+  // Verify the unified workspace, shared starting text, section anchors and responsive navigation.
   {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
     await page.addInitScript(() => localStorage.setItem('nameforge_settings', JSON.stringify({ language: 'en', theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal' })));
     const response = await page.goto(baseUrl + '#/creative-studio', { waitUntil: 'networkidle', timeout: 45000 });
     if (!response || response.status() >= 400) failures.push('creative-studio-navigation: workspace failed to load');
-    const tabs = page.locator('[data-testid="creative-studio-tabs"] > button[role="tab"]');
-    if (await tabs.count() !== 4) failures.push('creative-studio-navigation: expected exactly four tool tabs, found ' + await tabs.count());
+
     const sharedName = page.getByTestId('creative-studio-shared-name');
     if (await sharedName.count()) await sharedName.fill('Nova');
     else failures.push('creative-studio-navigation: shared name field is missing');
-    const usernameTab = page.getByRole('tab', { name: 'Username Designer' });
-    await usernameTab.click();
-    const baseWord = page.getByLabel('Base word (optional)');
-    if (!(await usernameTab.getAttribute('aria-selected') === 'true')) failures.push('creative-studio-navigation: username feature did not become selected');
-    if (await baseWord.count() && await baseWord.inputValue() !== 'Nova') failures.push('creative-studio-navigation: shared name was not passed to username designer');
-    await page.getByRole('tab', { name: 'Bio & Captions' }).click();
-    const bioEditor = page.locator('#creative-studio-panel').locator('textarea:visible').first();
-    if (await bioEditor.count() && await bioEditor.inputValue() !== 'Nova') failures.push('creative-studio-navigation: shared name was not passed to bio editor');
-    await usernameTab.click();
-    if (await baseWord.count() && await baseWord.inputValue() !== 'Nova') failures.push('creative-studio-navigation: switching features discarded the shared name');
-    if (!page.url().includes('/creative-studio/username')) failures.push('creative-studio-navigation: selected tool is not reflected in the URL');
-    const visibleNavItems = page.locator('header nav').getByRole('button', { name: /Creative Studio/ });
-    if (await visibleNavItems.count() !== 1) failures.push('creative-studio-navigation: desktop navigation does not expose one consolidated Creative Studio entry');
+
+    const expectedSections = ['text-styles', 'username', 'bio-caption', 'symbols-art'];
+    for (const section of expectedSections) {
+      const panel = page.getByTestId('creative-section-' + section);
+      if (await panel.count() !== 1) failures.push('creative-studio-navigation: missing unified section ' + section);
+    }
+
+    const usernameJump = page.getByRole('button', { name: /Username design/ });
+    if (!(await usernameJump.count())) failures.push('creative-studio-navigation: username section shortcut is missing');
+    else {
+      await usernameJump.click();
+      if (!page.url().includes('/creative-studio/username')) failures.push('creative-studio-navigation: username section did not update the deep link');
+      if (!(await page.getByTestId('creative-section-username').isVisible())) failures.push('creative-studio-navigation: username section is not visible after shortcut');
+    }
+
+    const desktopNav = page.locator('header nav').getByRole('button', { name: /Creative Studio/ });
+    if (await desktopNav.count() > 1) failures.push('creative-studio-navigation: duplicate desktop Creative Studio entries found');
     await page.close();
 
     const mobilePage = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
