@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Wand2, Dices, FileText, Shapes } from 'lucide-react';
+import { Wand2, Dices, FileText, Shapes, Type } from 'lucide-react';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
 import { StyleStudioView } from './StyleStudioView';
 import { UsernameDesignerView } from './UsernameDesignerView';
@@ -33,6 +33,7 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
   const [language, setLanguage] = useState(getAppSettings().language);
   const [activeTool, setActiveTool] = useState<CreativeTool>(readToolFromHash);
   const [visitedTools, setVisitedTools] = useState<CreativeTool[]>(() => [readToolFromHash()]);
+  const [designName, setDesignName] = useState(initialText || 'NameForge');
   useEffect(() => {
     const unsubscribe = subscribeToSettings((settings) => setLanguage(settings.language));
     const syncTool = () => {
@@ -49,9 +50,9 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
 
   const locale: 'en' | 'fr' | 'ar' = language === 'fr' ? 'fr' : language === 'ar' ? 'ar' : 'en';
   const copy = {
-    en: { eyebrow: 'NAMEFORGE CREATIVE WORKSPACE', title: 'Creative Studio', subtitle: 'One place to shape your name, profile and visual identity.', tools: 'Creative tools', active: 'Selected tool' },
-    fr: { eyebrow: 'ESPACE CRÉATIF NAMEFORGE', title: 'Studio créatif', subtitle: 'Un seul espace pour façonner votre pseudo, votre profil et votre identité visuelle.', tools: 'Outils créatifs', active: 'Outil sélectionné' },
-    ar: { eyebrow: 'مساحة NAMEFORGE الإبداعية', title: 'الاستوديو الإبداعي', subtitle: 'مساحة واحدة لتصميم اسمك وملفك الشخصي وهويتك البصرية.', tools: 'الأدوات الإبداعية', active: 'الأداة المحددة' },
+    en: { eyebrow: 'NAMEFORGE CREATIVE WORKSPACE', title: 'Name Designer Studio', subtitle: 'One workspace to create, style and personalize your name and online identity.', tools: 'Design features', active: 'Selected feature', name: 'Name or nickname to personalize', nameHint: 'Enter a name once; use it across every design feature.', placeholder: 'Type your name or nickname…' },
+    fr: { eyebrow: 'ESPACE CRÉATIF NAMEFORGE', title: 'Studio de personnalisation des noms', subtitle: 'Un seul espace pour créer, styliser et personnaliser votre nom et votre identité en ligne.', tools: 'Fonctionnalités de création', active: 'Fonctionnalité sélectionnée', name: 'Nom ou pseudo à personnaliser', nameHint: 'Saisissez votre nom une seule fois et réutilisez-le dans chaque fonctionnalité.', placeholder: 'Saisissez votre nom ou pseudo…' },
+    ar: { eyebrow: 'مساحة NAMEFORGE الإبداعية', title: 'استوديو تصميم الأسماء', subtitle: 'مساحة واحدة لإنشاء اسمك وتنسيقه وتخصيص هويتك الرقمية.', tools: 'ميزات التصميم', active: 'الميزة المحددة', name: 'الاسم أو اللقب المراد تخصيصه', nameHint: 'أدخل اسمك مرة واحدة واستخدمه في جميع ميزات التصميم.', placeholder: 'اكتب اسمك أو لقبك…' },
   }[locale];
 
   const selectTool = (tool: CreativeTool) => {
@@ -70,6 +71,12 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
           <h1 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">{copy.title}</h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
         </header>
+
+        <section className="mb-7 rounded-3xl border border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-500/10 via-[#101426] to-indigo-500/10 p-5 shadow-xl sm:p-7">
+          <label htmlFor="creative-studio-name" className="flex items-center gap-2 text-sm font-bold text-white"><Type className="h-4 w-4 text-fuchsia-300" />{copy.name}</label>
+          <input id="creative-studio-name" data-testid="creative-studio-shared-name" value={designName} onChange={(event) => setDesignName(event.target.value)} placeholder={copy.placeholder} className="mt-3 w-full rounded-xl border border-white/10 bg-[#080d1c] px-4 py-3 text-base font-semibold text-white outline-none transition placeholder:font-normal placeholder:text-slate-500 focus:border-fuchsia-400" />
+          <p className="mt-2 text-xs leading-5 text-slate-400">{copy.nameHint}</p>
+        </section>
 
         <nav role="tablist" data-testid="creative-studio-tabs" aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
           {TOOLS.map((tool) => {
@@ -91,10 +98,10 @@ export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialT
         </nav>
 
         <div id="creative-studio-panel" role="tabpanel" aria-label={TOOLS.find((tool) => tool.id === activeTool)?.labels[locale]} className="min-w-0">
-          {visitedTools.includes('text-styles') && <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={initialText} /></div>}
-          {visitedTools.includes('username') && <div hidden={activeTool !== 'username'}><UsernameDesignerView /></div>}
-          {visitedTools.includes('bio-caption') && <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView /></div>}
-          {visitedTools.includes('symbols-art') && <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView /></div>}
+          {visitedTools.includes('text-styles') && <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={designName} /></div>}
+          {visitedTools.includes('username') && <div hidden={activeTool !== 'username'}><UsernameDesignerView initialText={designName} /></div>}
+          {visitedTools.includes('bio-caption') && <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView initialText={designName} /></div>}
+          {visitedTools.includes('symbols-art') && <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView initialText={designName} /></div>}
         </div>
       </div>
     </section>
