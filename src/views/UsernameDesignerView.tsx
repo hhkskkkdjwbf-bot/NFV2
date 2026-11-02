@@ -75,18 +75,21 @@ async function copyText(value: string): Promise<boolean> {
   finally { area.remove(); }
 }
 
-export const UsernameDesignerView: React.FC = () => {
+interface UsernameDesignerViewProps { initialText?: string; }
+
+export const UsernameDesignerView: React.FC<UsernameDesignerViewProps> = ({ initialText = '' }) => {
   const [language, setLanguage] = useState(getAppSettings().language);
   React.useEffect(() => subscribeToSettings((settings) => setLanguage(settings.language)), []);
   const languageKey: Language = language in COPY ? language as Language : 'en';
   const t = COPY[languageKey];
-  const [baseName, setBaseName] = useState('');
+  const [baseName, setBaseName] = useState(initialText);
+  React.useEffect(() => { if (initialText) { setBaseName(initialText); setCheckValue(initialText); } }, [initialText]);
   const [prefix, setPrefix] = useState('');
   const [suffix, setSuffix] = useState('');
   const [style, setStyle] = useState<UsernameStyle>('gaming');
   const [minLength, setMinLength] = useState(3);
   const [maxLength, setMaxLength] = useState(16);
-  const [checkValue, setCheckValue] = useState('');
+  const [checkValue, setCheckValue] = useState(initialText);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [copied, setCopied] = useState('');
   const [copyMessage, setCopyMessage] = useState('');
