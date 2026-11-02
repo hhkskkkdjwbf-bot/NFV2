@@ -91,8 +91,10 @@ checks.push(['A punctuation-delimited Latin risk term still matches', screenName
 
 const phoneticReadiness = getPhoneticReadinessSummary();
 checks.push(['Phonetic readiness inventory covers exactly 28 natural languages', phoneticReadiness.totalLanguages === 28]);
-checks.push(['No language is falsely marked phonetic-generation-ready', phoneticReadiness.generationEnabled === 0]);
-checks.push(['Japanese and Korean are explicitly partial rather than complete', getLanguagePhoneticReadiness('ja')?.readiness === 'partial-segmentation' && getLanguagePhoneticReadiness('ko')?.readiness === 'partial-segmentation']);
+checks.push(['General phonetic generation remains disabled without full language evidence', phoneticReadiness.generationEnabled === 0]);
+checks.push(['Japanese Anime has a separately declared experimental katakana pipeline', getLanguagePhoneticReadiness('ja')?.generationEnabled === false && getLanguagePhoneticReadiness('ja')?.specializedPipelines?.some(p => p.scope === 'anime-romaji-to-katakana' && p.status === 'experimental' && p.generationEnabled) === true]);
+checks.push(['Japanese general phonetics and Korean remain explicitly partial', getLanguagePhoneticReadiness('ja')?.readiness === 'partial-segmentation' && getLanguagePhoneticReadiness('ko')?.readiness === 'partial-segmentation']);
+checks.push(['Japanese readiness explains the restricted Anime exception', getLanguagePhoneticReadiness('ja')?.limitation.includes('restricted experimental Anime') === true]);
 checks.push(['Remaining 26 languages explicitly require pronunciation references', phoneticReadiness.referenceDataRequired === 26]);
 checks.push(['All language profiles explain missing phonetic evidence', Object.values(LANGUAGE_PHONETIC_READINESS).every(profile => profile.limitation.length > 20 && profile.requiredEvidence.length > 0)]);
 
