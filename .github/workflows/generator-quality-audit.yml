@@ -8,6 +8,8 @@ on:
       - 'src/services/diversity.ts'
       - 'src/tests/diversity.test.ts'
       - 'src/tests/generatorLanguageRules.integration.test.ts'
+      - 'src/tests/japaneseKatakanaReference.test.ts'
+      - 'src/data/japaneseKatakanaReference.ts'
       - 'src/data/generators*.ts'
       - 'src/data/gamingAndSystemsGenerators.ts'
       - 'src/data/attestedBabyNames.ts'
@@ -18,7 +20,10 @@ on:
       - 'scripts/generator-quality-baseline.ts'
       - 'scripts/generator-quality-deep-dive.ts'
       - 'scripts/build-linguistic-review.ts'
+      - 'scripts/japanese-diversity-audit.ts'
+      - 'scripts/build-japanese-review.ts'
       - 'reports/generator-quality/**'
+      - 'reports/japanese-quality/**'
       - 'scripts/linguistic-audit.py'
       - 'docs/LINGUISTIC-PIPELINE.md'
       - 'package.json'
@@ -36,7 +41,7 @@ concurrency:
 jobs:
   baseline:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout main
         uses: actions/checkout@v4
@@ -60,6 +65,12 @@ jobs:
           python3 -c "import json; rows=[json.loads(x) for x in open('/tmp/nameforge-linguistic-audit.jsonl', encoding='utf-8')]; assert len(rows)==2 and all(r['schema_version']==1 and 'findings' in r for r in rows)"
       - name: Run multilingual and Japanese conversion regression tests
         run: npx tsx src/tests/generatorLanguageRules.integration.test.ts
+      - name: Run expanded Japanese Katakana reference corpus
+        run: npm run test:japanese:conversion
+      - name: Run Japanese diversity batches (100/500/1,000/5,000)
+        run: npm run audit:japanese:diversity
+      - name: Build Japanese human-review queue
+        run: npm run review:japanese
       - name: Run 234 × 28 empirical baseline
         run: npm run audit:generators
       - name: Run raw-output deep instrumentation
@@ -74,5 +85,6 @@ jobs:
           path: |
             artifacts/generator-quality-audit/
             artifacts/linguistic-human-review/
+            artifacts/japanese-quality/
           if-no-files-found: warn
           retention-days: 30
