@@ -56,14 +56,17 @@ async function copyText(value: string): Promise<boolean> {
   finally { area.remove(); }
 }
 
-export const BioCaptionStudioView: React.FC = () => {
+interface BioCaptionStudioViewProps { initialText?: string; }
+
+export const BioCaptionStudioView: React.FC<BioCaptionStudioViewProps> = ({ initialText = '' }) => {
   const [language, setLanguage] = useState(getAppSettings().language);
   React.useEffect(() => subscribeToSettings((settings) => setLanguage(settings.language)), []);
   const languageKey: Language = language in COPY ? language as Language : 'en';
   const t = COPY[languageKey];
   const [kind, setKind] = useState<BioCaptionKind>('bio');
   const [category, setCategory] = useState<Category>('all');
-  const [textValue, setTextValue] = useState('');
+  const [textValue, setTextValue] = useState(initialText);
+  React.useEffect(() => { if (initialText) setTextValue(initialText); }, [initialText]);
   const [limit, setLimit] = useState(150);
   const [copyStatus, setCopyStatus] = useState('');
   const editorRef = useRef<HTMLTextAreaElement>(null);
