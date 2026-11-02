@@ -15,7 +15,7 @@ for (const item of JAPANESE_KATAKANA_REFERENCE) {
   if (actual !== item.katakana) {
     failures.push(`${item.romaji}: expected ${item.katakana}, received ${actual || '(rejected)'}`);
   }
-  if (actual && !/^[\p{Script=Katakana}\\sー]+$/u.test(actual)) {
+  if (actual && !/^[\p{Script=Katakana}\sー]+$/u.test(actual)) {
     failures.push(`${item.romaji}: output contains characters outside the expected Katakana fixture scope: ${actual}`);
   }
 }
