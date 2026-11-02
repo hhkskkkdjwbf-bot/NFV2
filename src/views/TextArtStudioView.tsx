@@ -26,13 +26,16 @@ function downloadFile(content: string, filename: string, type: string) {
   const url=URL.createObjectURL(new Blob([content],{type})); const anchor=document.createElement('a'); anchor.href=url; anchor.download=filename; anchor.click(); URL.revokeObjectURL(url);
 }
 
-export const TextArtStudioView: React.FC = () => {
+interface TextArtStudioViewProps { initialText?: string; }
+
+export const TextArtStudioView: React.FC<TextArtStudioViewProps> = ({ initialText = '' }) => {
   const [language,setLanguage]=useState(getAppSettings().language);
   useEffect(()=>subscribeToSettings(settings=>setLanguage(settings.language)),[]);
   const locale: Locale = language in COPY ? language as Locale : 'en'; const t=COPY[locale];
   const [query,setQuery]=useState(''); const [category,setCategory]=useState<SymbolCategory|'all'>('all');
   const [favorites,setFavorites]=useState<string[]>(()=>readTextArtFavorites()); const [favoritesOnly,setFavoritesOnly]=useState(false);
-  const [textValue,setTextValue]=useState('✦ Create something beautiful ✦'); const [bannerText,setBannerText]=useState('YOUR TEXT ART');
+  const [textValue,setTextValue]=useState(initialText || '✦ Create something beautiful ✦'); const [bannerText,setBannerText]=useState(initialText || 'YOUR TEXT ART');
+  useEffect(()=>{if(initialText){setTextValue(initialText);setBannerText(initialText);}},[initialText]);
   const [style,setStyle]=useState<TextArtStyle>(DEFAULT_STYLE); const [background,setBackground]=useState('#17152f');
   const [width,setWidth]=useState(1200); const [height,setHeight]=useState(400); const [status,setStatus]=useState('');
   const canvasRef=useRef<HTMLCanvasElement>(null);
