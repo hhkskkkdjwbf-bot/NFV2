@@ -18,7 +18,7 @@ const SIMILARITY_THRESHOLD = 0.78;
 
 function normalizeName(value: string): string {
   return String(value ?? '').normalize('NFKC').toLocaleLowerCase()
-    .replace(/[^\\p{L}\\p{M}\\p{N}]+/gu, '');
+    .replace(/[^\p{L}\p{M}\p{N}]+/gu, '');
 }
 
 function codePoints(value: string): string[] {
