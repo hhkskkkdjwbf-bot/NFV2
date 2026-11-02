@@ -98,7 +98,7 @@ export function transliterateAnimeToKatakana(value: string): string {
     a: 'ア', i: 'イ', u: 'ウ', e: 'エ', o: 'オ',
   };
   const input = String(value ?? '').normalize('NFC').trim().toLowerCase();
-  if (!input || !/^[a-z]+(?:\s+[a-z]+)*$/u.test(input)) return '';
+  if (!input || !/^(?:[a-z]|n')+(?:\s+(?:[a-z]|n')+)*$/u.test(input)) return '';
 
   return input.split(/\s+/u).map((part) => {
     let remaining = part;
