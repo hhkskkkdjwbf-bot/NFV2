@@ -10,7 +10,7 @@ declare const process: { cwd(): string; exitCode?: number };
 
 function csv(value: unknown): string {
   const text = String(value ?? '');
-  return /[",\\n\\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
 }
 
 async function main() {
@@ -50,7 +50,7 @@ async function main() {
   ];
   const dir = `${process.cwd()}/artifacts/japanese-quality`;
   await mkdir(dir, { recursive: true });
-  await writeFile(`${dir}/japanese-human-review.csv`, [headers, ...rows].map(row => row.map(csv).join(',')).join('\\n'), 'utf8');
+  await writeFile(`${dir}/japanese-human-review.csv`, [headers, ...rows].map(row => row.map(csv).join(',')).join('\n'), 'utf8');
 
   const summary = [
     '# Japanese Anime output — human review queue', '',
@@ -66,7 +66,7 @@ async function main() {
     '3. **Naturalness:** whether a competent Japanese reviewer considers each result plausible and suitable for its archetype.',
     '', 'A Katakana-only result is not proof of an authentic Japanese name. This queue is pending until qualified reviewers complete and sign off.',
   ];
-  await writeFile(`${dir}/human-review-instructions.md`, summary.join('\\n'), 'utf8');
+  await writeFile(`${dir}/human-review-instructions.md`, summary.join('\n'), 'utf8');
 
   console.log(JSON.stringify({ archetypes: styles.length, rows: rows.length, perStyleTarget: perStyle }));
   if (!styles.length || styles.some(style => rows.filter(row => row[1] === style).length < perStyle)) {
