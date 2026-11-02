@@ -819,7 +819,7 @@ function buildProfessionalMetadata(
   generatorId: GeneratorId,
   styleLabel: string,
   length: LengthOption,
-  language: GenLanguageCode
+  language: GenLanguageCode = 'auto'
 ): {
   strengths: string[];
   watchouts: string[];
