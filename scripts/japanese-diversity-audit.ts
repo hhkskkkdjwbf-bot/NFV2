@@ -104,9 +104,62 @@ function metrics(names: string[]) {
   };
 }
 
+
+function archetypeAnalysis(names: string[], sourceStyles: string[]) {
+  const perStyle = stylesFrom(sourceStyles).map(style => {
+    const selected = names.filter((_, index) => sourceStyles[index] === style);
+    const result = metrics(selected);
+    return {
+      style,
+      outputCount: selected.length,
+      uniqueCount: result.uniqueNormalized,
+      duplicateEntries: result.duplicateEntries,
+      duplicateGroups: result.duplicateGroups,
+      duplicateRate: result.duplicateRate,
+    };
+  });
+  const byName = new Map<string, { name: string; occurrences: number; styles: Map<string, number> }>();
+  names.forEach((name, index) => {
+    const key = normalizeName(name);
+    const existing = byName.get(key) ?? { name, occurrences: 0, styles: new Map<string, number>() };
+    existing.occurrences++;
+    const style = sourceStyles[index];
+    existing.styles.set(style, (existing.styles.get(style) ?? 0) + 1);
+    byName.set(key, existing);
+  });
+  const crossStyleDuplicateGroups = [...byName.values()]
+    .filter(group => group.occurrences > 1 && group.styles.size > 1)
+    .map(group => ({
+      name: group.name,
+      occurrences: group.occurrences,
+      styleCount: group.styles.size,
+      styles: Object.fromEntries([...group.styles.entries()].sort(([a], [b]) => a.localeCompare(b))),
+    }))
+    .sort((a, b) => b.occurrences - a.occurrences || a.name.localeCompare(b.name));
+  return {
+    perStyle,
+    crossStyleDuplicateGroupCount: crossStyleDuplicateGroups.length,
+    crossStyleDuplicateGroups,
+  };
+}
+
+function stylesFrom(sourceStyles: string[]): string[] {
+  return [...new Set(sourceStyles)];
+}
+
 async function main() {
   const styles = Object.keys(SUBCATEGORIES_DATA.anime ?? {});
   if (!styles.length) throw new Error('No Anime style banks were found');
+  // Regression guard: a universal Anime pool must never be merged into every archetype.
+  const animeStyles = Object.values(SUBCATEGORIES_DATA.anime ?? {});
+  for (const root of ['Hikaru', 'Mizu', 'Tsuki', 'Umi', 'Daichi']) {
+    const styleCount = animeStyles.filter(style =>
+      style.prefixes.some(prefix => prefix.toLocaleLowerCase() === root.toLocaleLowerCase())
+    ).length;
+    if (styleCount === animeStyles.length) {
+      throw new Error(`Anime root "${root}" leaked into every archetype`);
+    }
+  }
 
   const allNames: string[] = [];
   const sourceStyles: string[] = [];
@@ -137,7 +190,7 @@ async function main() {
     metrics: metrics(allNames.slice(0, target)),
   }));
   const payload = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     generator: 'anime',
     generationLanguage: 'ja',
@@ -147,6 +200,7 @@ async function main() {
     totalCollected: allNames.length,
     requestedTargets: [...TARGETS],
     reports,
+    archetypeAnalysis: archetypeAnalysis(allNames, sourceStyles),
     limitations: [
       'This is a measurement of current deterministic engine output, not a naturalness assessment.',
       'Similarity checks compare each result with only the previous 25 results; they are not exhaustive pairwise comparisons.',
