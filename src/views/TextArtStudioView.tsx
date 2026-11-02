@@ -35,7 +35,7 @@ export const TextArtStudioView: React.FC<TextArtStudioViewProps> = ({ initialTex
   const [query,setQuery]=useState(''); const [category,setCategory]=useState<SymbolCategory|'all'>('all');
   const [favorites,setFavorites]=useState<string[]>(()=>readTextArtFavorites()); const [favoritesOnly,setFavoritesOnly]=useState(false);
   const [textValue,setTextValue]=useState(initialText || '✦ Create something beautiful ✦'); const [bannerText,setBannerText]=useState(initialText || 'YOUR TEXT ART');
-  useEffect(()=>{if(initialText){setTextValue(initialText);setBannerText(initialText);}},[initialText]);
+  useEffect(()=>{setTextValue(initialText || '');setBannerText(initialText || '');},[initialText]);
   const [style,setStyle]=useState<TextArtStyle>(DEFAULT_STYLE); const [background,setBackground]=useState('#17152f');
   const [width,setWidth]=useState(1200); const [height,setHeight]=useState(400); const [status,setStatus]=useState('');
   const canvasRef=useRef<HTMLCanvasElement>(null);
