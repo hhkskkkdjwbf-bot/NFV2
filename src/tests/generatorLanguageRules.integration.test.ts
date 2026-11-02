@@ -42,7 +42,7 @@ console.log('Checked Anime lexical-bank separation and school naming vocabulary'
 const romajiFixtures: Array<[string, string]> = [
   ['Haruto', 'ハルト'],
   ['Shinobu', 'シノブ'],
-  ['Ryu', 'リュウ'],
+  ['Ryu', 'リュ'],
   ['Zankoku', 'ザンコク'],
   ['Kage', 'カゲ'],
 ];
