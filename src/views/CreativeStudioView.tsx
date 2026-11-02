@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Wand2, Dices, FileText, Shapes, Type } from 'lucide-react';
+import { Wand2, Dices, FileText, Shapes, Type, Sparkles } from 'lucide-react';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
 import { StyleStudioView } from './StyleStudioView';
 import { UsernameDesignerView } from './UsernameDesignerView';
@@ -14,12 +14,7 @@ interface CreativeStudioViewProps {
   onNavigate: (view: string, generatorId?: GeneratorId) => void;
 }
 
-const TOOLS: Array<{ id: CreativeTool; icon: React.ComponentType<{ className?: string }>; labels: Record<'en' | 'fr' | 'ar', string>; descriptions: Record<'en' | 'fr' | 'ar', string> }> = [
-  { id: 'text-styles', icon: Wand2, labels: { en: 'Text Styles', fr: 'Styles de texte', ar: 'أنماط النصوص' }, descriptions: { en: 'Unicode styles, visual effects and typography', fr: 'Styles Unicode, effets visuels et typographie', ar: 'أنماط Unicode وتأثيرات بصرية وطباعة' } },
-  { id: 'username', icon: Dices, labels: { en: 'Username Designer', fr: 'Créateur de pseudos', ar: 'مصمم أسماء المستخدمين' }, descriptions: { en: 'Build a username that fits your identity', fr: 'Créez un pseudo adapté à votre identité', ar: 'أنشئ اسم مستخدم يناسب هويتك' } },
-  { id: 'bio-caption', icon: FileText, labels: { en: 'Bio & Captions', fr: 'Bio & légendes', ar: 'النبذة والتعليقات' }, descriptions: { en: 'Write profile bios and social captions', fr: 'Rédigez des bios et des légendes sociales', ar: 'اكتب نبذات وتعليقات لمنصات التواصل' } },
-  { id: 'symbols-art', icon: Shapes, labels: { en: 'Symbols & Art', fr: 'Symboles & Art', ar: 'الرموز والفن النصي' }, descriptions: { en: 'Explore symbols and create text banners', fr: 'Explorez les symboles et créez des bannières', ar: 'اكتشف الرموز وأنشئ لافتات نصية' } },
-];
+const TOOL_IDS: CreativeTool[] = ['text-styles', 'username', 'bio-caption', 'symbols-art'];
 
 function readToolFromHash(): CreativeTool {
   const hash = window.location.hash.replace(/^#\/?/, '');
@@ -31,77 +26,148 @@ function readToolFromHash(): CreativeTool {
 
 export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialText, onNavigate }) => {
   const [language, setLanguage] = useState(getAppSettings().language);
-  const [activeTool, setActiveTool] = useState<CreativeTool>(readToolFromHash);
-  const [visitedTools, setVisitedTools] = useState<CreativeTool[]>(() => [readToolFromHash()]);
-  const [designName, setDesignName] = useState(initialText || 'NameForge');
+  const [designName, setDesignName] = useState(initialText ?? 'NameForge');
   useEffect(() => {
     const unsubscribe = subscribeToSettings((settings) => setLanguage(settings.language));
-    const syncTool = () => {
-      const nextTool = readToolFromHash();
-      setActiveTool(nextTool);
-      setVisitedTools((current) => current.includes(nextTool) ? current : [...current, nextTool]);
-    };
-    window.addEventListener('hashchange', syncTool);
-    return () => {
-      unsubscribe();
-      window.removeEventListener('hashchange', syncTool);
-    };
+    return unsubscribe;
   }, []);
 
   const locale: 'en' | 'fr' | 'ar' = language === 'fr' ? 'fr' : language === 'ar' ? 'ar' : 'en';
   const copy = {
-    en: { eyebrow: 'NAMEFORGE CREATIVE WORKSPACE', title: 'Name Designer Studio', subtitle: 'One workspace to create, style and personalize your name and online identity.', tools: 'Design features', active: 'Selected feature', name: 'Name or nickname to personalize', nameHint: 'Enter a name once; use it across every design feature.', placeholder: 'Type your name or nickname…' },
-    fr: { eyebrow: 'ESPACE CRÉATIF NAMEFORGE', title: 'Studio de personnalisation des noms', subtitle: 'Un seul espace pour créer, styliser et personnaliser votre nom et votre identité en ligne.', tools: 'Fonctionnalités de création', active: 'Fonctionnalité sélectionnée', name: 'Nom ou pseudo à personnaliser', nameHint: 'Saisissez votre nom une seule fois et réutilisez-le dans chaque fonctionnalité.', placeholder: 'Saisissez votre nom ou pseudo…' },
-    ar: { eyebrow: 'مساحة NAMEFORGE الإبداعية', title: 'استوديو تصميم الأسماء', subtitle: 'مساحة واحدة لإنشاء اسمك وتنسيقه وتخصيص هويتك الرقمية.', tools: 'ميزات التصميم', active: 'الميزة المحددة', name: 'الاسم أو اللقب المراد تخصيصه', nameHint: 'أدخل اسمك مرة واحدة واستخدمه في جميع ميزات التصميم.', placeholder: 'اكتب اسمك أو لقبك…' },
+    en: {
+      eyebrow: 'NAMEFORGE CREATIVE WORKSPACE',
+      title: 'Ultimate Name Designer Studio',
+      subtitle: 'One continuous workspace for styling names, building usernames, writing bios and creating text art.',
+      name: 'Your shared name or starting text',
+      hint: 'Change this once to refresh the starting text in every creative tool. Each editor keeps its own detailed controls.',
+      placeholder: 'Type a name or nickname…',
+      workspace: 'Your creative workspace',
+      style: '01 · Text styling',
+      styleHint: 'Unicode lettering, visual effects, typography and exports',
+      username: '02 · Username design',
+      usernameHint: 'Create and validate usernames with prefixes, suffixes and styles',
+      bio: '03 · Bio and captions',
+      bioHint: 'Use templates, separators and character limits',
+      art: '04 · Symbols and text art',
+      artHint: 'Browse symbols, save favorites and design banners',
+      jump: 'Jump to section',
+    },
+    fr: {
+      eyebrow: 'ESPACE CRÉATIF NAMEFORGE',
+      title: 'Studio ultime de création de noms',
+      subtitle: 'Un espace continu pour styliser des noms, créer des pseudos, rédiger des bios et composer du text art.',
+      name: 'Votre nom ou texte de départ partagé',
+      hint: 'Modifiez ce champ pour actualiser le texte de départ dans chaque outil. Chaque éditeur conserve ses commandes détaillées.',
+      placeholder: 'Saisissez un nom ou un pseudo…',
+      workspace: 'Votre espace de création',
+      style: '01 · Styles de texte',
+      styleHint: 'Lettres Unicode, effets visuels, typographie et exports',
+      username: '02 · Création de pseudos',
+      usernameHint: 'Créez et vérifiez des pseudos avec préfixes, suffixes et styles',
+      bio: '03 · Bios et légendes',
+      bioHint: 'Modèles, séparateurs décoratifs et limites de caractères',
+      art: '04 · Symboles et art textuel',
+      artHint: 'Explorez les symboles, gérez vos favoris et créez des bannières',
+      jump: 'Accéder à une section',
+    },
+    ar: {
+      eyebrow: 'مساحة NAMEFORGE الإبداعية',
+      title: 'استوديو تصميم الأسماء المتكامل',
+      subtitle: 'مساحة عمل واحدة لتنسيق الأسماء وإنشاء أسماء المستخدمين وكتابة النبذات وتصميم الفن النصي.',
+      name: 'الاسم أو النص الأساسي المشترك',
+      hint: 'غيّر هذا الحقل لتحديث النص الأولي في جميع الأدوات. يحتفظ كل محرر بعناصر التحكم الخاصة به.',
+      placeholder: 'اكتب اسمًا أو لقبًا…',
+      workspace: 'مساحة التصميم',
+      style: '01 · تنسيق النصوص',
+      styleHint: 'حروف Unicode وتأثيرات بصرية وخطوط وتصدير',
+      username: '02 · تصميم أسماء المستخدمين',
+      usernameHint: 'أنشئ أسماء المستخدمين وتحقق منها باستخدام البادئات واللواحق والأنماط',
+      bio: '03 · النبذات والتعليقات',
+      bioHint: 'قوالب وفواصل زخرفية وحدود لعدد الأحرف',
+      art: '04 · الرموز والفن النصي',
+      artHint: 'تصفح الرموز واحفظ المفضلة وصمم اللافتات',
+      jump: 'انتقل إلى قسم',
+    },
   }[locale];
 
-  const selectTool = (tool: CreativeTool) => {
-    setActiveTool(tool);
-    setVisitedTools((current) => current.includes(tool) ? current : [...current, tool]);
-    window.location.hash = '/creative-studio/' + tool;
+  const sections = [
+    { id: 'text-styles' as const, title: copy.style, hint: copy.styleHint, icon: Wand2, color: 'fuchsia' },
+    { id: 'username' as const, title: copy.username, hint: copy.usernameHint, icon: Dices, color: 'purple' },
+    { id: 'bio-caption' as const, title: copy.bio, hint: copy.bioHint, icon: FileText, color: 'cyan' },
+    { id: 'symbols-art' as const, title: copy.art, hint: copy.artHint, icon: Shapes, color: 'pink' },
+  ];
+
+  const jumpTo = (id: CreativeTool) => {
+    document.getElementById('creative-section-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.replaceState(null, '', '#/creative-studio/' + id);
   };
+
+  useEffect(() => {
+    const syncLegacyRoute = () => {
+      const target = readToolFromHash();
+      if (window.location.hash.includes('creative-studio') || window.location.hash.includes('studio')) {
+        document.getElementById('creative-section-' + target)?.scrollIntoView({ block: 'start' });
+      }
+    };
+    window.addEventListener('hashchange', syncLegacyRoute);
+    return () => window.removeEventListener('hashchange', syncLegacyRoute);
+  }, []);
 
   return (
     <section className="min-h-[75vh] px-4 py-10 sm:px-8" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-2 text-xs font-bold tracking-[0.16em] text-fuchsia-200">
-            <Wand2 className="h-4 w-4" /> {copy.eyebrow}
+            <Sparkles className="h-4 w-4" /> {copy.eyebrow}
           </span>
           <h1 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">{copy.title}</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
+          <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
         </header>
 
         <section className="mb-7 rounded-3xl border border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-500/10 via-[#101426] to-indigo-500/10 p-5 shadow-xl sm:p-7">
-          <label htmlFor="creative-studio-name" className="flex items-center gap-2 text-sm font-bold text-white"><Type className="h-4 w-4 text-fuchsia-300" />{copy.name}</label>
-          <input id="creative-studio-name" data-testid="creative-studio-shared-name" value={designName} onChange={(event) => setDesignName(event.target.value)} placeholder={copy.placeholder} className="mt-3 w-full rounded-xl border border-white/10 bg-[#080d1c] px-4 py-3 text-base font-semibold text-white outline-none transition placeholder:font-normal placeholder:text-slate-500 focus:border-fuchsia-400" />
-          <p className="mt-2 text-xs leading-5 text-slate-400">{copy.nameHint}</p>
+          <label htmlFor="creative-studio-name" className="flex items-center gap-2 text-sm font-bold text-white">
+            <Type className="h-4 w-4 text-fuchsia-300" />{copy.name}
+          </label>
+          <input id="creative-studio-name" data-testid="creative-studio-shared-name" value={designName}
+            onChange={(event) => setDesignName(event.target.value)} placeholder={copy.placeholder}
+            className="mt-3 w-full rounded-xl border border-white/10 bg-[#080d1c] px-4 py-3 text-base font-semibold text-white outline-none transition placeholder:font-normal placeholder:text-slate-500 focus:border-fuchsia-400" />
+          <p className="mt-2 text-xs leading-5 text-slate-400">{copy.hint}</p>
         </section>
 
-        <nav role="tablist" data-testid="creative-studio-tabs" aria-label={copy.tools} className="mb-7 grid grid-cols-2 gap-2 rounded-2xl border border-white/10 bg-[#0b1020] p-2 sm:grid-cols-4">
-          {TOOLS.map((tool) => {
-            const Icon = tool.icon;
-            const selected = activeTool === tool.id;
-            return (
-              <button key={tool.id} type="button" role="tab" aria-selected={selected} aria-controls="creative-studio-panel"
-                onClick={() => selectTool(tool.id)}
-                className={`flex min-h-[76px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-3 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400 ${
-                  selected ? 'border-fuchsia-400/50 bg-fuchsia-500/15 text-white shadow-lg shadow-fuchsia-950/20' : 'border-transparent text-slate-400 hover:border-white/10 hover:bg-white/5 hover:text-white'
-                }`}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span className="text-xs font-bold sm:text-sm">{tool.labels[locale]}</span>
-                <span className="hidden text-[11px] leading-4 text-slate-500 sm:block">{tool.descriptions[locale]}</span>
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-xl font-black text-white sm:text-2xl">{copy.workspace}</h2>
+            <p className="mt-1 text-sm text-slate-400">{copy.jump}</p>
+          </div>
+          <nav aria-label={copy.jump} className="flex flex-wrap gap-2">
+            {sections.map(({ id, title, icon: Icon }) => (
+              <button key={id} type="button" onClick={() => jumpTo(id)}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#101426] px-3 py-2 text-xs font-semibold text-slate-300 transition hover:border-fuchsia-400/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400">
+                <Icon className="h-4 w-4" />{title}
               </button>
-            );
-          })}
-        </nav>
+            ))}
+          </nav>
+        </div>
 
-        <div id="creative-studio-panel" role="tabpanel" aria-label={TOOLS.find((tool) => tool.id === activeTool)?.labels[locale]} className="min-w-0">
-          {visitedTools.includes('text-styles') && <div hidden={activeTool !== 'text-styles'}><StyleStudioView onNavigate={onNavigate} initialText={designName} /></div>}
-          {visitedTools.includes('username') && <div hidden={activeTool !== 'username'}><UsernameDesignerView initialText={designName} /></div>}
-          {visitedTools.includes('bio-caption') && <div hidden={activeTool !== 'bio-caption'}><BioCaptionStudioView initialText={designName} /></div>}
-          {visitedTools.includes('symbols-art') && <div hidden={activeTool !== 'symbols-art'}><TextArtStudioView initialText={designName} /></div>}
+        <div className="space-y-8">
+          {sections.map(({ id, title, hint, icon: Icon }) => (
+            <section id={'creative-section-' + id} key={id} data-testid={'creative-section-' + id}
+              className="scroll-mt-6 overflow-hidden rounded-3xl border border-white/10 bg-[#0b1020]/70 shadow-2xl">
+              <header className="flex flex-col gap-2 border-b border-white/10 bg-gradient-to-r from-white/[0.04] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-fuchsia-400/20 bg-fuchsia-500/10 text-fuchsia-200"><Icon className="h-5 w-5" /></span>
+                  <div><h2 className="text-lg font-black text-white sm:text-xl">{title}</h2><p className="mt-1 text-xs text-slate-400">{hint}</p></div>
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Creative Studio</span>
+              </header>
+              <div className="min-w-0 [&>section]:!min-h-0 [&>section]:!px-0 [&>section]:!py-5">
+                {id === 'text-styles' && <StyleStudioView onNavigate={onNavigate} initialText={designName} />}
+                {id === 'username' && <UsernameDesignerView initialText={designName} />}
+                {id === 'bio-caption' && <BioCaptionStudioView initialText={designName} />}
+                {id === 'symbols-art' && <TextArtStudioView initialText={designName} />}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </section>
