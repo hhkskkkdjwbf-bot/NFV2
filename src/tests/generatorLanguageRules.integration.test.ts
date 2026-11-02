@@ -1,8 +1,35 @@
 declare const process: { exitCode?: number };
 import { generateNames } from '../services/generatorEngine';
 import { getScriptsInText } from '../services/linguisticRules';
+import { SUBCATEGORIES_DATA } from '../data/subcategories';
+import { SUBCATEGORIES_BATCH_B } from '../data/generatorsBatchB';
 
 type Case = { id: string; language: 'ar' | 'ja' | 'ru' | 'zh'; allowed: string[]; format?: 'title' | 'group' };
+
+const animeLexicons = SUBCATEGORIES_DATA.anime;
+const forbiddenCrossStyleFragments = ['Kael', 'Vex', 'nox', 'Lumi', 'Eli', 'lune', 'ael'];
+for (const style of ['hero', 'ninja', 'demon', 'warrior', 'villain', 'royal', 'magic', 'default']) {
+  const data = animeLexicons?.[style];
+  if (!data || data.prefixes.length < 6 || data.suffixes.length < 6) {
+    failures.push(`anime/${style}: missing or undersized dedicated lexical bank`);
+    continue;
+  }
+  const tokens = [...data.prefixes, ...data.suffixes];
+  if (tokens.some((token) => forbiddenCrossStyleFragments.includes(token))) {
+    failures.push(`anime/${style}: contains a known cross-style or non-Japanese fragment`);
+  }
+}
+const ninjaTokens = new Set([...(animeLexicons?.ninja?.prefixes || []), ...(animeLexicons?.ninja?.suffixes || [])]);
+const demonTokens = [...(animeLexicons?.demon?.prefixes || []), ...(animeLexicons?.demon?.suffixes || [])];
+if (demonTokens.every((token) => ninjaTokens.has(token))) {
+  failures.push('anime/demon: lexical bank duplicates the ninja bank');
+}
+const academy = SUBCATEGORIES_BATCH_B.anime_school?.academy;
+if (!academy || academy.suffixes.some((token) => ['High', 'Academy', 'Institute', 'Campus', 'Sanctuary'].includes(token))) {
+  failures.push('anime_school/academy: non-Japanese school suffixes remain in the Japanese-inspired bank');
+}
+console.log('Checked Anime lexical-bank separation and school naming vocabulary');
+
 const cases: Case[] = [
   { id: 'fantasy', language: 'ar', allowed: ['Arabic'] },
   { id: 'brand', language: 'ja', allowed: ['Han', 'Hiragana', 'Katakana'], format: 'group' },
