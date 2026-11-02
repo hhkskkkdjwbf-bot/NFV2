@@ -98,9 +98,9 @@ export function transliterateAnimeToKatakana(value: string): string {
     a: 'ア', i: 'イ', u: 'ウ', e: 'エ', o: 'オ',
   };
   const input = String(value ?? '').normalize('NFC').trim().toLowerCase();
-  if (!input || !/^[a-z]+(?:\\s+[a-z]+)*$/u.test(input)) return '';
+  if (!input || !/^[a-z]+(?:\s+[a-z]+)*$/u.test(input)) return '';
 
-  return input.split(/\\s+/u).map((part) => {
+  return input.split(/\s+/u).map((part) => {
     let remaining = part;
     let output = '';
     while (remaining.length) {
@@ -818,7 +818,8 @@ function buildProfessionalMetadata(
   name: string,
   generatorId: GeneratorId,
   styleLabel: string,
-  length: LengthOption
+  length: LengthOption,
+  language: GenLanguageCode
 ): {
   strengths: string[];
   watchouts: string[];
@@ -869,7 +870,9 @@ function buildProfessionalMetadata(
 
   const disclaimer = isBusiness
     ? 'Avertissement : proposition créative uniquement. NameForge ne vérifie ni la disponibilité juridique, ni les domaines, ni les identifiants sociaux. Effectuez ces recherches avant toute utilisation commerciale.'
-    : undefined;
+    : generatorId === 'anime' && language === 'ja'
+      ? 'Experimental Japanese-inspired output. These generated forms are not verified or attested Japanese names; katakana rendering is a controlled approximation, and naturalness and category fit require review by a Japanese-language reviewer.'
+      : undefined;
 
   const origin = `Forge NameForge • Archétype ${styleLabel}`;
 
@@ -1423,7 +1426,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
     const desc = (randomItem(resolved.descriptions) as string) ||
       '✨ Un nom exclusif façonné avec soin par la forge NameForge.';
 
-    const meta = buildProfessionalMetadata(cand.name, targetGenerator, resolved.label || targetStyle, length);
+    const meta = buildProfessionalMetadata(cand.name, targetGenerator, resolved.label || targetStyle, length, genLanguage);
 
     out.push({
       name: cand.name,
