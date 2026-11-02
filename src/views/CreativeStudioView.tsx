@@ -14,8 +14,6 @@ interface CreativeStudioViewProps {
   onNavigate: (view: string, generatorId?: GeneratorId) => void;
 }
 
-const TOOL_IDS: CreativeTool[] = ['text-styles', 'username', 'bio-caption', 'symbols-art'];
-
 function readToolFromHash(): CreativeTool {
   const hash = window.location.hash.replace(/^#\/?/, '');
   if (hash === 'username-designer' || hash === 'username-generator' || hash === 'pseudo-generator' || hash.endsWith('/username')) return 'username';
