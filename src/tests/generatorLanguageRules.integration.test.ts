@@ -80,7 +80,7 @@ for (const style of Object.keys(animeLexicons || {})) {
       failures.push(`anime/${style}/ja: experimental Japanese disclaimer missing`);
     }
     const scripts = getScriptsInText(result.name);
-    if (!scripts.length || scripts.some((script) => !['Katakana', 'Hiragana', 'Han'].includes(script))) {
+    if (scripts.length !== 1 || scripts[0] !== 'Katakana') {
       failures.push(`anime/${style}/ja: unexpected script in "${result.name}" [${scripts.join(',')}]`);
     }
   }
