@@ -71,6 +71,10 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
     nb: { back: 'Tilbake til alle generatorer', proposals: 'navn generert', inspired: 'Inspirert av:', copyAllTitle: 'Kopier hele listen med beskrivelser', copiedBatch: 'Serien er kopiert!', copyBatch: 'Kopier serie', exportTextTitle: 'Last ned denne serien som tekst', exportCsvTitle: 'Last ned denne serien som CSV-regneark', tip: 'Tips: Trykk', tipEnd: 'for å smi en ny serie umiddelbart.', leaderboard: 'UAVHENGIG TOPPLISTE', bestNames: 'Dine høyest rangerte navn', leaderboardDesc: 'Rangert utelukkende etter dine 1–5-stjernevurderinger i denne kategorien.', ratedCount: 'vurderte forslag', stars: 'stjerner', copied: 'Kopiert', copy: 'Kopier', noRatings: 'Ingen vurderinger ennå for', noRatingsDesc: 'Vurder navnene ovenfor for å bygge din personlige topplistefor denne generatoren.', advantages: 'Viktige fordeler', limits: 'Ting å vurdere', explore: 'Utforsk andre kategorier' },
   };
   const text = ui[language] || ui.en;
+  const experimentalJapaneseNotice = language === 'fr'
+    ? 'Sortie expérimentale inspirée du japonais. Ces formes ne sont pas des noms japonais vérifiés ou attestés. La conversion en katakana est une approximation contrôlée ; la naturalité et l’adéquation à la catégorie restent à valider.'
+    : 'Experimental Japanese-inspired output. These forms are not verified or attested Japanese names. Katakana conversion is a controlled approximation; naturalness and category fit remain unvalidated.';
+
   const exportLabels: Record<string, string[]> = {
     en: ['Date', 'Generator', 'Style', 'Archetype', 'Tone', 'Description', 'Ideal for', 'Name', 'Pronunciation', 'Name batch'],
     fr: ['Date', 'Générateur', 'Style', 'Archétype', 'Tonalité', 'Description', 'Idéal pour', 'Nom', 'Prononciation', 'Lot de noms'],
@@ -484,6 +488,17 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
               </button>
             </div>
           </div>
+
+          {generatorId === 'anime' && selectedGenLanguage === 'ja' && results.length > 0 && (
+            <aside
+              role="note"
+              aria-live="polite"
+              className="mb-4 flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-100"
+            >
+              <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" aria-hidden="true" />
+              <p className="leading-relaxed">{experimentalJapaneseNotice}</p>
+            </aside>
+          )}
 
           {/* Results Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
