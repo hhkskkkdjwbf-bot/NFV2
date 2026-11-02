@@ -7,6 +7,7 @@ on:
       - 'src/services/generatorEngine.ts'
       - 'src/services/diversity.ts'
       - 'src/tests/diversity.test.ts'
+      - 'src/tests/generatorLanguageRules.integration.test.ts'
       - 'src/data/generators*.ts'
       - 'src/data/gamingAndSystemsGenerators.ts'
       - 'src/data/attestedBabyNames.ts'
@@ -57,6 +58,8 @@ jobs:
           {"name":"محمد","language":"ar"}
           EOF
           python3 -c "import json; rows=[json.loads(x) for x in open('/tmp/nameforge-linguistic-audit.jsonl', encoding='utf-8')]; assert len(rows)==2 and all(r['schema_version']==1 and 'findings' in r for r in rows)"
+      - name: Run multilingual and Japanese conversion regression tests
+        run: npx tsx src/tests/generatorLanguageRules.integration.test.ts
       - name: Run 234 × 28 empirical baseline
         run: npm run audit:generators
       - name: Run raw-output deep instrumentation
