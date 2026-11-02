@@ -6,6 +6,15 @@ import { SUBCATEGORIES_BATCH_B } from '../data/generatorsBatchB';
 
 type Case = { id: string; language: 'ar' | 'ja' | 'ru' | 'zh'; allowed: string[]; format?: 'title' | 'group' };
 
+const cases: Case[] = [
+  { id: 'fantasy', language: 'ar', allowed: ['Arabic'] },
+  { id: 'brand', language: 'ja', allowed: ['Han', 'Hiragana', 'Katakana'], format: 'group' },
+  { id: 'startup', language: 'ru', allowed: ['Cyrillic'] },
+  { id: 'dragon', language: 'zh', allowed: ['Han'] },
+  { id: 'book', language: 'ja', allowed: ['Han', 'Hiragana', 'Katakana'] },
+];
+const failures: string[] = [];
+
 const animeLexicons = SUBCATEGORIES_DATA.anime;
 const forbiddenCrossStyleFragments = ['Kael', 'Vex', 'nox', 'Lumi', 'Eli', 'lune', 'ael'];
 for (const style of ['hero', 'ninja', 'demon', 'warrior', 'villain', 'royal', 'magic', 'default']) {
@@ -29,15 +38,6 @@ if (!academy || academy.suffixes.some((token) => ['High', 'Academy', 'Institute'
   failures.push('anime_school/academy: non-Japanese school suffixes remain in the Japanese-inspired bank');
 }
 console.log('Checked Anime lexical-bank separation and school naming vocabulary');
-
-const cases: Case[] = [
-  { id: 'fantasy', language: 'ar', allowed: ['Arabic'] },
-  { id: 'brand', language: 'ja', allowed: ['Han', 'Hiragana', 'Katakana'], format: 'group' },
-  { id: 'startup', language: 'ru', allowed: ['Cyrillic'] },
-  { id: 'dragon', language: 'zh', allowed: ['Han'] },
-  { id: 'book', language: 'ja', allowed: ['Han', 'Hiragana', 'Katakana'] },
-];
-const failures: string[] = [];
 
 // Category-specific Arabic output must not be replaced by generic personal-name
 // roots (including religious compounds) across unrelated generators.
