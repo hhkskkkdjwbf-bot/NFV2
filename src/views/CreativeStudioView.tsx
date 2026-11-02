@@ -1,175 +1,77 @@
-import React, { useEffect, useState } from 'react';
-import { Wand2, Dices, FileText, Shapes, Type, Sparkles } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Copy, Download, Save, RotateCcw, Sun, Moon, Type, Dices, Shapes, FileText, Search, Check, X } from 'lucide-react';
+import { UNICODE_STYLES, VISUAL_EFFECTS } from '../services/textStyler';
+import { generateUsernameSuggestions, UsernameStyle } from '../services/usernameDesigner';
+import { DECORATIVE_SEPARATORS, getBioCaptionTemplates } from '../services/bioCaptionStudio';
+import { TEXT_ART_ITEMS, readTextArtFavorites, saveTextArtFavorites } from '../services/textArtStudio';
 import { getAppSettings, subscribeToSettings } from '../services/settings';
-import { StyleStudioView } from './StyleStudioView';
-import { UsernameDesignerView } from './UsernameDesignerView';
-import { BioCaptionStudioView } from './BioCaptionStudioView';
-import { TextArtStudioView } from './TextArtStudioView';
 import { GeneratorId } from '../types';
 
-type CreativeTool = 'text-styles' | 'username' | 'bio-caption' | 'symbols-art';
-
-interface CreativeStudioViewProps {
-  initialText?: string;
-  onNavigate: (view: string, generatorId?: GeneratorId) => void;
-}
-
-function readToolFromHash(): CreativeTool {
-  const hash = window.location.hash.replace(/^#\/?/, '');
-  if (hash === 'username-designer' || hash === 'username-generator' || hash === 'pseudo-generator' || hash.endsWith('/username')) return 'username';
-  if (hash === 'bio-caption-studio' || hash === 'bio-studio' || hash === 'caption-studio' || hash.endsWith('/bio-caption')) return 'bio-caption';
-  if (hash === 'text-art-studio' || hash === 'symbols-text-art' || hash === 'symboles-text-art' || hash.endsWith('/symbols-art')) return 'symbols-art';
-  return 'text-styles';
-}
-
-export const CreativeStudioView: React.FC<CreativeStudioViewProps> = ({ initialText, onNavigate }) => {
-  const [language, setLanguage] = useState(getAppSettings().language);
-  const [designName, setDesignName] = useState(initialText ?? 'NameForge');
-  useEffect(() => {
-    const unsubscribe = subscribeToSettings((settings) => setLanguage(settings.language));
-    return unsubscribe;
-  }, []);
-
-  const locale: 'en' | 'fr' | 'ar' = language === 'fr' ? 'fr' : language === 'ar' ? 'ar' : 'en';
-  const copy = {
-    en: {
-      eyebrow: 'NAMEFORGE CREATIVE WORKSPACE',
-      title: 'Ultimate Name Designer Studio',
-      subtitle: 'One continuous workspace for styling names, building usernames, writing bios and creating text art.',
-      name: 'Your shared name or starting text',
-      hint: 'Change this once to refresh the starting text in every creative tool. Each editor keeps its own detailed controls.',
-      placeholder: 'Type a name or nickname…',
-      workspace: 'Your creative workspace',
-      style: '01 · Text styling',
-      styleHint: 'Unicode lettering, visual effects, typography and exports',
-      username: '02 · Username design',
-      usernameHint: 'Create and validate usernames with prefixes, suffixes and styles',
-      bio: '03 · Bio and captions',
-      bioHint: 'Use templates, separators and character limits',
-      art: '04 · Symbols and text art',
-      artHint: 'Browse symbols, save favorites and design banners',
-      jump: 'Jump to section',
-    },
-    fr: {
-      eyebrow: 'ESPACE CRÉATIF NAMEFORGE',
-      title: 'Studio ultime de création de noms',
-      subtitle: 'Un espace continu pour styliser des noms, créer des pseudos, rédiger des bios et composer du text art.',
-      name: 'Votre nom ou texte de départ partagé',
-      hint: 'Modifiez ce champ pour actualiser le texte de départ dans chaque outil. Chaque éditeur conserve ses commandes détaillées.',
-      placeholder: 'Saisissez un nom ou un pseudo…',
-      workspace: 'Votre espace de création',
-      style: '01 · Styles de texte',
-      styleHint: 'Lettres Unicode, effets visuels, typographie et exports',
-      username: '02 · Création de pseudos',
-      usernameHint: 'Créez et vérifiez des pseudos avec préfixes, suffixes et styles',
-      bio: '03 · Bios et légendes',
-      bioHint: 'Modèles, séparateurs décoratifs et limites de caractères',
-      art: '04 · Symboles et art textuel',
-      artHint: 'Explorez les symboles, gérez vos favoris et créez des bannières',
-      jump: 'Accéder à une section',
-    },
-    ar: {
-      eyebrow: 'مساحة NAMEFORGE الإبداعية',
-      title: 'استوديو تصميم الأسماء المتكامل',
-      subtitle: 'مساحة عمل واحدة لتنسيق الأسماء وإنشاء أسماء المستخدمين وكتابة النبذات وتصميم الفن النصي.',
-      name: 'الاسم أو النص الأساسي المشترك',
-      hint: 'غيّر هذا الحقل لتحديث النص الأولي في جميع الأدوات. يحتفظ كل محرر بعناصر التحكم الخاصة به.',
-      placeholder: 'اكتب اسمًا أو لقبًا…',
-      workspace: 'مساحة التصميم',
-      style: '01 · تنسيق النصوص',
-      styleHint: 'حروف Unicode وتأثيرات بصرية وخطوط وتصدير',
-      username: '02 · تصميم أسماء المستخدمين',
-      usernameHint: 'أنشئ أسماء المستخدمين وتحقق منها باستخدام البادئات واللواحق والأنماط',
-      bio: '03 · النبذات والتعليقات',
-      bioHint: 'قوالب وفواصل زخرفية وحدود لعدد الأحرف',
-      art: '04 · الرموز والفن النصي',
-      artHint: 'تصفح الرموز واحفظ المفضلة وصمم اللافتات',
-      jump: 'انتقل إلى قسم',
-    },
-  }[locale];
-
-  const sections = [
-    { id: 'text-styles' as const, title: copy.style, hint: copy.styleHint, icon: Wand2, color: 'fuchsia' },
-    { id: 'username' as const, title: copy.username, hint: copy.usernameHint, icon: Dices, color: 'purple' },
-    { id: 'bio-caption' as const, title: copy.bio, hint: copy.bioHint, icon: FileText, color: 'cyan' },
-    { id: 'symbols-art' as const, title: copy.art, hint: copy.artHint, icon: Shapes, color: 'pink' },
-  ];
-
-  const jumpTo = (id: CreativeTool) => {
-    document.getElementById('creative-section-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.history.replaceState(null, '', '#/creative-studio/' + id);
-  };
-
-  useEffect(() => {
-    const syncLegacyRoute = () => {
-      const target = readToolFromHash();
-      if (window.location.hash.includes('creative-studio') || window.location.hash.includes('studio')) {
-        document.getElementById('creative-section-' + target)?.scrollIntoView({ block: 'start' });
-      }
-    };
-    window.addEventListener('hashchange', syncLegacyRoute);
-    return () => window.removeEventListener('hashchange', syncLegacyRoute);
-  }, []);
-
-  return (
-    <section className="min-h-[75vh] px-4 py-10 sm:px-8" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <div className="mx-auto max-w-7xl">
-        <header className="mb-8 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-fuchsia-400/30 bg-fuchsia-500/10 px-4 py-2 text-xs font-bold tracking-[0.16em] text-fuchsia-200">
-            <Sparkles className="h-4 w-4" /> {copy.eyebrow}
-          </span>
-          <h1 className="mt-5 text-3xl font-black tracking-tight text-white sm:text-5xl">{copy.title}</h1>
-          <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-slate-400 sm:text-base">{copy.subtitle}</p>
-        </header>
-
-        <section className="mb-7 rounded-3xl border border-fuchsia-400/20 bg-gradient-to-br from-fuchsia-500/10 via-[#101426] to-indigo-500/10 p-5 shadow-xl sm:p-7">
-          <label htmlFor="creative-studio-name" className="flex items-center gap-2 text-sm font-bold text-white">
-            <Type className="h-4 w-4 text-fuchsia-300" />{copy.name}
-          </label>
-          <input id="creative-studio-name" data-testid="creative-studio-shared-name" value={designName}
-            onChange={(event) => setDesignName(event.target.value)} placeholder={copy.placeholder}
-            className="mt-3 w-full rounded-xl border border-white/10 bg-[#080d1c] px-4 py-3 text-base font-semibold text-white outline-none transition placeholder:font-normal placeholder:text-slate-500 focus:border-fuchsia-400" />
-          <p className="mt-2 text-xs leading-5 text-slate-400">{copy.hint}</p>
-        </section>
-
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-xl font-black text-white sm:text-2xl">{copy.workspace}</h2>
-            <p className="mt-1 text-sm text-slate-400">{copy.jump}</p>
-          </div>
-          <nav aria-label={copy.jump} className="flex flex-wrap gap-2">
-            {sections.map(({ id, title, icon: Icon }) => (
-              <button key={id} type="button" onClick={() => jumpTo(id)}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-[#101426] px-3 py-2 text-xs font-semibold text-slate-300 transition hover:border-fuchsia-400/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400">
-                <Icon className="h-4 w-4" />{title}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <div className="space-y-8">
-          {sections.map(({ id, title, hint, icon: Icon }) => (
-            <section id={'creative-section-' + id} key={id} data-testid={'creative-section-' + id}
-              className="scroll-mt-6 overflow-hidden rounded-3xl border border-white/10 bg-[#0b1020]/70 shadow-2xl">
-              <header className="flex flex-col gap-2 border-b border-white/10 bg-gradient-to-r from-white/[0.04] to-transparent px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-fuchsia-400/20 bg-fuchsia-500/10 text-fuchsia-200"><Icon className="h-5 w-5" /></span>
-                  <div><h2 className="text-lg font-black text-white sm:text-xl">{title}</h2><p className="mt-1 text-xs text-slate-400">{hint}</p></div>
-                </div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">Creative Studio</span>
-              </header>
-              <div className="min-w-0 [&>section]:!min-h-0 [&>section]:!px-0 [&>section]:!py-5">
-                {id === 'text-styles' && <StyleStudioView onNavigate={onNavigate} initialText={designName} />}
-                {id === 'username' && <UsernameDesignerView initialText={designName} />}
-                {id === 'bio-caption' && <BioCaptionStudioView initialText={designName} />}
-                {id === 'symbols-art' && <TextArtStudioView initialText={designName} />}
-              </div>
-            </section>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+type Tool = 'type' | 'nickname' | 'symbols' | 'bio';
+type Lang = 'en' | 'fr' | 'ar';
+interface Props { initialText?: string; onNavigate: (view: string, generatorId?: GeneratorId) => void; }
+interface Saved { id: string; name: string; output: string; }
+const LABELS = {
+ en: { title:'Name Designer Studio', subtitle:'One canvas. Four creative capabilities. No page switching.', name:'Your name or starting text', placeholder:'Type a name…', tools:'TOOLS', type:'Typography', nick:'Nicknames', symbols:'Symbols & art', bio:'Bio & captions', preview:'LIVE CANVAS', copy:'Copy result', copied:'Copied', save:'Save design', export:'Export TXT', reset:'Reset', style:'Unicode style', effect:'Visual effect', before:'Prefix', after:'Suffix', generate:'Generate suggestions', apply:'Apply', search:'Search symbols…', category:'Category', templates:'Templates', write:'Write your bio or caption…', separator:'Insert separator', saved:'Saved designs', empty:'Enter a name to start.', random:'Random name', light:'Light', dark:'Dark', noResults:'Generate suggestions to see results.' },
+ fr: { title:'Studio de création de noms', subtitle:'Un seul canvas. Quatre capacités créatives. Sans changer de page.', name:'Votre nom ou texte de départ', placeholder:'Saisissez un nom…', tools:'OUTILS', type:'Typographie', nick:'Pseudos', symbols:'Symboles & art', bio:'Bios & légendes', preview:'APERÇU EN DIRECT', copy:'Copier le résultat', copied:'Copié', save:'Enregistrer', export:'Exporter TXT', reset:'Réinitialiser', style:'Style Unicode', effect:'Effet visuel', before:'Préfixe', after:'Suffixe', generate:'Générer des suggestions', apply:'Appliquer', search:'Rechercher un symbole…', category:'Catégorie', templates:'Modèles', write:'Écrivez votre bio ou légende…', separator:'Insérer un séparateur', saved:'Créations enregistrées', empty:'Saisissez un nom pour commencer.', random:'Nom aléatoire', light:'Clair', dark:'Sombre', noResults:'Générez des suggestions pour afficher les résultats.' },
+ ar: { title:'استوديو تصميم الأسماء', subtitle:'لوحة واحدة وأربع قدرات إبداعية دون التنقل بين الصفحات.', name:'اسمك أو النص الأساسي', placeholder:'اكتب اسماً…', tools:'الأدوات', type:'الخطوط', nick:'الألقاب', symbols:'الرموز والفن', bio:'النبذات والتعليقات', preview:'معاينة مباشرة', copy:'نسخ النتيجة', copied:'تم النسخ', save:'حفظ التصميم', export:'تصدير TXT', reset:'إعادة ضبط', style:'نمط Unicode', effect:'تأثير بصري', before:'بادئة', after:'لاحقة', generate:'إنشاء اقتراحات', apply:'تطبيق', search:'ابحث عن رمز…', category:'التصنيف', templates:'القوالب', write:'اكتب نبذتك أو تعليقك…', separator:'إدراج فاصل', saved:'التصاميم المحفوظة', empty:'اكتب اسماً للبدء.', random:'اسم عشوائي', light:'فاتح', dark:'داكن', noResults:'أنشئ اقتراحات لعرض النتائج.' }
 };
-
+const PRESETS = [
+ {name:'Minimal',style:'bold-sans',effect:'',prefix:'',suffix:''},
+ {name:'Royal',style:'script',effect:'pure-gold',prefix:'꧁༺ ',suffix:' ༻꧂'},
+ {name:'Cyber',style:'monospace',effect:'cyber-neon',prefix:'⟪ ',suffix:' ⟫'},
+ {name:'Gothic',style:'fraktur',effect:'chrome-titanium',prefix:'† ',suffix:' †'},
+ {name:'Cosmic',style:'double-struck',effect:'',prefix:'✧･ﾟ ',suffix:' ･ﾟ✧'},
+ {name:'Gaming',style:'bold-serif',effect:'cyber-neon',prefix:'⚡ ',suffix:' ⚡'}
+];
+async function copyText(value:string){try{await navigator.clipboard.writeText(value);return true;}catch{const e=document.createElement('textarea');e.value=value;document.body.appendChild(e);e.select();const ok=document.execCommand('copy');e.remove();return ok;}}
+export const CreativeStudioView:React.FC<Props>=({initialText,onNavigate})=>{
+ void onNavigate;
+ const [lang,setLang]=useState<Lang>(()=>{const v=getAppSettings().language;return v==='fr'||v==='ar'?v:'en';});
+ useEffect(()=>subscribeToSettings(v=>setLang(v.language==='fr'||v.language==='ar'?v.language:'en')),[]);
+ const t=LABELS[lang],rtl=lang==='ar';
+ const [name,setName]=useState(initialText||'NameForge'),[tool,setTool]=useState<Tool>('type');
+ const [styleId,setStyleId]=useState('bold-sans'),[effectId,setEffectId]=useState(''),[prefix,setPrefix]=useState(''),[suffix,setSuffix]=useState('');
+ const [nickStyle,setNickStyle]=useState<UsernameStyle>('gaming'),[suggestions,setSuggestions]=useState<string[]>([]);
+ const [query,setQuery]=useState(''),[category,setCategory]=useState('all');
+ const [bioKind,setBioKind]=useState<'bio'|'caption'>('bio'),[bio,setBio]=useState('');
+ const [light,setLight]=useState(false),[notice,setNotice]=useState('');
+ const [saved,setSaved]=useState<Saved[]>(()=>{try{return JSON.parse(localStorage.getItem('nameforge.unified-designs.v1')||'[]')}catch{return[]}});
+ const [favorites,setFavorites]=useState<string[]>(()=>readTextArtFavorites());
+ useEffect(()=>{setName(initialText||'NameForge')},[initialText]);
+ useEffect(()=>{try{localStorage.setItem('nameforge.unified-designs.v1',JSON.stringify(saved))}catch{}},[saved]);
+ useEffect(()=>{saveTextArtFavorites(favorites)},[favorites]);
+ const style=UNICODE_STYLES.find(v=>v.id===styleId)||UNICODE_STYLES[0],effect=VISUAL_EFFECTS.find(v=>v.id===effectId);
+ const output=prefix+style.transform(name||'')+suffix;
+ const symbols=useMemo(()=>TEXT_ART_ITEMS.filter(v=>(category==='all'||v.category===category)&&(!query||[v.label,v.value,...v.keywords].join(' ').toLowerCase().includes(query.toLowerCase()))),[category,query]);
+ const templates=getBioCaptionTemplates(lang,bioKind);
+ const notify=(v:string)=>{setNotice(v);window.setTimeout(()=>setNotice(''),1600)};
+ const applyNick=(v:string)=>{setName(v);setPrefix('');setSuffix('');setStyleId('bold-sans');setEffectId('');setTool('type');};
+ const save=()=>{setSaved(v=>[{id:String(Date.now()),name,output},...v].slice(0,25));notify(t.save);};
+ const download=()=>{const u=URL.createObjectURL(new Blob([output],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='nameforge-design.txt';a.click();URL.revokeObjectURL(u);};
+ const tools:[Tool,string,React.ElementType][]=[['type',t.type,Type],['nickname',t.nick,Dices],['symbols',t.symbols,Shapes],['bio',t.bio,FileText]];
+ const card=light?'border-slate-200 bg-white text-slate-900':'border-white/10 bg-[#11182b] text-white';
+ const field=light?'border-slate-300 bg-white text-slate-900':'border-white/10 bg-[#080d1a] text-white';
+ return <section dir={rtl?'rtl':'ltr'} className={`min-h-[80vh] px-3 py-7 sm:px-6 ${light?'bg-slate-100':'bg-[#080d1a]'}`}>
+ <div className="mx-auto max-w-[1500px]">
+  <header className="mb-6 flex flex-wrap items-center justify-between gap-4"><div><p className="text-[11px] font-bold tracking-[.22em] text-fuchsia-400">NAMEFORGE / CREATIVE WORKSPACE</p><h1 className={`mt-2 text-3xl font-black sm:text-4xl ${light?'text-slate-950':'text-white'}`}>{t.title}</h1><p className="mt-2 text-sm text-slate-500">{t.subtitle}</p></div><div className="flex gap-2"><button onClick={()=>setLight(v=>!v)} aria-label="Toggle theme" className={`rounded-xl border p-3 ${card}`}>{light?<Moon size={17}/>:<Sun size={17}/>}</button><button onClick={()=>{setName('');setPrefix('');setSuffix('');setBio('');setStyleId('bold-sans');setEffectId('')}} className={`inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm ${card}`}><RotateCcw size={15}/>{t.reset}</button><button onClick={save} className="inline-flex items-center gap-2 rounded-xl bg-fuchsia-600 px-4 py-2 text-sm font-bold text-white"><Save size={15}/>{t.save}</button></div></header>
+  <div className={`mb-5 rounded-2xl border p-4 ${card}`}><label htmlFor="designer-name" className="mb-2 block text-xs font-bold uppercase tracking-wider text-fuchsia-500">{t.name}</label><div className="flex flex-col gap-2 sm:flex-row"><input id="designer-name" data-testid="unified-name-input" value={name} maxLength={80} onChange={e=>setName(e.target.value)} placeholder={t.placeholder} className={`min-w-0 flex-1 rounded-xl border px-4 py-3 text-lg font-semibold outline-none focus:border-fuchsia-500 ${field}`}/><button onClick={()=>setName(['Nova','Aether','Vex','Lumen','Raven','Onyx','Echo','Astra'][Math.floor(Math.random()*8)])} className={`rounded-xl border px-4 py-3 text-sm ${card}`}><Dices className="me-2 inline" size={16}/>{t.random}</button></div></div>
+  <div className="grid gap-5 xl:grid-cols-[220px_minmax(0,1fr)_330px]">
+   <aside className={`rounded-2xl border p-3 ${card}`}><p className="px-3 py-2 text-[10px] font-bold tracking-widest text-slate-500">{t.tools}</p><nav className="grid grid-cols-2 gap-2 xl:grid-cols-1">{tools.map(([id,label,Icon])=><button key={id} onClick={()=>setTool(id)} aria-pressed={tool===id} className={`flex items-center gap-3 rounded-xl px-3 py-3 text-start text-sm font-semibold ${tool===id?'bg-fuchsia-600 text-white':light?'text-slate-600 hover:bg-slate-100':'text-slate-300 hover:bg-white/5'}`}><Icon size={17}/>{label}</button>)}</nav><div className="mt-5 border-t border-current/10 pt-4"><p className="px-2 text-[10px] font-bold tracking-widest text-slate-500">PRESETS</p><div className="mt-2 grid grid-cols-2 gap-2">{PRESETS.map(p=><button key={p.name} onClick={()=>{setStyleId(p.style);setEffectId(p.effect);setPrefix(p.prefix);setSuffix(p.suffix);setTool('type')}} className={`rounded-lg border px-2 py-2 text-xs ${card}`}>{p.name}</button>)}</div></div></aside>
+   <main className="min-w-0 space-y-4">
+    <section className={`overflow-hidden rounded-2xl border ${card}`}><div className="border-b border-current/10 px-4 py-3"><p className="text-[10px] font-bold tracking-[.2em] text-fuchsia-500">{t.preview}</p></div><div className={`flex min-h-[270px] items-center justify-center break-words p-8 text-center text-3xl font-black sm:min-h-[350px] sm:text-5xl ${effect?.bgColor||(light?'bg-white':'bg-[#080d1a]')}`} style={{...effect?.cssStyle,textShadow:effect?.textShadowCSS}}>{name?output:<span className="text-base font-normal text-slate-500">{t.empty}</span>}</div><div className="flex flex-wrap gap-2 border-t border-current/10 p-3"><button onClick={()=>void copyText(output).then(ok=>notify(ok?t.copied:'Copy failed'))} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-fuchsia-600 px-3 py-2.5 text-sm font-bold text-white"><Copy size={15}/>{t.copy}</button><button onClick={download} className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm ${card}`}><Download size={15}/>{t.export}</button></div></section>
+    {tool==='nickname'&&<section className={`rounded-2xl border p-4 ${card}`}><h2 className="font-bold">{t.nick}</h2><div className="mt-3 flex flex-wrap gap-2">{(['gaming','fantasy','minimal','elegant'] as UsernameStyle[]).map(v=><button key={v} onClick={()=>setNickStyle(v)} className={`rounded-lg border px-3 py-2 text-xs ${nickStyle===v?'border-fuchsia-500 bg-fuchsia-500/10':'border-current/10'}`}>{v}</button>)}</div><button onClick={()=>setSuggestions(generateUsernameSuggestions({baseName:name,style:nickStyle,minLength:3,maxLength:20,quantity:16}))} className="mt-3 rounded-xl bg-fuchsia-600 px-4 py-2.5 text-sm font-bold text-white">{t.generate}</button><div className="mt-4 grid gap-2 sm:grid-cols-2">{suggestions.map(v=><div key={v} className={`flex items-center justify-between gap-2 rounded-xl border p-3 ${card}`}><span className="truncate font-semibold">{v}</span><button onClick={()=>applyNick(v)} className="rounded-lg bg-fuchsia-600 px-3 py-1.5 text-xs text-white">{t.apply}</button></div>)}</div>{!suggestions.length&&<p className="mt-3 text-sm text-slate-500">{t.noResults}</p>}</section>}
+    {tool==='bio'&&<section className={`rounded-2xl border p-4 ${card}`}><div className="flex gap-2"><button onClick={()=>setBioKind('bio')} className={`rounded-lg px-3 py-2 text-sm ${bioKind==='bio'?'bg-fuchsia-600 text-white':'border border-current/10'}`}>Bio</button><button onClick={()=>setBioKind('caption')} className={`rounded-lg px-3 py-2 text-sm ${bioKind==='caption'?'bg-fuchsia-600 text-white':'border border-current/10'}`}>Caption</button></div><h2 className="mt-4 font-bold">{t.templates}</h2><div className="mt-2 grid gap-2 sm:grid-cols-2">{templates.map(v=><button key={v.id} onClick={()=>setBio(v.content.replaceAll('[Name]',name).replaceAll('[Nom]',name))} className={`rounded-xl border p-3 text-start ${card}`}><b className="block text-sm">{v.title}</b><span className="mt-1 block text-xs text-slate-500">{v.description}</span></button>)}</div><textarea value={bio} onChange={e=>setBio(e.target.value)} rows={5} placeholder={t.write} className={`mt-3 w-full rounded-xl border p-3 text-sm ${field}`}/><div className="mt-2 flex flex-wrap gap-2">{DECORATIVE_SEPARATORS.map(v=><button key={v} onClick={()=>setBio(s=>s+(s?'\n':'')+v)} className={`rounded-lg border px-2 py-1.5 text-xs ${card}`}>{v}</button>)}</div><p className="mt-2 text-xs text-slate-500">{bio.length} characters</p><button onClick={()=>void copyText(bio).then(ok=>notify(ok?t.copied:'Copy failed'))} className="mt-3 rounded-lg bg-fuchsia-600 px-4 py-2 text-sm text-white"><Copy className="me-2 inline" size={14}/>{t.copy}</button></section>}
+   </main>
+   <aside className={`min-w-0 rounded-2xl border p-4 ${card}`}>
+    {tool==='type'&&<><h2 className="font-bold">{t.type}</h2><label className="mt-4 block text-xs font-semibold text-slate-500">{t.style}</label><div className="mt-2 max-h-[350px] space-y-2 overflow-y-auto">{UNICODE_STYLES.map(v=><button key={v.id} onClick={()=>setStyleId(v.id)} aria-pressed={styleId===v.id} className={`flex w-full items-center justify-between gap-2 rounded-xl border p-3 text-start ${styleId===v.id?'border-fuchsia-500 bg-fuchsia-500/10':card}`}><span className="min-w-0"><b className="block text-sm">{v.name}</b><span className="mt-1 block truncate text-xs text-slate-500">{v.transform(name||'NameForge')}</span></span>{styleId===v.id&&<Check size={15}/>}</button>)}</div><label className="mt-4 block text-xs text-slate-500">{t.effect}<select value={effectId} onChange={e=>setEffectId(e.target.value)} className={`mt-2 w-full rounded-xl border p-3 text-sm ${card}`}><option value="">None</option>{VISUAL_EFFECTS.map(v=><option key={v.id} value={v.id}>{v.name}</option>)}</select></label><div className="mt-4 grid grid-cols-2 gap-2"><label className="text-xs text-slate-500">{t.before}<input value={prefix} onChange={e=>setPrefix(e.target.value)} className={`mt-1 w-full rounded-lg border p-2 text-sm ${field}`}/></label><label className="text-xs text-slate-500">{t.after}<input value={suffix} onChange={e=>setSuffix(e.target.value)} className={`mt-1 w-full rounded-lg border p-2 text-sm ${field}`}/></label></div></>}
+    {tool==='symbols'&&<><h2 className="font-bold">{t.symbols}</h2><div className={`mt-3 flex items-center gap-2 rounded-xl border px-3 ${card}`}><Search size={15}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder={t.search} className="min-w-0 flex-1 bg-transparent py-2 text-sm outline-none"/></div><select value={category} onChange={e=>setCategory(e.target.value)} className={`mt-2 w-full rounded-xl border p-2 text-sm ${card}`}><option value="all">All categories</option>{['stars','arrows','hearts','decorative','nature','kaomoji'].map(v=><option key={v}>{v}</option>)}</select><div className="mt-3 grid max-h-[420px] grid-cols-4 gap-2 overflow-y-auto">{symbols.map(v=><button key={v.id} title={v.label} onClick={()=>setSuffix(s=>s+v.value)} className={`rounded-xl border p-3 text-xl hover:border-fuchsia-500 ${card}`}>{v.value}</button>)}</div><p className="mt-2 text-xs text-slate-500">{symbols.length} symbols · click to append</p></>}
+    {tool==='nickname'&&<p className="text-sm text-slate-500">Generate alternatives from the shared name, then apply one to the canvas.</p>}
+    {tool==='bio'&&<p className="text-sm text-slate-500">Bios and captions remain separate from the main name composition.</p>}
+    <div className="mt-6 border-t border-current/10 pt-4"><h3 className="text-xs font-bold uppercase tracking-widest text-slate-500">{t.saved}</h3>{saved.length===0?<p className="mt-2 text-xs text-slate-500">No saved designs.</p>:<div className="mt-2 space-y-2">{saved.slice(0,6).map(v=><div key={v.id} className={`flex items-center gap-2 rounded-lg border p-2 ${card}`}><button onClick={()=>{setName(v.name);setPrefix('');setSuffix('')}} className="min-w-0 flex-1 truncate text-start text-xs">{v.output}</button><button aria-label="Delete design" onClick={()=>setSaved(s=>s.filter(x=>x.id!==v.id))}><X size={14}/></button></div>)}</div>}</div>
+   </aside>
+  </div>
+  {notice&&<div role="status" className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-xl">{notice}</div>}
+ </div></section>;
+};
 export default CreativeStudioView;
