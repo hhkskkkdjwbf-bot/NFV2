@@ -160,7 +160,7 @@ async function main() {
   await writeFile(`${outputDir}/diversity-report.json`, JSON.stringify(payload, null, 2), 'utf8');
   await writeFile(
     `${outputDir}/diversity-sample.csv`,
-    ['ordinal,style,name', ...allNames.map((name, i) => `${i + 1},${sourceStyles[i]},"${name.replace(/"/g, '""')}"`)].join('\\n'),
+    ['ordinal,style,name', ...allNames.map((name, i) => `${i + 1},${sourceStyles[i]},"${name.replace(/"/g, '""')}"`)].join('\n'),
     'utf8',
   );
 
