@@ -39,6 +39,81 @@ function normalize(s: string): string {
   );
 }
 
+
+/**
+ * Phonetic transliteration preserves category-specific roots. It is not a
+ * semantic translation and deliberately avoids generic personal-name suffixes.
+ */
+function transliterateLatinToArabic(value: string): string {
+  const digraphs: Array<[string, string]> = [
+    ['sch', 'ش'], ['tch', 'تش'], ['sh', 'ش'], ['ch', 'تش'], ['kh', 'خ'],
+    ['gh', 'غ'], ['th', 'ث'], ['dh', 'ذ'], ['ph', 'ف'], ['zh', 'ژ'],
+    ['ck', 'ك'], ['qu', 'ك'], ['ou', 'و'], ['oo', 'و'], ['ee', 'ي'],
+    ['ea', 'ي'], ['ai', 'اي'], ['ay', 'اي'], ['ie', 'ي'],
+  ];
+  const letters: Record<string, string> = {
+    a: 'ا', b: 'ب', c: 'ك', d: 'د', e: 'ي', f: 'ف', g: 'غ', h: 'ه',
+    i: 'ي', j: 'ج', k: 'ك', l: 'ل', m: 'م', n: 'ن', o: 'و', p: 'ب',
+    r: 'ر', s: 'س', t: 'ت', u: 'و', v: 'ف', w: 'و', x: 'كس', y: 'ي', z: 'ز',
+  };
+  return String(value ?? '').split(/(\s+)/u).map((part) => {
+    if (!/\p{Script=Latin}/u.test(part)) return part;
+    let remaining = part.normalize('NFC').toLocaleLowerCase();
+    let output = '';
+    while (remaining.length) {
+      const match = digraphs.find(([latin]) => remaining.startsWith(latin));
+      if (match) {
+        output += match[1];
+        remaining = remaining.slice(match[0].length);
+        continue;
+      }
+      const char = Array.from(remaining)[0];
+      output += letters[char] ?? char;
+      remaining = remaining.slice(char.length);
+    }
+    return output;
+  }).join('').normalize('NFC');
+}
+
+/** Small deterministic romaji-to-katakana converter for the anime vocabulary. */
+function transliterateAnimeToKatakana(value: string): string {
+  const syllables: Record<string, string> = {
+    kya: 'キャ', kyu: 'キュ', kyo: 'キョ', sha: 'シャ', shu: 'シュ', sho: 'ショ',
+    cha: 'チャ', chu: 'チュ', cho: 'チョ', nya: 'ニャ', nyu: 'ニュ', nyo: 'ニョ',
+    hya: 'ヒャ', hyu: 'ヒュ', hyo: 'ヒョ', rya: 'リャ', ryu: 'リュ', ryo: 'リョ',
+    gya: 'ギャ', gyu: 'ギュ', gyo: 'ギョ', ja: 'ジャ', ju: 'ジュ', jo: 'ジョ',
+    shi: 'シ', chi: 'チ', tsu: 'ツ', fu: 'フ', ji: 'ジ',
+    ka: 'カ', ki: 'キ', ku: 'ク', ke: 'ケ', ko: 'コ', sa: 'サ', si: 'シ', su: 'ス', se: 'セ', so: 'ソ',
+    ta: 'タ', ti: 'チ', tu: 'ツ', te: 'テ', to: 'ト', na: 'ナ', ni: 'ニ', nu: 'ヌ', ne: 'ネ', no: 'ノ',
+    ha: 'ハ', hi: 'ヒ', he: 'ヘ', ho: 'ホ', ma: 'マ', mi: 'ミ', mu: 'ム', me: 'メ', mo: 'モ',
+    ya: 'ヤ', yu: 'ユ', yo: 'ヨ', ra: 'ラ', ri: 'リ', ru: 'ル', re: 'レ', ro: 'ロ',
+    wa: 'ワ', wo: 'ヲ', ga: 'ガ', gi: 'ギ', gu: 'グ', ge: 'ゲ', go: 'ゴ',
+    za: 'ザ', zi: 'ジ', zu: 'ズ', ze: 'ゼ', zo: 'ゾ', da: 'ダ', di: 'ヂ', du: 'ヅ', de: 'デ', do: 'ド',
+    ba: 'バ', bi: 'ビ', bu: 'ブ', be: 'ベ', bo: 'ボ', pa: 'パ', pi: 'ピ', pu: 'プ', pe: 'ペ', po: 'ポ',
+    a: 'ア', i: 'イ', u: 'ウ', e: 'エ', o: 'オ', n: 'ン',
+  };
+  return String(value ?? '').split(/(\s+)/u).map((part) => {
+    if (!/\p{Script=Latin}/u.test(part)) return part;
+    let remaining = part.toLocaleLowerCase().replace(/[^a-z]/g, '');
+    let output = '';
+    while (remaining.length) {
+      if (remaining.length > 1 && remaining[0] === remaining[1] && !'aeioun'.includes(remaining[0])) {
+        output += 'ッ';
+        remaining = remaining.slice(1);
+        continue;
+      }
+      const key = [remaining.slice(0, 3), remaining.slice(0, 2), remaining.slice(0, 1)].find((candidate) => syllables[candidate]);
+      if (!key) {
+        remaining = remaining.slice(1);
+        continue;
+      }
+      output += syllables[key];
+      remaining = remaining.slice(key.length);
+    }
+    return output;
+  }).join('');
+}
+
 /* =====================================================================
    1. SIMILARITY & LEVENSHTEIN DISTANCE FILTER
 ===================================================================== */
@@ -1088,7 +1163,15 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
   // Family policy controls construction strategies, titles, gender morphology and token handling.
   const strategies: GenerationStrategy[] = linguisticPolicy.strategies;
   const explicitLanguageRules = genLanguage !== 'auto' ? LANGUAGE_PHONETICS[genLanguage] : undefined;
-  const usesLanguageRoots = Boolean(explicitLanguageRules && explicitLanguageRules.prefixes.length > 0);
+  // Keep the selected generator's thematic vocabulary for Latin locales.
+  // Arabic and anime/Japanese use phonetic rendering of those same category roots.
+  // Generic language roots remain a fallback for other non-Latin locales pending
+  // reviewed category-by-language lexical banks.
+  const usesLanguageRoots = Boolean(
+    explicitLanguageRules && explicitLanguageRules.prefixes.length > 0 &&
+    !getLanguageScriptProfile(genLanguage).scripts.includes('Latin') &&
+    genLanguage !== 'ar' && !(genLanguage === 'ja' && targetGenerator === 'anime')
+  );
   const keywordScriptsMatch = !cleanKw || genLanguage === 'auto' ||
     (isKeywordCompatibleWithLanguage(cleanKw, genLanguage) &&
       getScriptsInText(cleanKw).every((script) => getLanguageScriptProfile(genLanguage).scripts.includes(script)));
@@ -1230,7 +1313,7 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       // banks are not consistently localized and can otherwise inject French
       // words into Korean, Russian, and other explicitly localized results.
       const langRules = LANGUAGE_PHONETICS[genLanguage] || LANGUAGE_PHONETICS.auto;
-      const localizedTitles = linguisticPolicy.allowLocalizedTitles && genLanguage !== 'auto' ? langRules.titleWords : [];
+      const localizedTitles = linguisticPolicy.allowLocalizedTitles && genLanguage !== 'auto' && genLanguage !== 'ar' && !(genLanguage === 'ja' && targetGenerator === 'anime') ? langRules.titleWords : [];
       const categoryTitles = genLanguage === 'auto' ? (resolved.titles || []) : [];
       const titlesPool = localizedTitles.length > 0 ? localizedTitles : categoryTitles;
 
@@ -1274,6 +1357,13 @@ function generateNamesInternal(options: GenerateOptions): GeneratedName[] {
       } else if (/a$/i.test(formattedName) && formattedName.length > 4) {
         formattedName = formattedName.slice(0, -1) + 'an';
       }
+    }
+
+    // Keep category roots intact while rendering them in the selected script.
+    if (keywordScriptsMatch && genLanguage === 'ar') {
+      formattedName = transliterateLatinToArabic(formattedName);
+    } else if (keywordScriptsMatch && genLanguage === 'ja' && targetGenerator === 'anime') {
+      formattedName = transliterateAnimeToKatakana(formattedName);
     }
 
     const score = scoreCandidate(formattedName, length, gender);
