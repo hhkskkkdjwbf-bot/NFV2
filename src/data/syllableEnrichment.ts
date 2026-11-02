@@ -52,11 +52,7 @@ const POOLS: Record<string, SyllablePool | Record<string, SyllablePool>> = {
     suffixes: split('ar ax eon ex ion ix on or os um us yx ara ia ine ova tron vex zar nex xis ron dyne'),
     middle: split('a e o ar ax ex ion'),
   },
-  anime: {
-    prefixes: split('Aki Daichi Eiji Fumi Gin Haru Isamu Jun Kazu Ren Mako Naru Oka Rin Sora Tsuki Umi Yui Zen Hikaru Kuro Shiro Akane Mizu Raiden Taiga'),
-    suffixes: split('ji ro ta ka ya mi ri ko ma na sa to shi zen maru hiko kichi nosuke rou ki no ra'),
-    middle: split('a i o ka na ta'),
-  },
+  // Anime intentionally has no global pool: each archetype keeps its own linguistic roots.
   warrior: {
     knight: {
       prefixes: split('Aldr Bert Ced Dun Edm Godr Hub Lanc Osw Rand Rod Stef Thib Wal Gaw Gal Bors Ywain'),
