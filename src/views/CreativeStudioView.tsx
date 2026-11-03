@@ -4,7 +4,7 @@ import { UNICODE_STYLES, VISUAL_EFFECTS } from '../services/textStyler';
 import { generateUsernameSuggestions, UsernameStyle } from '../services/usernameDesigner';
 import { DECORATIVE_SEPARATORS, getBioCaptionTemplates } from '../services/bioCaptionStudio';
 import { TEXT_ART_ITEMS, filterTextArtItems, readTextArtFavorites, saveTextArtFavorites, SymbolCategory } from '../services/textArtStudio';
-import { getAppSettings, subscribeToSettings } from '../services/settings';
+import { getAppSettings, saveAppSettings, subscribeToSettings } from '../services/settings';
 import { GeneratorId } from '../types';
 
 type Tool = 'type' | 'nickname' | 'symbols' | 'bio';
