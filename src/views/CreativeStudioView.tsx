@@ -43,7 +43,7 @@ export const CreativeStudioView:React.FC<Props>=({initialText,onNavigate})=>{
  useEffect(()=>{saveTextArtFavorites(favorites)},[favorites]);
  const style=UNICODE_STYLES.find(v=>v.id===styleId)||UNICODE_STYLES[0],effect=VISUAL_EFFECTS.find(v=>v.id===effectId);
  const output=prefix+style.transform(name||'')+suffix;
- const activeOutput=tool==='bio'&&bio?bio:output;
+ const activeOutput=tool==='bio'?bio:output;
  const symbols=useMemo(()=>filterTextArtItems(TEXT_ART_ITEMS,query,category as 'all'|'stars'|'arrows'|'hearts'|'decorative'|'nature'|'kaomoji',favorites,favoritesOnly),[category,query,favorites,favoritesOnly]);
  const templates=getBioCaptionTemplates(lang,bioKind);
  const notify=(v:string)=>{setNotice(v);window.setTimeout(()=>setNotice(''),1600)};
