@@ -1,0 +1,222 @@
+/* NameForge unified design system
+   Shared visual language for every route. Keep feature-specific layout in view components. */
+@layer base {
+  :root {
+    --nf-accent: #9b7cff;
+    --nf-accent-strong: #7c5ce7;
+    --nf-cyan: #55d6e8;
+    --nf-page-bg: #080b16;
+    --nf-surface: rgba(17, 24, 43, 0.88);
+    --nf-surface-raised: #151d31;
+    --nf-border: rgba(148, 163, 184, 0.16);
+    --nf-ink: #f4f6ff;
+    --nf-muted: #a2aec3;
+    --nf-radius: 1.25rem;
+    --nf-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-padding-top: 6rem;
+    scrollbar-gutter: stable;
+  }
+
+  body {
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    color: #fff;
+    background: rgba(124, 92, 231, 0.72);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--nf-accent);
+    outline-offset: 3px;
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+  }
+}
+
+html.light {
+  --nf-page-bg: #f4f8ff;
+  --nf-surface: rgba(255, 255, 255, 0.94);
+  --nf-surface-raised: #ffffff;
+  --nf-border: rgba(83, 125, 169, 0.2);
+  --nf-ink: #173653;
+  --nf-muted: #526d86;
+  --nf-shadow: 0 16px 42px rgba(36, 92, 145, 0.08);
+}
+
+.nf-app-shell {
+  isolation: isolate;
+  min-height: 100svh;
+  background: var(--nf-page-bg);
+  color: var(--nf-ink);
+}
+
+.nf-site-header {
+  background: color-mix(in srgb, var(--nf-page-bg) 88%, transparent) !important;
+  border-color: var(--nf-border) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
+}
+
+.nf-site-header > div {
+  min-height: 4.5rem;
+}
+
+.nf-site-header nav > button,
+.nf-site-header nav > div > button {
+  min-height: 2.65rem;
+  border-radius: .75rem;
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+}
+
+.nf-site-header nav > button:hover,
+.nf-site-header nav > div > button:hover {
+  background: rgba(148, 163, 184, .08);
+}
+
+.nf-site-main {
+  width: 100%;
+  min-width: 0;
+}
+
+.nf-page {
+  width: 100%;
+  max-width: 1560px;
+  margin-inline: auto;
+  min-width: 0;
+}
+
+.nf-page h1 {
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.nf-page h2 {
+  text-wrap: balance;
+  letter-spacing: -.02em;
+}
+
+.nf-page p {
+  text-wrap: pretty;
+}
+
+.nf-page :is(article, [role="dialog"]) {
+  border-color: var(--nf-border);
+}
+
+.nf-page article {
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.nf-page article:hover {
+  box-shadow: var(--nf-shadow);
+}
+
+.nf-page :is(input, select, textarea) {
+  min-width: 0;
+  border-radius: .8rem;
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.nf-page :is(input, select, textarea):focus {
+  box-shadow: 0 0 0 3px rgba(155, 124, 255, .16);
+}
+
+.nf-page :is(button, a) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nf-page button {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: .18s;
+  transition-timing-function: ease;
+}
+
+.nf-home > section {
+  scroll-margin-top: 6rem;
+}
+
+.nf-home > section:first-child {
+  padding-top: clamp(2.5rem, 7vw, 6rem);
+}
+
+.nf-catalog .grid > article {
+  min-height: 16rem;
+  border-radius: 1.35rem;
+  background-color: var(--nf-surface);
+}
+
+.nf-generator-detail #generator {
+  scroll-margin-top: 6rem;
+}
+
+.nf-library,
+.nf-creative-studio {
+  min-height: 65vh;
+}
+
+.nf-site-footer {
+  border-color: var(--nf-border) !important;
+  background: color-mix(in srgb, var(--nf-page-bg) 94%, #000 6%) !important;
+}
+
+.nf-site-footer a,
+.nf-site-footer button {
+  transition: color .18s ease, transform .18s ease;
+}
+
+.nf-site-footer a:hover,
+.nf-site-footer button:hover {
+  transform: translateX(2px);
+}
+
+[dir="rtl"] .nf-site-footer a:hover,
+[dir="rtl"] .nf-site-footer button:hover {
+  transform: translateX(-2px);
+}
+
+@media (max-width: 767px) {
+  .nf-site-header > div {
+    min-height: 4.1rem;
+  }
+
+  .nf-page {
+    padding-inline: 1rem;
+  }
+
+  .nf-page h1 {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+
+  .nf-catalog .grid > article {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
