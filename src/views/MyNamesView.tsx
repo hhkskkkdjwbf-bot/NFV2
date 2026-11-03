@@ -360,7 +360,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(currentLanguage);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={currentLanguage} className="nf-page nf-page-layout nf-library py-10 text-start">
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={currentLanguage} className="nf-page nf-page-layout nf-library nf-personal-workspace py-10 text-start">
       {/* Hidden file input for import */}
       <input
         type="file"
@@ -481,7 +481,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
       )}
 
       {/* Stats Bar */}
-      <div className="grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+      <div className="nf-library-stats grid grid-cols-2 sm:grid-cols-6 gap-2.5">
         <div className="p-3.5 rounded-2xl bg-[#0f172a] border border-slate-800 text-center">
           <div className="text-xl sm:text-2xl font-black text-white">{stats.total}</div>
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">
@@ -521,7 +521,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
       </div>
 
       {/* Main Mode Tabs: Noms | Collections | Historique */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-3">
+      <div className="nf-library-tabs flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveMainTab('names')}
@@ -607,7 +607,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
       {activeMainTab === 'names' && (
         <div className="space-y-6">
           {/* Controls & Search Toolbar */}
-          <div className="space-y-3.5 p-4 rounded-3xl bg-[#0f172a] border border-slate-800">
+          <div className="nf-library-toolbar space-y-3.5 p-4 rounded-3xl bg-[#0f172a] border border-slate-800">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               {/* Status filter tabs */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
@@ -748,7 +748,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="nf-library-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredEntries.map((item) => {
                 const assignedCol = collections.find((c) => c.id === item.collectionId);
                 const isSelected = selectedForCompare.includes(item.name);
@@ -965,7 +965,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="nf-collections-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {collections.map((col) => {
                 const count = entries.filter((e) => e.collectionId === col.id).length;
                 return (
@@ -1063,7 +1063,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <div className="nf-history-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
               {history.map((item) => {
                 const isSaved = entries.some((e) => e.name.toLowerCase() === item.name.toLowerCase() && e.saved);
                 const isLiked = entries.some((e) => e.name.toLowerCase() === item.name.toLowerCase() && e.liked);
