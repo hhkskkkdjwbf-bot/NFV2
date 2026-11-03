@@ -97,7 +97,7 @@ export const GeneratorControl: React.FC<GeneratorControlProps> = ({
   }, [generatorId, styles, style, onStyleChange]);
 
   return (
-    <div className="w-full space-y-4">
+    <div className="nf-generator-controls w-full space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
         {/* 1. Style selector */}
         <div className="lg:col-span-1">
