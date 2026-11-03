@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { filterTextArtItems, generateTextArtCss, readTextArtFavorites, saveTextArtFavorites, TEXT_ART_ITEMS, SYMBOL_FAVORITES_KEY } from '../services/textArtStudio';
+import { filterTextArtItems, generateTextArtCss, readTextArtFavorites, saveTextArtFavorites, TEXT_ART_ITEMS, SYMBOL_FAVORITES_KEY, TEXT_ART_PRESETS } from '../services/textArtStudio';
 
 const filtered = filterTextArtItems(TEXT_ART_ITEMS, 'heart');
 assert.ok(filtered.some(item => item.id === 'heart'));
@@ -23,3 +23,7 @@ assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'rocket').some(item => item.id === 
 assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'pizza', 'food').some(item => item.value === '🍕'));
 assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'game', 'gaming').length > 0);
 console.log('Phase 5 Text Art tests passed');
+
+assert.ok(TEXT_ART_PRESETS.length >= 12, 'at least twelve presets should exist');
+assert.equal(new Set(TEXT_ART_PRESETS.map(item => item.id)).size, TEXT_ART_PRESETS.length, 'preset IDs must be unique');
+for (const item of TEXT_ART_PRESETS) { assert.ok(item.style.fontFamily && item.style.fontSize > 0 && item.style.fontWeight >= 100); assert.ok(item.style.backgroundColor && item.style.textTransform); assert.ok(generateTextArtCss(item.style).includes('text-transform:')); }
