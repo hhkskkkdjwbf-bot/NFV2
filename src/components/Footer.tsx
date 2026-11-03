@@ -56,7 +56,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const creativeGens = ALL_GENERATORS_LIST.filter((g) => g.category === 'creative').slice(0, 5);
 
   return (
-    <footer lang={settings.language} dir={isRtlLanguage ? 'rtl' : 'ltr'} className="border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
+    <footer lang={settings.language} dir={isRtlLanguage ? 'rtl' : 'ltr'} className="nf-site-footer border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
       <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
           {/* Brand Col */}
