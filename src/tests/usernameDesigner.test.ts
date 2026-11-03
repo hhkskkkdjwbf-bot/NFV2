@@ -21,7 +21,7 @@ assert(validateUsername('okay', 8, 3).errors.includes('invalid-limits'), 'Invali
 
 for (const style of ['gaming', 'fantasy', 'minimal', 'elegant'] as const) {
   const names = generateUsernameSuggestions({ baseName: 'Nova', style, minLength: 3, maxLength: 18, quantity: 16 });
-  assert(names.length > 0, `${style} style generates suggestions`);
+  assert(names.length === 16, `${style} style returns the requested 16 unique suggestions`);
   assert(new Set(names.map((name) => name.toLowerCase())).size === names.length, `${style} style avoids duplicates`);
   assert(names.every((name) => validateUsername(name, 3, 18).valid), `${style} style respects character and length rules`);
 }
@@ -30,7 +30,7 @@ const prefixed = generateUsernameSuggestions({
   baseName: 'Nova', style: 'gaming', prefix: 'Neo', suffix: 'GG', minLength: 3, maxLength: 20, quantity: 4,
 });
 assert(prefixed.every((name) => name.startsWith('Neo') && name.endsWith('GG')), 'Custom prefixes and suffixes are applied');
-assert(generateUsernameSuggestions({ style: 'minimal', minLength: 3, maxLength: 4, quantity: 10 }).every((name) => name.length <= 4), 'Short maximum length is respected');
+assert(generateUsernameSuggestions({ style: 'minimal', minLength: 3, maxLength: 4, quantity: 10 }).every((name) => name.length <= 4), 'Short maximum length is respected');\nconst minimalNames = generateUsernameSuggestions({ baseName: 'Nova', style: 'minimal', minLength: 3, maxLength: 24, quantity: 16 });\nassert(minimalNames.length === 16, 'Minimal style with a base name reaches the requested quantity');\nassert(minimalNames.some((name) => name.toLowerCase().includes('axis')), 'Minimal style uses its style-specific root vocabulary');
 assert(generateUsernameSuggestions({ style: 'gaming', minLength: 20, maxLength: 4 }).length === 0, 'Invalid generation limits return no results');
 
 console.log('\nPhase 3 username designer tests: all checks passed.');
