@@ -99,7 +99,7 @@ try {
           const tokens = ['--nf-page-bg', '--nf-surface', '--nf-ink', '--nf-muted', '--nf-accent', '--nf-border', '--nf-motion-fast', '--nf-motion-normal', '--nf-motion-slow'];
           const colors = Object.fromEntries(tokens.map((token) => [token, rootStyle.getPropertyValue(token).trim()]));
           const inkColor = getComputedStyle(document.querySelector('main') || document.body).color;
-          const pageBackground = getComputedStyle(document.querySelector('.nf-app-shell') || document.body).backgroundColor;
+          const pageBackground = getComputedStyle(document.body).backgroundColor;
           const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
           const motionDurations = motionNodes.map((element) => getComputedStyle(element).transitionDuration.split(',').map((value) => parseFloat(value) || 0));
           return {
@@ -170,7 +170,7 @@ try {
 
         // Compare repeat captures at pixel level on stable desktop routes. The report
         // records the changed-pixel ratio so later commits can be reviewed consistently.
-        if (viewport.name === 'desktop' && theme === 'dark' && ['home', 'catalog', 'creative-studio'].includes(view.name)) {
+        if (viewport.name === 'desktop' && ['home', 'catalog', 'creative-studio'].includes(view.name)) {
           const firstCapture = await page.screenshot({ fullPage: false, animations: 'disabled' });
           await page.reload({ waitUntil: 'networkidle', timeout: 45000 });
           await page.waitForTimeout(350);
