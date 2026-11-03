@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 
 class MemoryStorage {
   private values = new Map<string, string>();
+  get length() { return this.values.size; }
+  key(index: number) { return [...this.values.keys()][index] ?? null; }
   getItem(key: string) { return this.values.get(key) ?? null; }
   setItem(key: string, value: string) { this.values.set(key, String(value)); }
   removeItem(key: string) { this.values.delete(key); }
@@ -24,6 +26,7 @@ const { resetAllLocalData } = await import('../services/settings');
 
 const personalKeys = [
   'nameforge_saved_names',
+  'nameforge_saved_projects',
   'nameforge_collections',
   'nameforge_generation_history',
   'nameforge_recent_names',
@@ -32,6 +35,7 @@ const personalKeys = [
 ];
 
 for (const key of personalKeys) memory.setItem(key, 'test-data');
+memory.setItem('nameforge_rating_Aster Vale', '5');
 memory.setItem('nameforge_settings', JSON.stringify({
   language: 'fr',
   theme: 'light',
@@ -46,6 +50,7 @@ resetAllLocalData();
 for (const key of personalKeys) {
   assert.equal(memory.getItem(key), null, key + ' should be cleared by reset');
 }
+assert.equal(memory.getItem('nameforge_rating_Aster Vale'), null, 'rating entries should be cleared');
 assert.ok(memory.getItem('nameforge_settings'), 'reset must preserve user preferences');
 assert.equal(memory.getItem('unrelated-app-data'), 'must-remain', 'reset must not touch unrelated storage');
 
