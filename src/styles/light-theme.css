@@ -591,3 +591,8 @@ html.light .nf-site-footer {
   color: #344f70 !important;
   border-color: #cbdced !important;
 }
+
+html.light .nf-app-shell button:not(:disabled):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell a[role="button"]:not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+  color: #12385f !important;
+}
