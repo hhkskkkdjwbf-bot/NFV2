@@ -407,6 +407,9 @@ try {
           await favoritesFilter.click();
           if (!(await page.getByRole('button', { name: 'Remove from favorites' }).count())) failures.push('creative-studio: favorites-only filter did not show the saved symbol');
           await favoritesFilter.click();
+          await page.reload({ waitUntil: 'networkidle', timeout: 45000 });
+          await page.getByRole('button', { name: 'Symbols & art' }).click();
+          if (!(await page.getByRole('button', { name: 'Remove from favorites' }).count())) failures.push('creative-studio: favorite did not survive a page reload');
         }
       }
       await page.getByRole('button', { name: 'Nicknames' }).click();
