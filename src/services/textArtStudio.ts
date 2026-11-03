@@ -25,7 +25,6 @@ export const TEXT_ART_ITEMS: TextArtItem[] = [
     ['leaf','❧','Leaf'],['clover','☘','Clover'],['four-leaf','🍀','Four-leaf clover'],['cherry','🍒','Cherries'],['butterfly','🦋','Butterfly'],['sparkles','✨','Sparkles'],['fire','🔥','Fire'],['cloud','☁','Cloud'],['rainbow','🌈','Rainbow'],['planet','🪐','Planet'],
   ].map(([id,value,label])=>({id,value,label,category:'nature' as const,keywords:['nature','emoji']})),
   ...[
-  ...[
     ['smile','😀','Grinning face'],['grin','😁','Beaming face'],['joy','😂','Face with tears of joy'],['rofl','🤣','Rolling laughter'],['smile-eyes','😊','Smiling face'],['blush','😳','Blushing face'],['wink','😉','Winking face'],['cool','😎','Cool face'],['think','🤔','Thinking face'],['shush','🤫','Shushing face'],['mind-blown','🤯','Mind blown'],['party','🥳','Party face'],['star-eyes','🤩','Star-struck'],['nerd','🤓','Nerd face'],['robot','🤖','Robot face'],['alien','👽','Alien'],['ghost','👻','Ghost'],['skull-emoji','💀','Skull emoji'],['clap','👏','Clapping hands'],['raised-hands','🙌','Celebration hands'],['pray','🙏','Folded hands'],['thumbs-up','👍','Thumbs up'],['fire-heart','❤️‍🔥','Heart on fire'],['white-heart','🤍','White heart'],['black-heart','🖤','Black heart'],['blue-heart','💙','Blue heart'],['purple-heart','💜','Purple heart'],['green-heart','💚','Green heart'],['yellow-heart','💛','Yellow heart'],['orange-heart','🧡','Orange heart'],['sparkling-heart','💖','Sparkling heart'],['gift-heart','💝','Heart with ribbon'],
   ].map(([id,value,label])=>({id,value,label,category:'emoji' as const,keywords:['emoji','face','expression','reaction']})),
   ...[
@@ -43,6 +42,7 @@ export const TEXT_ART_ITEMS: TextArtItem[] = [
   ...[
     ['globe','🌍','Globe Europe Africa'],['globe-americas','🌎','Globe Americas'],['globe-asia','🌏','Globe Asia'],['compass','🧭','Compass'],['map','🗺️','World map'],['location','📍','Location pin'],['airplane','✈️','Airplane'],['departures','🛫','Departures'],['arrivals','🛬','Arrivals'],['train','🚆','Train'],['car','🚗','Car'],['bus','🚌','Bus'],['ship','🚢','Ship'],['sailboat','⛵','Sailboat'],['mountain','⛰️','Mountain'],['camping','🏕️','Camping'],['beach','🏖️','Beach'],['tent','⛺','Tent'],['hotel','🏨','Hotel'],['luggage','🧳','Luggage'],['ticket','🎟️','Admission ticket'],['camera','📸','Camera'],
   ].map(([id,value,label])=>({id,value,label,category:'travel' as const,keywords:['travel','trip','journey','holiday','place']})),
+  ...[
     ['shrug','¯\\_(ツ)_/¯','Shrug'],['happy','(＾▽＾)','Happy'],['excited','(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧','Excited'],['cute','(｡♥‿♥｡)','Cute'],['wave-face','(・ω・)ノ','Waving'],['table-flip','(╯°□°）╯︵ ┻━┻','Table flip'],['calm','(￣▽￣)','Calm'],['cry','(ಥ﹏ಥ)','Crying'],['look','(¬‿¬)','Mischievous'],['sleep','(－ω－) zzZ','Sleepy'],['dance','♪┏(・o･)┛♪','Dancing'],['cat','(=^･ω･^=)','Cat'],['bear','ʕ•ᴥ•ʔ','Bear'],['lenny','( ͡° ͜ʖ ͡°)','Lenny face'],['cheer','٩(◕‿◕｡)۶','Cheering'],['love-face','(づ￣ ³￣)づ','Affection'],
   ].map(([id,value,label])=>({id,value,label,category:'kaomoji' as const,keywords:['kaomoji','face','emoticon']})),
 ];
