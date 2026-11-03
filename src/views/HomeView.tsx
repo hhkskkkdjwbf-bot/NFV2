@@ -425,7 +425,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(settings.language);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={settings.language} className="nf-page nf-home space-y-24 pb-20 overflow-hidden">
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={settings.language} className="nf-page nf-page-layout nf-home pb-20 overflow-hidden">
       {/* ========================================================
           1. SECTION HERO & INTRODUCTION
       ========================================================= */}
@@ -500,7 +500,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           1.5. SECTION FORGE EXPRESS DIRECTE (TESTEZ IMMÉDIATEMENT)
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 -mt-10 sm:-mt-8 relative z-20">
+      <section className="nf-container -mt-10 sm:-mt-8 relative z-20">
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#131b2e] via-[#0d1424] to-[#080d19] border border-purple-500/40 shadow-2xl space-y-6 relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
             <div>
@@ -613,7 +613,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           2. SECTION AVANTAGES DE NAMEFORGE
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="nf-animated-heading text-2xl sm:text-4xl font-black tracking-tight mb-3">
             {t.advantages.title}
@@ -726,7 +726,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           4. CATÉGORIES POPULAIRES & RECOMMANDÉES
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold uppercase tracking-wider mb-2">
@@ -792,7 +792,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           5. EXPLORER LES FAMILLES — LE CATALOGUE RESTE SUR SA PAGE
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 py-8">
+      <section className="nf-container py-8">
         <div className="relative overflow-hidden rounded-3xl border border-purple-500/20 bg-gradient-to-br from-purple-500/10 via-[#0f172a] to-cyan-500/10 p-6 sm:p-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-purple-300 mb-4">
             <Compass className="h-4 w-4" />
@@ -836,7 +836,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           6. SECTION NOMS LES MIEUX NOTÉS (CLASSEMENT PAR ÉTOILES INDÉPENDANT)
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-[#121728] via-[#0f1424] to-[#0a0d18] border border-amber-500/20 shadow-2xl space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
             <div>
@@ -990,7 +990,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           7. SECTION COMMENT UTILISER NAMEFORGE (3 ÉTAPES)
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h2 className="nf-animated-heading text-2xl sm:text-4xl font-black tracking-tight mb-3">
             {t.howItWorks.title}
@@ -1027,7 +1027,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           8. SECTION FAQ RÉÉCRITE (18 QUESTIONS COMPLÈTES)
       ========================================================= */}
-      <section ref={faqSectionRef} data-testid="home-faq-section" className="max-w-4xl mx-auto px-4 sm:px-6">
+      <section ref={faqSectionRef} data-testid="home-faq-section" className="nf-reading-container">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
             <HelpCircle className="w-3.5 h-3.5" />
@@ -1102,7 +1102,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           9. BANNIÈRE D’APPEL À L’ACTION (CTA)
       ========================================================= */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-purple-900/50 via-indigo-900/40 to-cyan-900/40 border border-purple-500/40 shadow-2xl text-center space-y-6">
           <h2 className="nf-animated-heading text-3xl sm:text-4xl font-black tracking-tight">
             {homeCta.title}
