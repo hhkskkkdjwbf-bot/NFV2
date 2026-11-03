@@ -57,7 +57,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
   return (
     <footer lang={settings.language} dir={isRtlLanguage ? 'rtl' : 'ltr'} className="nf-site-footer border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
-      <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <div className="nf-container">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
           {/* Brand Col */}
           <div className="md:col-span-2 space-y-4">
