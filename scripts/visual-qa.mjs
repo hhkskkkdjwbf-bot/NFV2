@@ -73,7 +73,7 @@ try {
         const state = await page.evaluate(() => {
           const rootStyle = getComputedStyle(document.documentElement);
           const color = (value) => {
-            const parts = value.match(/[\\d.]+/g)?.map(Number) || [];
+            const parts = value.match(/[\d.]+/g)?.map(Number) || [];
             if (parts.length < 3) return null;
             const channels = parts.slice(0, 3).map((part) => part / 255).map((part) =>
               part <= 0.04045 ? part / 12.92 : ((part + 0.055) / 1.055) ** 2.4
@@ -99,7 +99,7 @@ try {
           const tokens = ['--nf-page-bg', '--nf-surface', '--nf-ink', '--nf-muted', '--nf-accent', '--nf-border', '--nf-motion-fast', '--nf-motion-normal', '--nf-motion-slow'];
           const colors = Object.fromEntries(tokens.map((token) => [token, rootStyle.getPropertyValue(token).trim()]));
           const inkColor = getComputedStyle(document.querySelector('main') || document.body).color;
-          const pageBackground = rootStyle.getPropertyValue('--nf-page-bg').trim();
+          const pageBackground = getComputedStyle(document.querySelector('.nf-app-shell') || document.body).backgroundColor;
           const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
           const motionDurations = motionNodes.map((element) => getComputedStyle(element).transitionDuration.split(',').map((value) => parseFloat(value) || 0));
           return {
@@ -139,7 +139,7 @@ try {
           inkContrast: contrast(inkColor, pageBackground),
           reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
           maxTransitionSeconds: motionDurations.flat().reduce((max, value) => Math.max(max, value), 0),
-          });
+          };
         });
 
         const label = viewport.name + '-' + theme + '-' + view.name;
