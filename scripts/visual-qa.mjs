@@ -386,6 +386,10 @@ try {
       await nameInput.fill('Nova');
       const initialPreview = (await preview.innerText()).trim();
       if (!initialPreview) failures.push('creative-studio: live canvas did not render the shared name');
+      const initialEffectSelect = page.locator('aside').last().locator('select').first();
+      await initialEffectSelect.selectOption('cyber-neon');
+      const effectBackground = await preview.evaluate((el) => getComputedStyle(el).backgroundColor);
+      if (effectBackground !== 'rgb(5, 7, 20)') failures.push('creative-studio: selected visual effect did not apply its background color (' + effectBackground + ')');
       await page.getByRole('button', { name: 'Symbols & art' }).click();
       const symbol = page.locator('aside').last().locator('button[title]:visible').first();
       if (!(await symbol.count())) failures.push('creative-studio: searchable symbol library is missing');
@@ -413,6 +417,14 @@ try {
         await applyButton.click();
         if (!(await preview.innerText()).trim()) failures.push('creative-studio: applying a nickname emptied the canvas');
       }
+      await page.getByRole('button', { name: 'Typography' }).click();
+      const stylePanel = page.locator('aside').last();
+      await stylePanel.getByRole('button', { name: /Bold Serif Classic/ }).click();
+      const effectSelect = stylePanel.locator('select').first();
+      await effectSelect.selectOption('pure-gold');
+      const styleInputs = stylePanel.locator('input');
+      await styleInputs.nth(0).fill('★ ');
+      await styleInputs.nth(1).fill(' ★');
       await page.getByRole('button', { name: 'Bio & captions' }).click();
       const template = page.locator('main').getByRole('button').filter({ hasText: /Personal intro|Content creator|Small business/ }).first();
       if (await template.count()) {
@@ -428,6 +440,11 @@ try {
         else {
           await savedBio.click();
           if ((await preview.innerText()).trim() !== 'My saved bio\\nLine two') failures.push('creative-studio: restoring a saved design did not restore its bio content');
+          await page.getByRole('button', { name: 'Typography' }).click();
+          const restoredPanel = page.locator('aside').last();
+          if (await restoredPanel.locator('select').first().inputValue() !== 'pure-gold') failures.push('creative-studio: saved visual effect was not restored');
+          if (await restoredPanel.locator('input').nth(0).inputValue() !== '★ ' || await restoredPanel.locator('input').nth(1).inputValue() !== ' ★') failures.push('creative-studio: saved prefix or suffix was not restored');
+          if (!(await restoredPanel.getByRole('button', { name: /Bold Serif Classic/ }).getAttribute('aria-pressed') === 'true')) failures.push('creative-studio: saved Unicode style was not restored');
         }
       } else failures.push('creative-studio: bio templates are missing');
     }
