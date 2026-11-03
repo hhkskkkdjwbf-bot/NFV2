@@ -108,6 +108,13 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
   });
 
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(language);
+  const hasActiveFilters = Boolean(search.trim()) || selectedCategory !== 'all' || !searchInDescriptions || sortMode !== 'relevance';
+  const resetFilters = () => {
+    setSearch('');
+    setSelectedCategory('all');
+    setSearchInDescriptions(true);
+    setSortMode('relevance');
+  };
 
   return (
     <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-page-layout nf-catalog py-12 space-y-12">
@@ -120,13 +127,13 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
         <p className="text-sm sm:text-base text-slate-300">{t.description}</p>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#0f172a] border border-slate-800">
+      <section className="nf-catalog-filters space-y-4 rounded-2xl border border-slate-800 bg-[#0f172a] p-4 sm:p-5" aria-label={t.search}>
+        <div className="nf-catalog-filter-top flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2" />
             <input type="text" aria-label={t.search} placeholder={t.search} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-10 ps-10 pe-3 bg-[#0a0f1d] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 shadow-inner" />
           </div>
-          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto justify-end">
+          <div className="nf-catalog-category-list flex items-center gap-2 flex-wrap w-full lg:w-auto lg:justify-end" role="group" aria-label={t.categories.all}>
             <button onClick={() => {
               const randomGen = ALL_GENERATORS_LIST[Math.floor(Math.random() * ALL_GENERATORS_LIST.length)];
               onNavigate('generator-detail', randomGen.id);
@@ -140,7 +147,7 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
             ))}
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-2">
+        <div className="nf-catalog-filter-options flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <label className="inline-flex items-center gap-2 text-xs text-slate-400">
             <input type="checkbox" checked={searchInDescriptions} onChange={(event) => setSearchInDescriptions(event.target.checked)} className="accent-purple-500" />
             {language === 'fr' ? 'Inclure les descriptions et guides' : language === 'ar' ? 'تضمين الأوصاف والأدلة' : 'Search descriptions and guides'}
@@ -153,26 +160,25 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
             </select>
           </label>
         </div>
-        <div className="flex items-center justify-between px-2 text-xs text-slate-400 font-medium">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/80 pt-3 text-xs text-slate-400 font-medium" aria-live="polite">
           <span>{t.shown} <strong className="text-white">{filtered.length}</strong> {t.of} {ALL_GENERATORS_LIST.length} {t.generatorWord}</span>
-          {search && <button onClick={() => setSearch('')} className="text-purple-400 hover:underline cursor-pointer text-[11px]">{t.clear}</button>}
+          {hasActiveFilters && <button onClick={resetFilters} className="rounded-lg border border-purple-500/30 px-3 py-2 text-purple-300 hover:bg-purple-500/10 cursor-pointer text-[11px]">{t.reset}</button>}
         </div>
-      </div>
+      </section>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="nf-generator-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filtered.map((gen) => (
-          <article key={gen.id} className="group relative p-6 rounded-3xl bg-gradient-to-b from-[#101728] to-[#0a0f1d] border border-slate-800 hover:border-purple-500/60 transition-all duration-200 hover:-translate-y-1 shadow-lg flex flex-col justify-between">
+          <article key={gen.id} className="nf-generator-card group relative p-6 rounded-3xl bg-gradient-to-b from-[#101728] to-[#0a0f1d] border border-slate-800 hover:border-purple-500/60 transition-all duration-200 hover:-translate-y-1 shadow-lg flex flex-col">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-3xl group-hover:scale-110 transition">{gen.icon}</span>
                 <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300">{categoryLabel(gen.category, gen.category)}</span>
               </div>
-              <h2 className="text-lg font-black text-white group-hover:text-cyan-300 transition mb-2">{getLocalizedGeneratorTitle(gen.id, language, gen.title)}</h2>
-              <p className="text-xs text-slate-400 leading-relaxed min-h-[48px] line-clamp-3">{getLocalizedGeneratorDescription(gen, language)}</p>
+              <h2 className="nf-generator-card-title text-lg font-black text-white group-hover:text-cyan-300 transition mb-2">{getLocalizedGeneratorTitle(gen.id, language, gen.title)}</h2>
+              <p className="nf-generator-card-description text-xs text-slate-400 leading-relaxed line-clamp-3">{getLocalizedGeneratorDescription(gen, language)}</p>
             </div>
-            <div className="pt-6 mt-4 border-t border-slate-800/80 flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-500 uppercase">{categoryLabel(gen.category, gen.category)}</span>
-              <button onClick={() => onNavigate('generator-detail', gen.id)} className="py-1.5 px-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-purple-600/30">
+            <div className="nf-generator-card-footer mt-auto pt-5 border-t border-slate-800/80 flex items-center justify-end">
+              <button onClick={() => onNavigate('generator-detail', gen.id)} className="py-2 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-purple-600/30">
                 <span>{t.forge}</span><ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -181,9 +187,10 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
       </div>
 
       {filtered.length === 0 && (
-        <div className="text-center py-12 text-slate-400">
+        <div className="nf-catalog-empty rounded-2xl border border-dashed border-slate-700 px-5 py-14 text-center text-slate-400">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800 text-slate-300"><Search className="h-5 w-5" /></div>
           <p className="text-sm">{t.empty} « {search} ».</p>
-          <button onClick={() => { setSearch(''); setSelectedCategory('all'); }} className="mt-3 text-xs text-purple-400 hover:underline cursor-pointer">{t.reset}</button>
+          <button onClick={resetFilters} className="mt-4 rounded-xl bg-purple-600 px-4 py-2 text-xs font-bold text-white hover:bg-purple-500 cursor-pointer">{t.reset}</button>
         </div>
       )}
     </div>
