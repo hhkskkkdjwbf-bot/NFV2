@@ -897,8 +897,7 @@ html.light {
     font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
   }
 
-  .nf-studio-settings .max-h-\\[350px\\],
-  .nf-studio-settings .max-h-\\[420px\\] {
+  .nf-studio-settings [class*="max-h-"] {
     max-height: 16rem;
   }
 
