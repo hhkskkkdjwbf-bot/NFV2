@@ -1,199 +1,459 @@
-/* NameForge light theme refinement.
-   Every selector is scoped to html.light; the dark theme is intentionally untouched. */
+/* NameForge — full light-theme system.
+   Strictly scoped to html.light. Dark theme styles are not modified. */
 
 html.light {
   color-scheme: light;
-  --nf-page-bg: #f2f7fd;
+  --nf-page-bg: #f3f6fc;
   --nf-surface: #ffffff;
   --nf-surface-raised: #ffffff;
-  --nf-surface-muted: #edf3fa;
-  --nf-border: #d6e2ef;
-  --nf-ink: #173653;
-  --nf-muted: #526d86;
-  --nf-subtle: #647f98;
-  --nf-accent: #6d5bd0;
-  --nf-accent-strong: #5945b8;
-  --nf-accent-soft: rgba(109, 91, 208, .13);
-  --nf-shadow: 0 16px 42px rgba(35, 72, 112, .09);
-  --nf-shadow-soft: 0 6px 20px rgba(35, 72, 112, .06);
-  --nf-line: #d6e2ef;
-  background-color: var(--nf-page-bg);
+  --nf-surface-muted: #edf2fb;
+  --nf-border: #d8e1ef;
+  --nf-ink: #17243b;
+  --nf-muted: #53647d;
+  --nf-subtle: #71819a;
+  --nf-accent: #6554d9;
+  --nf-accent-strong: #5140c2;
+  --nf-accent-soft: rgba(101, 84, 217, .14);
+  --nf-cyan: #0891b2;
+  --nf-shadow: 0 22px 55px rgba(42, 61, 105, .11);
+  --nf-shadow-soft: 0 8px 24px rgba(42, 61, 105, .075);
+  --nf-line: #d8e1ef;
+  background: var(--nf-page-bg);
   color: var(--nf-ink);
 }
 
 html.light body {
   color: var(--nf-ink) !important;
-  background-color: var(--nf-page-bg) !important;
+  background: #f3f6fc !important;
   background-image:
-    radial-gradient(ellipse at 8% 0%, rgba(147, 197, 253, .20), transparent 38%),
-    radial-gradient(ellipse at 95% 12%, rgba(186, 230, 253, .22), transparent 34%),
-    linear-gradient(180deg, #f8fbff 0%, #eef6ff 54%, #f5f9ff 100%) !important;
+    radial-gradient(ellipse at 5% 0%, rgba(129, 140, 248, .20), transparent 31%),
+    radial-gradient(ellipse at 96% 8%, rgba(34, 211, 238, .14), transparent 29%),
+    linear-gradient(180deg, #f8faff 0%, #eef3fc 52%, #f6f8fd 100%) !important;
+  background-attachment: fixed;
 }
 
 html.light .nf-app-shell {
+  min-height: 100svh;
   background: transparent !important;
   color: var(--nf-ink) !important;
 }
 
-html.light :is(.nf-site-header, .nf-site-footer) {
-  border-color: var(--nf-border) !important;
-  color: var(--nf-ink);
+html.light .nf-site-header {
+  background: rgba(255, 255, 255, .88) !important;
+  border-color: rgba(190, 204, 226, .8) !important;
+  box-shadow: 0 8px 28px rgba(42, 61, 105, .085) !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
-html.light .nf-site-header {
-  background: rgba(248, 251, 255, .88) !important;
-  box-shadow: 0 5px 22px rgba(35, 72, 112, .06);
+html.light .nf-site-header .nf-container {
+  min-height: 4.65rem;
+}
+
+html.light .nf-site-header nav button,
+html.light .nf-site-header .nf-navigation-actions button {
+  color: #43536d;
+}
+
+html.light .nf-site-header nav button:hover,
+html.light .nf-site-header .nf-navigation-actions button:hover {
+  color: var(--nf-accent-strong) !important;
+}
+
+html.light .nf-site-header .nf-generators-dropdown,
+html.light .nf-site-header .nf-mobile-navigation {
+  color: var(--nf-ink) !important;
+  background: rgba(255, 255, 255, .98) !important;
+  border-color: var(--nf-border) !important;
+  box-shadow: 0 20px 55px rgba(34, 51, 88, .16) !important;
+}
+
+html.light .nf-site-header .nf-generators-dropdown button,
+html.light .nf-site-header .nf-mobile-navigation button {
+  color: #40516b;
+}
+
+html.light .nf-site-header .nf-generators-dropdown button:hover,
+html.light .nf-site-header .nf-mobile-navigation button:hover {
+  color: var(--nf-accent-strong) !important;
+  background: #eef0ff !important;
 }
 
 html.light .nf-site-footer {
-  background: #eaf2fb !important;
+  color: #52647e !important;
+  background: linear-gradient(180deg, #eaf0fa, #e5edf8) !important;
+  border-color: #d5dfed !important;
 }
 
-html.light .nf-page :is(h1, h2, h3, h4, h5, h6),
-html.light .nf-footer-heading {
+html.light .nf-site-footer :is(p, li, a, button, .text-slate-400, .text-slate-500) {
+  color: #52647e !important;
+}
+
+html.light .nf-site-footer :is(a, button):hover {
+  color: var(--nf-accent-strong) !important;
+}
+
+html.light .nf-footer-heading,
+html.light .nf-page :is(h1, h2, h3, h4, h5, h6) {
   color: var(--nf-ink) !important;
 }
 
-html.light .nf-page :is(p, li, label, small, figcaption),
-html.light .nf-page .nf-muted {
-  color: var(--nf-muted);
-}
-
-html.light .nf-page :is(article, [role="dialog"], .nf-surface, .nf-panel,
-  .nf-generator-panel, .nf-studio-tools, .nf-studio-settings,
-  .nf-studio-preview, .nf-library-toolbar, .nf-project-workspace,
-  .nf-library-stats > div) {
+/* The old interface uses many dark Tailwind utility surfaces.
+   Re-map those actual classes instead of relying on unused page aliases. */
+html.light .nf-app-shell [class*="bg-[#0"],
+html.light .nf-app-shell [class*="bg-[#1"] {
+  color: var(--nf-ink) !important;
+  background-color: #ffffff !important;
   border-color: var(--nf-border) !important;
-  box-shadow: var(--nf-shadow-soft);
 }
 
-html.light .nf-page :is(.nf-surface, .nf-generator-panel,
-  .nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
-  .nf-library-toolbar, .nf-project-workspace, .nf-library-stats > div) {
-  background: var(--nf-surface) !important;
+html.light .nf-app-shell [class*="from-[#0"],
+html.light .nf-app-shell [class*="from-[#1"],
+html.light .nf-app-shell [class*="via-[#0"],
+html.light .nf-app-shell [class*="via-[#1"],
+html.light .nf-app-shell [class*="to-[#0"],
+html.light .nf-app-shell [class*="to-[#1"] {
+  background-image: linear-gradient(145deg, #ffffff 0%, #f2f5ff 100%) !important;
+  border-color: var(--nf-border) !important;
+}
+
+html.light .nf-app-shell [class~="bg-slate-950"],
+html.light .nf-app-shell [class~="bg-slate-900"],
+html.light .nf-app-shell [class~="bg-slate-900/80"],
+html.light .nf-app-shell [class~="bg-slate-900/60"],
+html.light .nf-app-shell [class~="bg-slate-800"],
+html.light .nf-app-shell [class~="bg-slate-800/90"],
+html.light .nf-app-shell [class~="bg-slate-800/80"],
+html.light .nf-app-shell [class~="bg-slate-800/60"],
+html.light .nf-app-shell [class~="bg-slate-950/40"] {
+  color: #34445f !important;
+  background-color: #edf2fa !important;
+  border-color: #d5dfed !important;
+}
+
+html.light .nf-app-shell [class~="border-slate-800"],
+html.light .nf-app-shell [class~="border-slate-800/90"],
+html.light .nf-app-shell [class~="border-slate-800/80"],
+html.light .nf-app-shell [class~="border-slate-800/60"],
+html.light .nf-app-shell [class~="border-slate-700"],
+html.light .nf-app-shell [class~="border-slate-700/80"],
+html.light .nf-app-shell [class~="border-slate-700/70"],
+html.light .nf-app-shell [class~="border-slate-700/60"],
+html.light .nf-app-shell [class~="border-white/10"],
+html.light .nf-app-shell [class~="border-white/5"] {
+  border-color: #d9e2ef !important;
+}
+
+/* Correct dark-theme text utilities throughout every real view. */
+html.light .nf-app-shell .text-white,
+html.light .nf-app-shell .text-slate-100,
+html.light .nf-app-shell .text-slate-200,
+html.light .nf-app-shell .text-slate-300 {
+  color: #263750 !important;
+}
+
+html.light .nf-app-shell .text-slate-400 {
+  color: #586b85 !important;
+}
+
+html.light .nf-app-shell .text-slate-500 {
+  color: #71819a !important;
+}
+
+html.light .nf-app-shell .text-slate-600 {
+  color: #65758c !important;
+}
+
+html.light .nf-app-shell .text-purple-200,
+html.light .nf-app-shell .text-purple-300,
+html.light .nf-app-shell .text-purple-400 {
+  color: #604bc2 !important;
+}
+
+html.light .nf-app-shell .text-cyan-200,
+html.light .nf-app-shell .text-cyan-300,
+html.light .nf-app-shell .text-cyan-400 {
+  color: #087f9d !important;
+}
+
+html.light .nf-app-shell .text-pink-300,
+html.light .nf-app-shell .text-pink-400 {
+  color: #b83280 !important;
+}
+
+html.light .nf-app-shell .text-amber-200,
+html.light .nf-app-shell .text-amber-300,
+html.light .nf-app-shell .text-amber-400 {
+  color: #a65b08 !important;
+}
+
+html.light .nf-app-shell .text-emerald-300,
+html.light .nf-app-shell .text-emerald-400 {
+  color: #087a58 !important;
+}
+
+html.light .nf-app-shell .text-indigo-300,
+html.light .nf-app-shell .text-indigo-400 {
+  color: #4f46b8 !important;
+}
+
+/* Keep white text on intentionally saturated actions and status badges. */
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-gradient-to-"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-purple-600"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-indigo-600"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-cyan-600"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-blue-600"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-red-600"],
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-rose-600"],
+html.light .nf-app-shell [class~="bg-purple-600"],
+html.light .nf-app-shell [class~="bg-indigo-600"],
+html.light .nf-app-shell [class~="bg-cyan-600"],
+html.light .nf-app-shell [class~="bg-blue-600"],
+html.light .nf-app-shell [class~="bg-red-600"],
+html.light .nf-app-shell [class~="bg-rose-600"] {
+  color: #ffffff !important;
+}
+
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-gradient-to-"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-purple-600"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-indigo-600"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-cyan-600"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-blue-600"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-red-600"] *,
+html.light .nf-app-shell :is(button, a, [role="button"])[class*="bg-rose-600"] * {
+  color: #ffffff !important;
+}
+
+/* Clear page hierarchy and make the light theme visibly intentional. */
+html.light .nf-page {
+  color: var(--nf-ink) !important;
+}
+
+html.light .nf-page-header {
+  margin-bottom: clamp(2rem, 4vw, 3.25rem);
+}
+
+html.light .nf-page-header > :is(h1, p) {
+  text-wrap: balance;
+}
+
+html.light .nf-page .nf-animated-heading {
+  color: transparent !important;
+  background-image: linear-gradient(100deg, #5145c7 0%, #087f9d 52%, #8b55c9 100%) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}
+
+html.light .nf-home > section:first-child {
+  padding-top: clamp(3.25rem, 8vw, 6.75rem);
+}
+
+html.light .nf-home-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+html.light .nf-home-hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -2rem -1rem;
+  border: 1px solid rgba(255,255,255,.72);
+  border-radius: 2.5rem;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(129,140,248,.18), transparent 38%),
+    radial-gradient(circle at 90% 8%, rgba(34,211,238,.14), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,.88), rgba(239,244,255,.70));
+  box-shadow: 0 22px 65px rgba(48, 66, 112, .08);
+}
+
+html.light .nf-page :is(.nf-generator-panel, .nf-catalog-filters, .nf-library-toolbar,
+  .nf-project-workspace, .nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-surface, .nf-panel) {
+  color: var(--nf-ink) !important;
+  border-color: var(--nf-border) !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+
+html.light .nf-page :is(.nf-generator-panel, .nf-catalog-filters, .nf-library-toolbar,
+  .nf-project-workspace, .nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-surface) {
+  background: rgba(255,255,255,.94) !important;
 }
 
 html.light .nf-page .nf-panel {
-  background: var(--nf-surface-muted) !important;
+  background: #edf2fa !important;
 }
 
-html.light .nf-page :is(.nf-name-result-card, .nf-generator-card,
-  .nf-featured-card, .nf-top-rated-card, .nf-library-card-grid > article,
-  .nf-collections-grid > article, .nf-history-grid > article,
-  .nf-project-workspace article) {
-  color: var(--nf-ink);
-  border-color: var(--nf-border) !important;
-  box-shadow: var(--nf-shadow-soft);
-}
-
-html.light .nf-page :is(input, select, textarea) {
+html.light .nf-page :is(.nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result, .nf-library-card-grid > article,
+  .nf-collections-grid > article, .nf-history-grid > article, .nf-project-workspace article) {
   color: var(--nf-ink) !important;
-  background-color: #ffffff !important;
-  border-color: #b9cde0 !important;
-  box-shadow: 0 1px 2px rgba(35, 72, 112, .04);
+  background: linear-gradient(155deg, #ffffff 0%, #f7f9ff 100%) !important;
+  border: 1px solid #dce4f0 !important;
+  border-radius: 1.35rem !important;
+  box-shadow: 0 10px 28px rgba(42, 61, 105, .075) !important;
 }
 
-html.light .nf-page :is(input, select, textarea)::placeholder {
-  color: #71869b !important;
+html.light .nf-page :is(.nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result, .nf-library-card-grid > article,
+  .nf-collections-grid > article, .nf-history-grid > article):hover {
+  border-color: rgba(101,84,217,.42) !important;
+  box-shadow: 0 18px 38px rgba(65, 75, 145, .13) !important;
+  transform: translateY(-3px);
+}
+
+html.light .nf-page .nf-name-result-card {
+  background: linear-gradient(155deg, #ffffff, #f1f5ff) !important;
+}
+
+html.light .nf-page .nf-name-result-card [class*="text-white"] {
+  color: #1d2a42 !important;
+}
+
+html.light .nf-page :is(.nf-generator-card-title, .nf-featured-card-title) {
+  color: #1e2c47 !important;
+}
+
+html.light .nf-page :is(.nf-generator-card-description, .nf-featured-card-description) {
+  color: #586b85 !important;
+}
+
+html.light .nf-page .nf-studio-preview-stage {
+  color: #1b2a43 !important;
+  background: linear-gradient(145deg, #ffffff, #edf3ff) !important;
+  border: 1px solid var(--nf-border) !important;
+  box-shadow: inset 0 1px 0 #ffffff, var(--nf-shadow-soft);
+}
+
+html.light .nf-page .nf-studio-tools nav button[aria-pressed="true"],
+html.light .nf-page .nf-studio-settings button[aria-pressed="true"],
+html.light .nf-page .nf-library-tabs button[aria-pressed="true"] {
+  color: #5140c2 !important;
+  background: #eeedff !important;
+  border-color: rgba(101,84,217,.42) !important;
+}
+
+/* Inputs, dropdowns, search bars and text areas. */
+html.light .nf-app-shell :is(input, select, textarea) {
+  color: #1e2c45 !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd7e7 !important;
+  border-radius: .85rem !important;
+  box-shadow: 0 2px 5px rgba(39, 59, 96, .035) !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea)::placeholder {
+  color: #8190a5 !important;
   opacity: 1;
 }
 
-html.light .nf-page :is(input, select, textarea):focus-visible {
-  border-color: var(--nf-accent) !important;
-  box-shadow: 0 0 0 3px var(--nf-accent-soft) !important;
+html.light .nf-app-shell :is(input, select, textarea):focus {
+  border-color: #7163dc !important;
+  box-shadow: 0 0 0 3px rgba(101,84,217,.15) !important;
+  outline: none !important;
 }
 
-html.light .nf-page select option,
-html.light select option,
-html.light select optgroup {
-  color: var(--nf-ink) !important;
+html.light .nf-app-shell select option,
+html.light .nf-app-shell select optgroup {
+  color: #1e2c45 !important;
   background: #ffffff !important;
-}
-
-html.light .nf-nav-link[aria-current="page"],
-html.light .nf-mobile-nav-link.is-active {
-  color: var(--nf-accent-strong) !important;
-}
-
-html.light .nf-mobile-nav-link.is-active {
-  background: rgba(109, 91, 208, .09) !important;
-  border-color: rgba(109, 91, 208, .25) !important;
-}
-
-html.light .nf-footer-link[aria-current="page"],
-html.light .nf-site-footer button[aria-current="page"] {
-  color: var(--nf-accent-strong) !important;
-}
-
-html.light .nf-studio-preview-stage {
-  color: var(--nf-ink);
-  background: linear-gradient(145deg, #ffffff, #f1f7ff) !important;
-  border-color: var(--nf-border) !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), var(--nf-shadow-soft);
-}
-
-html.light .nf-studio-tools nav button[aria-pressed="true"],
-html.light .nf-studio-settings button[aria-pressed="true"] {
-  color: var(--nf-accent-strong);
-  background: rgba(109, 91, 208, .09);
-  border-color: rgba(109, 91, 208, .42) !important;
 }
 
 html.light .nf-page :is(button, a):focus-visible,
 html.light .nf-site-header :is(button, a):focus-visible,
 html.light .nf-site-footer :is(button, a):focus-visible {
-  outline: 3px solid rgba(73, 112, 205, .62) !important;
+  outline: 3px solid rgba(101,84,217,.55) !important;
   outline-offset: 3px;
 }
 
-/* Keep saturated action buttons and their labels white and visually distinct. */
-html.light .nf-page :is(button, a)[class*="bg-gradient-to-"],
-html.light .nf-page :is(button, a)[class*="bg-purple-600"],
-html.light .nf-page :is(button, a)[class*="bg-indigo-600"],
-html.light .nf-page :is(button, a)[class*="bg-blue-600"],
-html.light .nf-page :is(button, a)[class*="bg-cyan-600"],
-html.light .nf-page :is(button, a)[class*="bg-emerald-600"] {
-  color: #ffffff !important;
+/* Modal surfaces become bright while the dimmed backdrop remains intact. */
+html.light .nf-app-shell [role="dialog"] {
+  color: var(--nf-ink) !important;
+  background-color: #ffffff !important;
+  border-color: var(--nf-border) !important;
+  box-shadow: 0 28px 80px rgba(28, 42, 75, .24) !important;
 }
 
-html.light .nf-page :is(button, a)[class*="bg-gradient-to-"] *,
-html.light .nf-page :is(button, a)[class*="bg-purple-600"] *,
-html.light .nf-page :is(button, a)[class*="bg-indigo-600"] *,
-html.light .nf-page :is(button, a)[class*="bg-blue-600"] *,
-html.light .nf-page :is(button, a)[class*="bg-cyan-600"] *,
-html.light .nf-page :is(button, a)[class*="bg-emerald-600"] * {
-  color: #ffffff !important;
+html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4, .text-white) {
+  color: #1c2a43 !important;
 }
 
-html.light [role="dialog"] {
-  color: var(--nf-ink);
-}
-
-html.light [role="dialog"] > :is(div, section) {
-  border-color: var(--nf-border);
+html.light .nf-app-shell [role="dialog"] :is(input, select, textarea) {
+  background: #f8faff !important;
 }
 
 html.light .nf-page kbd {
-  color: #315777 !important;
-  background: #e8f1fb !important;
-  border-color: #cbdced !important;
+  color: #344a68 !important;
+  background: #eaf0fa !important;
+  border-color: #cfdaea !important;
+}
+
+/* Soft semantic chips and badges. */
+html.light .nf-app-shell [class*="bg-purple-500/10"],
+html.light .nf-app-shell [class*="bg-purple-500/15"],
+html.light .nf-app-shell [class*="bg-purple-500/20"],
+html.light .nf-app-shell [class*="bg-purple-950/"] {
+  color: #5b45bd !important;
+  background-color: #f0edff !important;
+  border-color: #d9d1ff !important;
+}
+
+html.light .nf-app-shell [class*="bg-cyan-500/"],
+html.light .nf-app-shell [class*="bg-cyan-600/"] {
+  color: #087f9d !important;
+  background-color: #e7f8fc !important;
+  border-color: #b8e8f1 !important;
+}
+
+html.light .nf-app-shell [class*="bg-emerald-500/"] {
+  color: #087a58 !important;
+  background-color: #e7f8ef !important;
+  border-color: #b8e7d0 !important;
+}
+
+html.light .nf-app-shell [class*="bg-amber-500/"],
+html.light .nf-app-shell [class*="bg-amber-950/"] {
+  color: #92520b !important;
+  background-color: #fff6e5 !important;
+  border-color: #f1d7a4 !important;
+}
+
+html.light .nf-app-shell [class*="bg-pink-500/"] {
+  color: #a52c72 !important;
+  background-color: #fff0f7 !important;
+  border-color: #f2c6dd !important;
+}
+
+/* Smooth, restrained motion; honor the user's reduced-motion preference. */
+html.light .nf-page article,
+html.light .nf-page button,
+html.light .nf-site-header,
+html.light .nf-site-footer {
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(.2,.7,.2,1);
 }
 
 @media (max-width: 767px) {
   html.light .nf-site-header {
-    box-shadow: 0 3px 14px rgba(35, 72, 112, .05);
+    box-shadow: 0 4px 18px rgba(42, 61, 105, .07) !important;
   }
 
-  html.light .nf-page :is(.nf-generator-panel, .nf-project-workspace,
-    .nf-studio-tools, .nf-studio-settings, .nf-studio-preview) {
-    box-shadow: 0 4px 14px rgba(35, 72, 112, .05);
+  html.light .nf-home-hero::before {
+    inset: -1.25rem -.5rem;
+    border-radius: 1.75rem;
+  }
+
+  html.light .nf-page :is(.nf-generator-panel, .nf-library-toolbar,
+    .nf-project-workspace, .nf-studio-tools, .nf-studio-settings, .nf-studio-preview) {
+    box-shadow: 0 5px 18px rgba(42, 61, 105, .06) !important;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html.light .nf-page *,
-  html.light .nf-site-header *,
-  html.light .nf-site-footer * {
+  html.light .nf-app-shell *,
+  html.light .nf-app-shell *::before,
+  html.light .nf-app-shell *::after {
     scroll-behavior: auto !important;
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
