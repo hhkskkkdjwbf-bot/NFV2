@@ -133,7 +133,7 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
             <Search className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2" />
             <input type="text" aria-label={t.search} placeholder={t.search} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-10 ps-10 pe-3 bg-[#0a0f1d] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 shadow-inner" />
           </div>
-          <div className="nf-catalog-category-list flex items-center gap-2 flex-wrap w-full lg:w-auto lg:justify-end" role="group" aria-label={t.categories.all}>
+          <div className="flex items-center gap-2 flex-wrap w-full lg:w-auto lg:justify-end">
             <button onClick={() => {
               const randomGen = ALL_GENERATORS_LIST[Math.floor(Math.random() * ALL_GENERATORS_LIST.length)];
               onNavigate('generator-detail', randomGen.id);
@@ -166,7 +166,7 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
         </div>
       </section>
 
-      <div className="nf-generator-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="nf-generator-grid gap-6">
         {filtered.map((gen) => (
           <article key={gen.id} className="nf-generator-card group relative p-6 rounded-3xl bg-gradient-to-b from-[#101728] to-[#0a0f1d] border border-slate-800 hover:border-purple-500/60 transition-all duration-200 hover:-translate-y-1 shadow-lg flex flex-col">
             <div>
@@ -189,7 +189,7 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
       {filtered.length === 0 && (
         <div className="nf-catalog-empty rounded-2xl border border-dashed border-slate-700 px-5 py-14 text-center text-slate-400">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-800 text-slate-300"><Search className="h-5 w-5" /></div>
-          <p className="text-sm">{t.empty} « {search} ».</p>
+          <p className="text-sm">{search ? `${t.empty} « ${search} ».` : t.empty}</p>
           <button onClick={resetFilters} className="mt-4 rounded-xl bg-purple-600 px-4 py-2 text-xs font-bold text-white hover:bg-purple-500 cursor-pointer">{t.reset}</button>
         </div>
       )}
