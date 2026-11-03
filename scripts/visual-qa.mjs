@@ -386,13 +386,13 @@ try {
     if (!(await preview.count())) failures.push('creative-studio: live canvas is missing');
     if (await nameInput.count() && await preview.count()) {
       // The Studio theme switch must update the shared site preference, not a local-only palette.
-      const lightThemeButton = page.getByRole('button', { name: 'Light' });
+      const lightThemeButton = page.getByRole('button', { name: 'Light', exact: true });
       if (!(await lightThemeButton.count())) failures.push('creative-studio: global light-theme control is missing');
       else {
         await lightThemeButton.click();
         const lightApplied = await page.evaluate(() => document.documentElement.classList.contains('light'));
         if (!lightApplied) failures.push('creative-studio: light-theme action did not update the global document theme');
-        const darkThemeButton = page.getByRole('button', { name: 'Dark' });
+        const darkThemeButton = page.getByRole('button', { name: 'Dark', exact: true });
         if (await darkThemeButton.count()) {
           await darkThemeButton.click();
           const darkApplied = await page.evaluate(() => document.documentElement.classList.contains('dark'));
