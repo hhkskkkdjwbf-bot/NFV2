@@ -70,35 +70,80 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            // The Pages API may return deployments from different environments.
-            // Scan all pages so a legacy deployment cannot be hidden by an
-            // environment filter. The SHA below is the orphan reported by GitHub.
             const orphanedSha = 'd30a74c32e62ea6a2b2e4ad1e5e67424c6316707';
-            const deployments = await github.paginate(github.rest.repos.listDeployments, {
-              owner, repo, per_page: 100
-            });
-            let inspected = 0;
-            let closed = 0;
-            for (const deployment of deployments) {
-              const isPagesDeployment =
-                deployment.environment === 'github-pages' ||
-                deployment.sha === orphanedSha;
-              if (!isPagesDeployment) continue;
-              inspected += 1;
-              const statuses = await github.rest.repos.listDeploymentStatuses({
-                owner, repo, deployment_id: deployment.id, per_page: 1
-              });
-              const latest = statuses.data[0];
-              if (latest?.state !== 'in_progress' && latest?.state !== 'queued') continue;
-              await github.rest.repos.createDeploymentStatus({
-                owner, repo, deployment_id: deployment.id, state: 'inactive',
-                description: 'Closed stale Pages deployment before the next NameForge release.',
-                auto_inactive: false
-              });
-              closed += 1;
-              core.info(`Closed stale Pages deployment ${deployment.id}; sha=${deployment.sha}; environment=${deployment.environment}; previous_state=${latest.state}.`);
+
+            // GitHub's deployment-status endpoint can intermittently return 5xx
+            // responses. Retry transient failures, then skip only the affected
+            // historical record instead of aborting the production deployment.
+            async function withRetry(label, operation) {
+              for (let attempt = 1; attempt <= 3; attempt += 1) {
+                try {
+                  return await operation();
+                } catch (error) {
+                  const status = error.status ?? error.response?.status;
+                  const retryable = !status || status >= 500 || status === 429;
+                  if (!retryable || attempt === 3) throw error;
+                  core.warning(`${label} failed (attempt ${attempt}/3, HTTP ${status ?? 'unknown'}); retrying.`);
+                  await new Promise(resolve => setTimeout(resolve, 1500 * attempt));
+                }
+              }
             }
-            core.info(`Inspected ${inspected} Pages deployment(s); closed ${closed} active deployment(s).`);
+
+            try {
+              const deployments = await withRetry('List deployments', () =>
+                github.paginate(github.rest.repos.listDeployments, {
+                  owner, repo, per_page: 100
+                })
+              );
+              let inspected = 0;
+              let closed = 0;
+              let skipped = 0;
+
+              for (const deployment of deployments) {
+                const isPagesDeployment =
+                  deployment.environment === 'github-pages' ||
+                  deployment.sha === orphanedSha;
+                if (!isPagesDeployment) continue;
+                inspected += 1;
+
+                let statuses;
+                try {
+                  statuses = await withRetry(`Read deployment ${deployment.id} statuses`, () =>
+                    github.rest.repos.listDeploymentStatuses({
+                      owner, repo, deployment_id: deployment.id, per_page: 1
+                    })
+                  );
+                } catch (error) {
+                  skipped += 1;
+                  core.warning(`Could not inspect historical deployment ${deployment.id} after retries; skipping this record. ${error.message}`);
+                  continue;
+                }
+
+                const latest = statuses.data[0];
+                if (latest?.state !== 'in_progress' && latest?.state !== 'queued') continue;
+
+                try {
+                  await withRetry(`Close deployment ${deployment.id}`, () =>
+                    github.rest.repos.createDeploymentStatus({
+                      owner, repo, deployment_id: deployment.id, state: 'inactive',
+                      description: 'Closed stale Pages deployment before the next NameForge release.',
+                      auto_inactive: false
+                    })
+                  );
+                  closed += 1;
+                  core.info(`Closed stale Pages deployment ${deployment.id}; sha=${deployment.sha}; environment=${deployment.environment}; previous_state=${latest.state}.`);
+                } catch (error) {
+                  skipped += 1;
+                  core.warning(`Could not close historical deployment ${deployment.id} after retries; continuing to the Pages deploy action. ${error.message}`);
+                }
+              }
+
+              core.info(`Inspected ${inspected} Pages deployment(s); closed ${closed}; skipped ${skipped} transient API failure(s).`);
+            } catch (error) {
+              // Cleanup is defensive housekeeping. The authoritative deploy
+              // action below must decide whether Pages can actually be updated.
+              core.warning(`Could not complete stale-deployment cleanup; continuing to the Pages deploy action. ${error.message}`);
+            }
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
