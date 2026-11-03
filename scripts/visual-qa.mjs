@@ -118,6 +118,8 @@ try {
             const settingsDialog = page.locator('[role="dialog"][aria-labelledby="settings-title"]');
             const defaultLanguage = settingsDialog.locator('#settings-default-generation-language');
             if (!(await defaultLanguage.isVisible())) failures.push(label + ': default generation-language selector is missing or hidden in Settings');
+            const selectedSettings = await settingsDialog.locator('button[aria-pressed="true"]').count();
+            if (selectedSettings < 3) failures.push(label + ': language, theme, and text-size settings do not expose their selected state');
             if (await defaultLanguage.count()) {
               if (await defaultLanguage.locator('option').count() < 20) failures.push(label + ': Settings language selector has fewer than 20 language choices');
               const indicator = await defaultLanguage.evaluate((select) => getComputedStyle(select).backgroundImage);
@@ -383,6 +385,20 @@ try {
     if (!(await nameInput.count())) failures.push('creative-studio: shared name input is missing');
     if (!(await preview.count())) failures.push('creative-studio: live canvas is missing');
     if (await nameInput.count() && await preview.count()) {
+      // The Studio theme switch must update the shared site preference, not a local-only palette.
+      const lightThemeButton = page.getByRole('button', { name: 'Light' });
+      if (!(await lightThemeButton.count())) failures.push('creative-studio: global light-theme control is missing');
+      else {
+        await lightThemeButton.click();
+        const lightApplied = await page.evaluate(() => document.documentElement.classList.contains('light'));
+        if (!lightApplied) failures.push('creative-studio: light-theme action did not update the global document theme');
+        const darkThemeButton = page.getByRole('button', { name: 'Dark' });
+        if (await darkThemeButton.count()) {
+          await darkThemeButton.click();
+          const darkApplied = await page.evaluate(() => document.documentElement.classList.contains('dark'));
+          if (!darkApplied) failures.push('creative-studio: dark-theme action did not restore the global document theme');
+        } else failures.push('creative-studio: dark-theme control was not available after switching to light');
+      }
       await nameInput.fill('Nova');
       const initialPreview = (await preview.innerText()).trim();
       if (!initialPreview) failures.push('creative-studio: live canvas did not render the shared name');
