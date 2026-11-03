@@ -460,3 +460,134 @@ html.light .nf-site-footer {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Accessible calm-blue mode: simple controls, strong navy text, clear hierarchy. */
+html.light {
+  --nf-ink: #102b4c;
+  --nf-muted: #344f70;
+  --nf-subtle: #526b88;
+  --nf-accent: #245b91;
+  --nf-accent-strong: #174675;
+  --nf-accent-soft: #e5f2ff;
+  --nf-border: #c9d9eb;
+  --nf-surface-muted: #edf5fd;
+}
+
+html.light body,
+html.light .nf-app-shell,
+html.light .nf-page {
+  color: #102b4c !important;
+}
+
+html.light .nf-app-shell :is(h1, h2, h3, h4, h5, h6, .nf-page-title) {
+  color: #102b4c !important;
+  letter-spacing: -.018em;
+}
+
+html.light .nf-app-shell :is(p, li, label, small, .text-slate-400, .text-slate-500) {
+  color: #405a78 !important;
+}
+
+html.light .nf-app-shell :is(.text-slate-300, .text-slate-200, .text-slate-100, .text-white) {
+  color: #183653 !important;
+}
+
+/* Replace purple/cyan gradients and dark button fills with calm, readable blue.
+   Danger actions retain their red meaning. */
+html.light .nf-app-shell button:not(:disabled):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell a[role="button"]:not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+  color: #12385f !important;
+  background: #dceeff !important;
+  background-image: none !important;
+  border: 1px solid #b8d5f1 !important;
+  box-shadow: 0 2px 5px rgba(30, 75, 120, .07) !important;
+  font-weight: 700;
+}
+
+html.light .nf-app-shell button:not(:disabled):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell a[role="button"]:not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
+  color: #0d2d50 !important;
+  background: #c7e3ff !important;
+  border-color: #8fbbe5 !important;
+  box-shadow: 0 5px 14px rgba(30, 75, 120, .12) !important;
+}
+
+html.light .nf-app-shell button:disabled {
+  color: #6c7f96 !important;
+  background: #edf2f7 !important;
+  border-color: #d8e1eb !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-app-shell button[class*="bg-red-"],
+html.light .nf-app-shell button[class*="bg-rose-"],
+html.light .nf-app-shell a[role="button"][class*="bg-red-"],
+html.light .nf-app-shell a[role="button"][class*="bg-rose-"] {
+  color: #ffffff !important;
+  background: #b93845 !important;
+  border-color: #a52e3a !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea) {
+  color: #102b4c !important;
+  background: #ffffff !important;
+  border-color: #b9cde3 !important;
+  font-size: 14px !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea)::placeholder {
+  color: #667d98 !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea):focus {
+  border-color: #367bb8 !important;
+  box-shadow: 0 0 0 3px rgba(54, 123, 184, .18) !important;
+}
+
+html.light .nf-app-shell :is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #2c72ad !important;
+  outline-offset: 3px;
+}
+
+html.light .nf-page .nf-animated-heading {
+  background-image: linear-gradient(100deg, #12385f 0%, #245b91 55%, #367eaa 100%) !important;
+}
+
+html.light .nf-page :is(.nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result) {
+  border-color: #cbdced !important;
+  box-shadow: 0 5px 18px rgba(29, 59, 93, .065) !important;
+}
+
+html.light .nf-page :is(.nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result):hover {
+  border-color: #8fbbe5 !important;
+  box-shadow: 0 10px 24px rgba(29, 59, 93, .10) !important;
+}
+
+html.light .nf-site-header nav button[aria-current="page"],
+html.light .nf-site-header a[aria-current="page"] {
+  color: #12385f !important;
+  background: #e3f1ff !important;
+  border-color: #b8d5f1 !important;
+}
+
+html.light .nf-app-shell [role="dialog"] {
+  color: #102b4c !important;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4, p, label, span) {
+  color: #284663;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4) {
+  color: #102b4c !important;
+}
+
+html.light .nf-site-footer {
+  background: #eaf2fb !important;
+  color: #344f70 !important;
+  border-color: #cbdced !important;
+}
