@@ -1,4 +1,4 @@
-export type SymbolCategory = 'stars' | 'arrows' | 'hearts' | 'decorative' | 'nature' | 'kaomoji';
+export type SymbolCategory = 'stars' | 'arrows' | 'hearts' | 'decorative' | 'nature' | 'kaomoji' | 'emoji' | 'gaming' | 'music' | 'weather' | 'food' | 'travel';
 
 export interface TextArtItem {
   id: string;
@@ -25,6 +25,24 @@ export const TEXT_ART_ITEMS: TextArtItem[] = [
     ['leaf','❧','Leaf'],['clover','☘','Clover'],['four-leaf','🍀','Four-leaf clover'],['cherry','🍒','Cherries'],['butterfly','🦋','Butterfly'],['sparkles','✨','Sparkles'],['fire','🔥','Fire'],['cloud','☁','Cloud'],['rainbow','🌈','Rainbow'],['planet','🪐','Planet'],
   ].map(([id,value,label])=>({id,value,label,category:'nature' as const,keywords:['nature','emoji']})),
   ...[
+  ...[
+    ['smile','😀','Grinning face'],['grin','😁','Beaming face'],['joy','😂','Face with tears of joy'],['rofl','🤣','Rolling laughter'],['smile-eyes','😊','Smiling face'],['blush','😳','Blushing face'],['wink','😉','Winking face'],['cool','😎','Cool face'],['think','🤔','Thinking face'],['shush','🤫','Shushing face'],['mind-blown','🤯','Mind blown'],['party','🥳','Party face'],['star-eyes','🤩','Star-struck'],['nerd','🤓','Nerd face'],['robot','🤖','Robot face'],['alien','👽','Alien'],['ghost','👻','Ghost'],['skull-emoji','💀','Skull emoji'],['clap','👏','Clapping hands'],['raised-hands','🙌','Celebration hands'],['pray','🙏','Folded hands'],['thumbs-up','👍','Thumbs up'],['fire-heart','❤️‍🔥','Heart on fire'],['white-heart','🤍','White heart'],['black-heart','🖤','Black heart'],['blue-heart','💙','Blue heart'],['purple-heart','💜','Purple heart'],['green-heart','💚','Green heart'],['yellow-heart','💛','Yellow heart'],['orange-heart','🧡','Orange heart'],['sparkling-heart','💖','Sparkling heart'],['gift-heart','💝','Heart with ribbon'],
+  ].map(([id,value,label])=>({id,value,label,category:'emoji' as const,keywords:['emoji','face','expression','reaction']})),
+  ...[
+    ['controller','🎮','Game controller'],['joystick','🕹️','Joystick'],['trophy','🏆','Trophy'],['medal','🏅','Sports medal'],['crossed-swords','⚔️','Crossed swords'],['shield','🛡️','Shield'],['target','🎯','Bullseye'],['game-die','🎲','Game die'],['chess','♟️','Chess pawn'],['puzzle','🧩','Puzzle piece'],['magic-wand','🪄','Magic wand'],['crystal-ball','🔮','Crystal ball'],['rocket','🚀','Rocket'],['satellite','🛰️','Satellite'],['computer','💻','Laptop'],['keyboard','⌨️','Keyboard'],['pixel-heart','♡','Pixel heart'],['level-up','⬆️','Level up'],['power','⏻','Power symbol'],['infinity-game','♾️','Infinite play'],
+  ].map(([id,value,label])=>({id,value,label,category:'gaming' as const,keywords:['gaming','game','esports','technology','play']})),
+  ...[
+    ['note','♪','Eighth note'],['notes','♫','Beamed notes'],['double-notes','♬','Double notes'],['treble-clef','𝄞','Treble clef'],['microphone','🎤','Microphone'],['headphones','🎧','Headphones'],['guitar','🎸','Guitar'],['piano','🎹','Musical keyboard'],['drum','🥁','Drum'],['saxophone','🎷','Saxophone'],['violin','🎻','Violin'],['trumpet','🎺','Trumpet'],['music-score','🎼','Musical score'],['disco','🪩','Disco ball'],['vinyl','💿','Disc'],['cassette','📼','Cassette'],
+  ].map(([id,value,label])=>({id,value,label,category:'music' as const,keywords:['music','sound','instrument','song']})),
+  ...[
+    ['sunny','🌞','Sun with face'],['sun-behind-cloud','🌤️','Sun behind small cloud'],['partly-cloudy','⛅','Partly cloudy'],['cloud-rain','🌧️','Rain cloud'],['thunder','⛈️','Thunderstorm'],['lightning','⚡','Lightning'],['snow','❄️','Snowflake'],['snowman','☃️','Snowman'],['wind','🌬️','Wind face'],['tornado','🌪️','Tornado'],['fog','🌫️','Fog'],['umbrella','☂️','Umbrella'],['droplet','💧','Droplet'],['ocean-wave','🌊','Ocean wave'],['thermometer','🌡️','Thermometer'],['rainbow-emoji','🌈','Rainbow emoji'],
+  ].map(([id,value,label])=>({id,value,label,category:'weather' as const,keywords:['weather','climate','sky','nature']})),
+  ...[
+    ['pizza','🍕','Pizza'],['burger','🍔','Burger'],['fries','🍟','French fries'],['taco','🌮','Taco'],['sushi','🍣','Sushi'],['ramen','🍜','Ramen'],['rice','🍚','Rice'],['bread','🍞','Bread'],['croissant','🥐','Croissant'],['cheese','🧀','Cheese'],['cake','🍰','Cake'],['cupcake','🧁','Cupcake'],['donut','🍩','Doughnut'],['cookie','🍪','Cookie'],['chocolate','🍫','Chocolate'],['ice-cream','🍦','Ice cream'],['coffee','☕','Coffee'],['tea','🍵','Tea'],['bubble-tea','🧋','Bubble tea'],['strawberry','🍓','Strawberry'],['watermelon','🍉','Watermelon'],['apple','🍎','Red apple'],['avocado','🥑','Avocado'],['banana','🍌','Banana'],['grapes','🍇','Grapes'],['lemon','🍋','Lemon'],['peach','🍑','Peach'],['mango','🥭','Mango'],
+  ].map(([id,value,label])=>({id,value,label,category:'food' as const,keywords:['food','drink','fruit','meal','emoji']})),
+  ...[
+    ['globe','🌍','Globe Europe Africa'],['globe-americas','🌎','Globe Americas'],['globe-asia','🌏','Globe Asia'],['compass','🧭','Compass'],['map','🗺️','World map'],['location','📍','Location pin'],['airplane','✈️','Airplane'],['departures','🛫','Departures'],['arrivals','🛬','Arrivals'],['train','🚆','Train'],['car','🚗','Car'],['bus','🚌','Bus'],['ship','🚢','Ship'],['sailboat','⛵','Sailboat'],['mountain','⛰️','Mountain'],['camping','🏕️','Camping'],['beach','🏖️','Beach'],['tent','⛺','Tent'],['hotel','🏨','Hotel'],['luggage','🧳','Luggage'],['ticket','🎟️','Admission ticket'],['camera','📸','Camera'],
+  ].map(([id,value,label])=>({id,value,label,category:'travel' as const,keywords:['travel','trip','journey','holiday','place']})),
     ['shrug','¯\\_(ツ)_/¯','Shrug'],['happy','(＾▽＾)','Happy'],['excited','(ﾉ◕ヮ◕)ﾉ*:･ﾟ✧','Excited'],['cute','(｡♥‿♥｡)','Cute'],['wave-face','(・ω・)ノ','Waving'],['table-flip','(╯°□°）╯︵ ┻━┻','Table flip'],['calm','(￣▽￣)','Calm'],['cry','(ಥ﹏ಥ)','Crying'],['look','(¬‿¬)','Mischievous'],['sleep','(－ω－) zzZ','Sleepy'],['dance','♪┏(・o･)┛♪','Dancing'],['cat','(=^･ω･^=)','Cat'],['bear','ʕ•ᴥ•ʔ','Bear'],['lenny','( ͡° ͜ʖ ͡°)','Lenny face'],['cheer','٩(◕‿◕｡)۶','Cheering'],['love-face','(づ￣ ³￣)づ','Affection'],
   ].map(([id,value,label])=>({id,value,label,category:'kaomoji' as const,keywords:['kaomoji','face','emoticon']})),
 ];
