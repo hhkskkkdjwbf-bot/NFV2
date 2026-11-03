@@ -860,3 +860,87 @@ html.light .nf-app-shell .nf-page button[aria-disabled="true"] {
   background: #e8edf2 !important;
   border-color: #d3dbe4 !important;
 }
+
+
+/* Explicit home-page layout repair and dependable light-mode CTA styling. */
+html.light .nf-home.nf-page-layout {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin-inline: auto !important;
+  padding-inline: 0 !important;
+}
+
+html.light .nf-home > .nf-home-hero--balanced {
+  box-sizing: border-box !important;
+  display: block !important;
+  width: min(calc(100% - 2rem), 72rem) !important;
+  max-width: 72rem !important;
+  min-width: 0 !important;
+  margin-inline: auto !important;
+  align-self: center !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+html.light .nf-home-hero--balanced::before {
+  inset-inline: 0 !important;
+  border-radius: 2rem !important;
+}
+
+html.light .nf-home-hero-actions {
+  width: min(100%, 46rem) !important;
+  max-width: 46rem !important;
+  margin-inline: auto !important;
+  align-items: stretch !important;
+}
+
+html.light .nf-home-hero-actions .nf-home-action,
+html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action {
+  box-sizing: border-box !important;
+  min-height: 3.25rem !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #3478b5 !important;
+  background-color: #3478b5 !important;
+  background-image: none !important;
+  border: 1px solid #2d6fa9 !important;
+  box-shadow: 0 2px 6px rgba(31, 78, 119, .16) !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-home-hero-actions .nf-home-action:hover,
+html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #28669f !important;
+  background-color: #28669f !important;
+  border-color: #225b90 !important;
+}
+
+html.light .nf-home-hero-actions .nf-home-action *,
+html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .nf-home > .nf-container,
+html.light .nf-home > .nf-reading-container {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+}
+
+@media (max-width: 640px) {
+  html.light .nf-home > .nf-home-hero--balanced {
+    width: calc(100% - 1rem) !important;
+    padding-top: 2.5rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  html.light .nf-home-hero-actions {
+    width: 100% !important;
+  }
+}
