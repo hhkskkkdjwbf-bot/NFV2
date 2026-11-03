@@ -393,6 +393,17 @@ try {
         await symbol.click();
         const withSymbol = (await preview.innerText()).trim();
         if (withSymbol === initialPreview) failures.push('creative-studio: selecting a symbol did not update the shared canvas');
+        const favoriteButton = page.getByRole('button', { name: 'Add to favorites' }).first();
+        if (!(await favoriteButton.count())) failures.push('creative-studio: symbol favorite control is missing');
+        else {
+          await favoriteButton.click();
+          const favoriteStored = await page.evaluate(() => JSON.parse(localStorage.getItem('nameforge.text-art.favorites.v1') || '[]'));
+          if (!Array.isArray(favoriteStored) || favoriteStored.length !== 1) failures.push('creative-studio: favorite was not persisted');
+          const favoritesFilter = page.getByRole('button', { name: /Favorites only/ });
+          await favoritesFilter.click();
+          if (!(await page.getByRole('button', { name: 'Remove from favorites' }).count())) failures.push('creative-studio: favorites-only filter did not show the saved symbol');
+          await favoritesFilter.click();
+        }
       }
       await page.getByRole('button', { name: 'Nicknames' }).click();
       await page.getByRole('button', { name: 'Generate suggestions' }).click();
@@ -403,11 +414,21 @@ try {
         if (!(await preview.innerText()).trim()) failures.push('creative-studio: applying a nickname emptied the canvas');
       }
       await page.getByRole('button', { name: 'Bio & captions' }).click();
-      const beforeBio = (await preview.innerText()).trim();
       const template = page.locator('main').getByRole('button').filter({ hasText: /Personal intro|Content creator|Small business/ }).first();
       if (await template.count()) {
         await template.click();
-        if ((await preview.innerText()).trim() !== beforeBio) failures.push('creative-studio: choosing a bio template overwrote the main name canvas');
+        if (!(await preview.innerText()).trim()) failures.push('creative-studio: selecting a bio template did not populate the live canvas');
+        const bioEditor = page.locator('textarea').first();
+        await bioEditor.fill('My saved bio\\nLine two');
+        await page.getByRole('button', { name: 'Save design' }).click();
+        await page.getByRole('button', { name: 'Reset' }).click();
+        if ((await preview.innerText()).trim()) failures.push('creative-studio: reset did not clear the bio preview');
+        const savedBio = page.getByRole('button', { name: /My saved bio/ }).first();
+        if (!(await savedBio.count())) failures.push('creative-studio: saved bio snapshot is missing');
+        else {
+          await savedBio.click();
+          if ((await preview.innerText()).trim() !== 'My saved bio\\nLine two') failures.push('creative-studio: restoring a saved design did not restore its bio content');
+        }
       } else failures.push('creative-studio: bio templates are missing');
     }
     if (pageErrors.length) failures.push('creative-studio: JavaScript errors: ' + pageErrors.join(' | '));
