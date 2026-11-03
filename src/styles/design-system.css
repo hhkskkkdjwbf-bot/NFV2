@@ -540,3 +540,201 @@ html.light {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Phase 4 — generator results and personal workspace */
+.nf-generator-panel {
+  background: linear-gradient(155deg,
+    color-mix(in srgb, var(--nf-surface-raised) 96%, var(--nf-accent) 4%),
+    var(--nf-surface-muted)) !important;
+  border-color: var(--nf-border) !important;
+  border-radius: var(--nf-radius-panel) !important;
+  box-shadow: var(--nf-shadow) !important;
+}
+
+.nf-generator-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nf-generator-controls > :first-child {
+  align-items: stretch;
+}
+
+.nf-generator-controls label {
+  color: var(--nf-muted) !important;
+  letter-spacing: .055em;
+}
+
+.nf-generator-controls :is(input, select) {
+  min-height: var(--nf-control-height);
+  color: var(--nf-ink) !important;
+  background-color: var(--nf-surface-muted) !important;
+  border: 1px solid var(--nf-border) !important;
+  border-radius: var(--nf-radius-control) !important;
+  box-shadow: none;
+}
+
+.nf-generator-controls :is(input, select):focus {
+  border-color: var(--nf-accent) !important;
+  box-shadow: 0 0 0 3px var(--nf-accent-soft) !important;
+}
+
+.nf-generator-controls input::placeholder {
+  color: var(--nf-subtle) !important;
+}
+
+.nf-results-grid,
+.nf-library-card-grid,
+.nf-collections-grid,
+.nf-history-grid {
+  align-items: stretch;
+}
+
+.nf-results-grid > *,
+.nf-library-card-grid > *,
+.nf-collections-grid > *,
+.nf-history-grid > * {
+  min-width: 0;
+  height: 100%;
+}
+
+.nf-name-result-card {
+  min-height: 25rem;
+  height: 100%;
+  background: linear-gradient(160deg, var(--nf-surface-raised), var(--nf-surface-muted)) !important;
+  border-color: var(--nf-border) !important;
+  border-radius: var(--nf-radius-panel) !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+
+.nf-name-result-card:hover {
+  border-color: color-mix(in srgb, var(--nf-accent) 55%, var(--nf-border)) !important;
+  box-shadow: var(--nf-shadow) !important;
+}
+
+.nf-personal-workspace {
+  gap: clamp(1.25rem, 2.6vw, 2rem) !important;
+}
+
+.nf-personal-workspace .nf-page-header {
+  margin-bottom: .25rem;
+}
+
+.nf-library-stats > div {
+  min-width: 0;
+  min-height: 5.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--nf-surface) !important;
+  border: 1px solid var(--nf-border) !important;
+  border-radius: var(--nf-radius-card) !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-library-stats > div > div:first-child {
+  font-variant-numeric: tabular-nums;
+}
+
+.nf-library-tabs {
+  align-items: center;
+  gap: .75rem;
+}
+
+.nf-library-tabs > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.nf-library-tabs > div:first-child button {
+  min-height: 2.65rem;
+}
+
+.nf-library-toolbar,
+.nf-project-workspace {
+  background: var(--nf-surface) !important;
+  border-color: var(--nf-border) !important;
+  border-radius: var(--nf-radius-panel) !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-library-toolbar :is(input, select),
+.nf-project-workspace :is(input, select, textarea) {
+  color: var(--nf-ink) !important;
+  background: var(--nf-surface-muted) !important;
+  border-color: var(--nf-border) !important;
+}
+
+.nf-library-card-grid > article,
+.nf-collections-grid > article,
+.nf-history-grid > article,
+.nf-project-workspace article {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--nf-surface) !important;
+  border-color: var(--nf-border) !important;
+  border-radius: var(--nf-radius-card) !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-library-card-grid > article:hover,
+.nf-collections-grid > article:hover,
+.nf-history-grid > article:hover,
+.nf-project-workspace article:hover {
+  border-color: color-mix(in srgb, var(--nf-accent) 45%, var(--nf-border)) !important;
+}
+
+.nf-personal-workspace :is(h2, h3, h4) {
+  color: var(--nf-ink);
+}
+
+.nf-personal-workspace :is(p, label) {
+  overflow-wrap: anywhere;
+}
+
+.nf-personal-workspace button,
+.nf-generator-panel button {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .nf-generator-panel {
+    padding: 1rem !important;
+    border-radius: var(--nf-radius-card) !important;
+  }
+
+  .nf-name-result-card {
+    min-height: 0;
+    padding: 1.15rem !important;
+  }
+
+  .nf-library-tabs {
+    align-items: stretch;
+  }
+
+  .nf-library-tabs > div:first-child {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: .25rem;
+  }
+
+  .nf-library-tabs > div:first-child button {
+    flex: 0 0 auto;
+  }
+
+  .nf-library-stats > div {
+    min-height: 4.5rem;
+    padding: .75rem !important;
+  }
+
+  .nf-project-workspace {
+    padding: 1rem !important;
+  }
+}
