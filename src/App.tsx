@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { useGeneratorLocalization } from './hooks/useGeneratorLocalization';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { HomeView } from './views/HomeView';
+const HomeView = lazy(() => import('./views/HomeView').then((module) => ({ default: module.HomeView })));
 const GeneratorsListView = lazy(() => import('./views/GeneratorsListView').then((module) => ({ default: module.GeneratorsListView })));
 const GeneratorDetailView = lazy(() => import('./views/GeneratorDetailView').then((module) => ({ default: module.GeneratorDetailView })));
 const MyNamesView = lazy(() => import('./views/MyNamesView').then((module) => ({ default: module.MyNamesView })));
@@ -188,7 +188,7 @@ export const App: React.FC = () => {
   }, [currentView, currentGenerator, settings.language]);
 
   return (
-    <div className="min-h-screen bg-[#060611] text-slate-100 flex flex-col font-sans selection:bg-purple-500 selection:text-white transition-colors duration-200">
+    <div className="nf-app-shell min-h-screen bg-[#060611] text-slate-100 flex flex-col font-sans selection:bg-purple-500 selection:text-white transition-colors duration-200">
       {/* Accessibility Skip Link */}
       <a
         href="#main-content"
@@ -203,26 +203,24 @@ export const App: React.FC = () => {
         onNavigate={handleNavigate}
       />
 
-      <main id="main-content" className="flex-1 focus:outline-none" tabIndex={-1}>
-        {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}
-        {currentView !== 'home' && (
-          <Suspense
-            fallback={
-              <div className="flex min-h-[40vh] items-center justify-center px-6" role="status" aria-live="polite">
-                <span className="text-sm text-slate-500">{getShellLabels(settings.language).loading}</span>
-              </div>
-            }
-          >
-            {currentView === 'generators' && <GeneratorsListView onNavigate={handleNavigate} />}
-            {currentView === 'generator-detail' && (
-              <GeneratorDetailView generatorId={currentGenerator} onNavigate={handleNavigate} />
-            )}
-            {currentView === 'my-names' && <MyNamesView onNavigate={handleNavigate} />}
-            {currentView === 'creative-studio' && (
-              <CreativeStudioView onNavigate={handleNavigate} initialText={styleStudioText} />
-            )}
-          </Suspense>
-        )}
+      <main id="main-content" className="nf-site-main flex-1 focus:outline-none" tabIndex={-1}>
+        <Suspense
+          fallback={
+            <div className="flex min-h-[40vh] items-center justify-center px-6" role="status" aria-live="polite">
+              <span className="text-sm text-slate-500">{getShellLabels(settings.language).loading}</span>
+            </div>
+          }
+        >
+          {currentView === 'home' && <HomeView onNavigate={handleNavigate} />}
+          {currentView === 'generators' && <GeneratorsListView onNavigate={handleNavigate} />}
+          {currentView === 'generator-detail' && (
+            <GeneratorDetailView generatorId={currentGenerator} onNavigate={handleNavigate} />
+          )}
+          {currentView === 'my-names' && <MyNamesView onNavigate={handleNavigate} />}
+          {currentView === 'creative-studio' && (
+            <CreativeStudioView onNavigate={handleNavigate} initialText={styleStudioText} />
+          )}
+        </Suspense>
       </main>
 
       <Footer onNavigate={handleNavigate} />
