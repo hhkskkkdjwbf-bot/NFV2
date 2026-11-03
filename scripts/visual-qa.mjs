@@ -437,7 +437,7 @@ try {
         await bioEditor.fill('My saved bio\\nLine two');
         await page.getByRole('button', { name: 'Save design' }).click();
         await page.getByRole('button', { name: 'Reset' }).click();
-        if ((await preview.innerText()).trim()) failures.push('creative-studio: reset did not clear the bio preview');
+        if ((await preview.innerText()).trim() !== 'Enter a name to start.') failures.push('creative-studio: reset left stale bio content or did not restore the empty-state preview');
         const savedBio = page.getByRole('button', { name: /My saved bio/ }).first();
         if (!(await savedBio.count())) failures.push('creative-studio: saved bio snapshot is missing');
         else {
