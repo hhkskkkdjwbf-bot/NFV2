@@ -376,7 +376,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
 
       {/* Interactive Generator Card */}
       <section id="generator" className="nf-container">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#141d2f]/95 to-[#0c111d]/95 border border-slate-700/80 shadow-2xl relative overflow-hidden">
+        <div className="nf-generator-panel p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#141d2f]/95 to-[#0c111d]/95 border border-slate-700/80 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="nf-animated-heading text-xl sm:text-2xl font-black flex items-center gap-2">
@@ -501,7 +501,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
           )}
 
           {/* Results Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="nf-results-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {results.map((item) => (
               <NameCard
                 key={item.name}
