@@ -3,15 +3,16 @@ import { useGeneratorLocalization } from '../hooks/useGeneratorLocalization';
 import { ALL_GENERATORS_LIST, GENERATOR_FAMILIES_CONFIG } from '../data/generators';
 import { GeneratorId } from '../types';
 import { Logo } from './Logo';
-import { getAppSettings, subscribeToSettings } from '../services/settings';
+import { getAppSettings, subscribeToSettings, SUPPORTED_LANGUAGES } from '../services/settings';
 import { getTranslations } from '../i18n';
 import { ShieldAlert, Facebook } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (view: string, generatorId?: GeneratorId) => void;
+  currentView: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
   const { title: getLocalizedGeneratorTitle, shortTitle: getLocalizedGeneratorShortTitle, description: getLocalizedGeneratorDescription } = useGeneratorLocalization();
   const [settings, setSettings] = useState(getAppSettings());
 
@@ -49,16 +50,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     hi: { studio: 'स्टाइल स्टूडियो (Unicode और Canvas)', favorites: 'पसंदीदा और नोट्स', catalog: 'कैटलॉग', home: 'होम', all: 'सभी जनरेटर', names: 'मेरे नाम', generators: 'जनरेटर', styles: 'शैलियाँ', free: '100% मुफ़्त और स्थानीय' },
   };
   const labels = footerLabels[settings.language] || footerLabels.en;
-  const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(settings.language);
+  const currentLangMeta = SUPPORTED_LANGUAGES.find((language) => language.code === settings.language) || SUPPORTED_LANGUAGES[0];
 
   const fantasyGens = ALL_GENERATORS_LIST.filter((g) => g.category === 'fantasy').slice(0, 5);
   const businessGens = ALL_GENERATORS_LIST.filter((g) => g.category === 'business').slice(0, 5);
   const creativeGens = ALL_GENERATORS_LIST.filter((g) => g.category === 'creative').slice(0, 5);
 
   return (
-    <footer lang={settings.language} dir={isRtlLanguage ? 'rtl' : 'ltr'} className="nf-site-footer border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
+    <footer lang={settings.language} dir={currentLangMeta.dir} className="nf-site-footer border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
       <div className="nf-container">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
+        <div className="nf-footer-grid grid grid-cols-1 md:grid-cols-5 gap-10 mb-12">
           {/* Brand Col */}
           <div className="md:col-span-2 space-y-4">
             <button
@@ -194,19 +195,22 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="flex items-center gap-6">
             <button
               onClick={() => onNavigate('home')}
-              className="hover:text-slate-400 transition cursor-pointer"
+              aria-current={currentView === 'home' ? 'page' : undefined}
+              className={`nf-footer-link transition cursor-pointer ${currentView === 'home' ? 'is-active' : 'hover:text-slate-300'}`}
             >
               {labels.home}
             </button>
             <button
               onClick={() => onNavigate('generators')}
-              className="hover:text-slate-400 transition cursor-pointer"
+              aria-current={currentView === 'generators' ? 'page' : undefined}
+              className={`nf-footer-link transition cursor-pointer ${currentView === 'generators' ? 'is-active' : 'hover:text-slate-300'}`}
             >
               {labels.all}
             </button>
             <button
               onClick={() => onNavigate('my-names')}
-              className="hover:text-slate-400 transition cursor-pointer"
+              aria-current={currentView === 'my-names' ? 'page' : undefined}
+              className={`nf-footer-link transition cursor-pointer ${currentView === 'my-names' ? 'is-active' : 'hover:text-slate-300'}`}
             >
               {labels.names}
             </button>
