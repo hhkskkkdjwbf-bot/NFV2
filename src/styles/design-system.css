@@ -131,9 +131,47 @@ html.light {
 
 .nf-page {
   width: 100%;
-  max-width: 1560px;
+  max-width: none;
   margin-inline: auto;
   min-width: 0;
+}
+
+.nf-page-layout {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--nf-content-width);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.nf-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--nf-content-width);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.nf-reading-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--nf-reading-width);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.nf-page-header {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.nf-page-header h1 {
+  margin-inline: auto;
+  max-width: 100%;
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  text-wrap: balance;
 }
 
 .nf-page h1 {
@@ -154,6 +192,56 @@ html.light {
 
 .nf-page :is(article, [role="dialog"]) {
   border-color: var(--nf-border);
+  border-radius: var(--nf-radius-card);
+}
+
+.nf-page article {
+  min-width: 0;
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-page button {
+  min-height: 2.5rem;
+  border-radius: var(--nf-radius-control);
+  line-height: 1.25;
+}
+
+.nf-page button.rounded-full {
+  border-radius: 9999px;
+}
+
+.nf-page :is(input, select, textarea) {
+  min-height: 2.5rem;
+}
+
+.nf-page-header > p {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.nf-home > section {
+  box-sizing: border-box;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.nf-site-header .nf-container,
+.nf-site-footer .nf-container {
+  max-width: var(--nf-content-width);
+}
+
+.nf-catalog .grid > article {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nf-catalog .grid > article :is(h2, h3, p) {
+  overflow-wrap: anywhere;
+}
+
+.nf-library .nf-page-header {
+  margin-bottom: .5rem;
 }
 
 .nf-page article {
@@ -269,12 +357,9 @@ html.light {
     min-height: 4.1rem;
   }
 
-  .nf-page {
-    padding-inline: 1rem;
-  }
-
   .nf-page h1,
-  .nf-page-title {
+  .nf-page-title,
+  .nf-page-header h1 {
     font-size: clamp(1.9rem, 8vw, 2.8rem);
   }
 
