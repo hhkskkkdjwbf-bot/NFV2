@@ -15,6 +15,7 @@ let browser;
 const failures = [];
 const results = [];
 const localizationFindings = [];
+const visualComparisons = [];
 async function waitForServer() {
   for (let attempt = 0; attempt < 60; attempt++) {
     try {
@@ -69,7 +70,39 @@ try {
         const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
         await page.waitForTimeout(500);
 
-        const state = await page.evaluate(() => ({
+        const state = await page.evaluate(() => {
+          const rootStyle = getComputedStyle(document.documentElement);
+          const color = (value) => {
+            const parts = value.match(/[\\d.]+/g)?.map(Number) || [];
+            if (parts.length < 3) return null;
+            const channels = parts.slice(0, 3).map((part) => part / 255).map((part) =>
+              part <= 0.04045 ? part / 12.92 : ((part + 0.055) / 1.055) ** 2.4
+            );
+            return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+          };
+          const contrast = (foreground, background) => {
+            const a = color(foreground), b = color(background);
+            if (a === null || b === null) return null;
+            return Number(((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2));
+          };
+          const selectors = ['header', 'main', 'footer', '.nf-container', '.nf-page-header', '.nf-generator-grid', '.nf-studio-workspace'];
+          const geometry = selectors.flatMap((selector) => [...document.querySelectorAll(selector)].slice(0, 4).map((element) => {
+            const rect = element.getBoundingClientRect();
+            const style = getComputedStyle(element);
+            return {
+              selector, x: Math.round(rect.x), y: Math.round(rect.y),
+              width: Math.round(rect.width), height: Math.round(rect.height),
+              display: style.display, position: style.position,
+              visible: rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none',
+            };
+          })).filter((item) => item.visible);
+          const tokens = ['--nf-page-bg', '--nf-surface', '--nf-ink', '--nf-muted', '--nf-accent', '--nf-border', '--nf-motion-fast', '--nf-motion-normal', '--nf-motion-slow'];
+          const colors = Object.fromEntries(tokens.map((token) => [token, rootStyle.getPropertyValue(token).trim()]));
+          const inkColor = getComputedStyle(document.querySelector('main') || document.body).color;
+          const pageBackground = rootStyle.getPropertyValue('--nf-page-bg').trim();
+          const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
+          const motionDurations = motionNodes.map((element) => getComputedStyle(element).transitionDuration.split(',').map((value) => parseFloat(value) || 0));
+          return {
           title: document.title,
           bodyTextLength: (document.body?.innerText || '').trim().length,
           htmlClass: document.documentElement.className,
@@ -101,12 +134,77 @@ try {
             src: img.currentSrc || img.src,
             loaded: img.complete && img.naturalWidth > 0,
           })),
-        }));
+          geometry,
+          colors,
+          inkContrast: contrast(inkColor, pageBackground),
+          reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
+          maxTransitionSeconds: motionDurations.flat().reduce((max, value) => Math.max(max, value), 0),
+          });
+        });
 
         const label = viewport.name + '-' + theme + '-' + view.name;
         const screenshotPath = outputDir + '/' + label + '.png';
 
         await page.screenshot({ path: screenshotPath, fullPage: true, animations: 'disabled' });
+
+        // Audit layout geometry, design tokens, contrast and reduced-motion behavior.
+        if (!state.colors['--nf-page-bg'] || !state.colors['--nf-surface'] || !state.colors['--nf-ink'] || !state.colors['--nf-accent']) {
+          failures.push(label + ': one or more core design color tokens are missing');
+        }
+        if (state.inkContrast !== null && state.inkContrast < 4.5) {
+          failures.push(label + ': primary text contrast is below WCAG AA (ratio ' + state.inkContrast + ')');
+        }
+        if (!state.reducedMotion) failures.push(label + ': reduced-motion preference was not applied in the browser context');
+        if (state.maxTransitionSeconds > 0.02) failures.push(label + ': reduced-motion leaves a long transition (' + state.maxTransitionSeconds + 's)');
+        for (const box of state.geometry) {
+          if (box.width < 0 || box.height < 0) failures.push(label + ': invalid geometry for ' + box.selector);
+          if (box.x + box.width > state.viewportWidth + 3 && box.selector !== 'footer') {
+            failures.push(label + ': ' + box.selector + ' exceeds the viewport width');
+          }
+        }
+        const primaryContainer = state.geometry.find((box) => box.selector === '.nf-container');
+        if (primaryContainer && viewport.name === 'desktop') {
+          const centerOffset = Math.abs((primaryContainer.x + primaryContainer.width / 2) - viewport.width / 2);
+          if (centerOffset > 28) failures.push(label + ': main container is visibly off-center (' + Math.round(centerOffset) + 'px)');
+        }
+
+        // Compare repeat captures at pixel level on stable desktop routes. The report
+        // records the changed-pixel ratio so later commits can be reviewed consistently.
+        if (viewport.name === 'desktop' && theme === 'dark' && ['home', 'catalog', 'creative-studio'].includes(view.name)) {
+          const firstCapture = await page.screenshot({ fullPage: false, animations: 'disabled' });
+          await page.reload({ waitUntil: 'networkidle', timeout: 45000 });
+          await page.waitForTimeout(350);
+          const secondCapture = await page.screenshot({ fullPage: false, animations: 'disabled' });
+          const comparison = await page.evaluate(async ({ first, second }) => {
+            const decode = (base64) => new Promise((resolve, reject) => {
+              const image = new Image();
+              image.onload = () => resolve(image);
+              image.onerror = reject;
+              image.src = 'data:image/png;base64,' + base64;
+            });
+            const [a, b] = await Promise.all([decode(first), decode(second)]);
+            if (a.width !== b.width || a.height !== b.height) return { width: a.width, height: a.height, changedPixels: -1, changedRatio: 1 };
+            const canvas = document.createElement('canvas');
+            canvas.width = a.width; canvas.height = a.height;
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            context.drawImage(a, 0, 0);
+            const pixelsA = context.getImageData(0, 0, canvas.width, canvas.height).data;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(b, 0, 0);
+            const pixelsB = context.getImageData(0, 0, canvas.width, canvas.height).data;
+            let changedPixels = 0;
+            for (let index = 0; index < pixelsA.length; index += 4) {
+              if (Math.abs(pixelsA[index] - pixelsB[index]) > 8 ||
+                  Math.abs(pixelsA[index + 1] - pixelsB[index + 1]) > 8 ||
+                  Math.abs(pixelsA[index + 2] - pixelsB[index + 2]) > 8 ||
+                  Math.abs(pixelsA[index + 3] - pixelsB[index + 3]) > 8) changedPixels += 1;
+            }
+            const totalPixels = canvas.width * canvas.height;
+            return { width: canvas.width, height: canvas.height, changedPixels, changedRatio: Number((changedPixels / totalPixels).toFixed(5)) };
+          }, { first: firstCapture.toString('base64'), second: secondCapture.toString('base64') });
+          visualComparisons.push({ label, ...comparison });
+          if (comparison.changedRatio > 0.08) failures.push(label + ': repeated screenshot comparison changed more than 8% of pixels (' + comparison.changedRatio + ')');
+        }
 
         // Expand every FAQ answer so each accordion's content and light/dark styling
         // is actually rendered, not only represented by its collapsed heading.
@@ -494,7 +592,7 @@ try {
   server.kill('SIGTERM');
 }
 
-const report = { baseUrl, testedCombinations: results.length, failures, localizationFindings, results };
+const report = { baseUrl, testedCombinations: results.length, failures, localizationFindings, visualComparisons, results };
 await (await import('node:fs/promises')).writeFile(outputDir + '/report.json', JSON.stringify(report, null, 2));
 console.log(JSON.stringify(report, null, 2));
 if (failures.length) process.exitCode = 1;
