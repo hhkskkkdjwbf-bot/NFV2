@@ -14,5 +14,12 @@ assert.deepEqual(readTextArtFavorites(storage),['heart','shrug']);
 assert.equal(memory.has(SYMBOL_FAVORITES_KEY),true);
 assert.ok(generateTextArtCss({fontFamily:'Arial";color:red',fontSize:48,fontWeight:700,color:'#abc',letterSpacing:2,textAlign:'center',lineHeight:1.3}).includes('font-size: 48px'));
 assert.ok(!generateTextArtCss({fontFamily:'Arial',fontSize:999,fontWeight:700,color:'red',letterSpacing:99,textAlign:'center',lineHeight:9}).includes('font-size: 999px'));
-assert.ok(TEXT_ART_ITEMS.length >= 60);
+assert.ok(TEXT_ART_ITEMS.length >= 150);
+assert.equal(new Set(TEXT_ART_ITEMS.map(item => item.id)).size, TEXT_ART_ITEMS.length, 'symbol IDs must be unique');
+for (const category of ['emoji','gaming','music','weather','food','travel'] as const) {
+  assert.ok(filterTextArtItems(TEXT_ART_ITEMS, '', category).length >= 10, category + ' category should have a useful collection');
+}
+assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'rocket').some(item => item.id === 'rocket'));
+assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'pizza', 'food').some(item => item.value === '🍕'));
+assert.ok(filterTextArtItems(TEXT_ART_ITEMS, 'game', 'gaming').length > 0);
 console.log('Phase 5 Text Art tests passed');
