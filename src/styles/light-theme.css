@@ -784,3 +784,79 @@ html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4) {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Hotfix: restore a centered, full-width page rhythm and prevent washed-out CTAs.
+   All selectors are scoped to the light theme; dark mode remains untouched. */
+html.light .nf-home.nf-page-layout {
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin-inline: auto !important;
+  align-items: stretch !important;
+}
+
+html.light .nf-home > .nf-home-hero {
+  display: block;
+  box-sizing: border-box;
+  width: min(100%, 72rem) !important;
+  max-width: 72rem !important;
+  margin-inline: auto !important;
+  align-self: center !important;
+}
+
+html.light .nf-home > .nf-container,
+html.light .nf-home > .nf-reading-container {
+  box-sizing: border-box;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+}
+
+html.light .nf-home > .nf-container > *,
+html.light .nf-home > .nf-reading-container > * {
+  min-width: 0;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]),
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #3478b5 !important;
+  background-image: none !important;
+  border-color: #2d6fa9 !important;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]) *,
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
+  background-color: #28669f !important;
+  border-color: #225b90 !important;
+}
+
+html.light .nf-app-shell .nf-page button[class*="bg-red-"],
+html.light .nf-app-shell .nf-page button[class*="bg-rose-"],
+html.light .nf-app-shell .nf-page [role="button"][class*="bg-red-"],
+html.light .nf-app-shell .nf-page [role="button"][class*="bg-rose-"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #b93845 !important;
+  background-image: none !important;
+  border-color: #a52e3a !important;
+}
+
+html.light .nf-app-shell .nf-page button:disabled,
+html.light .nf-app-shell .nf-page button[aria-disabled="true"] {
+  color: #536170 !important;
+  -webkit-text-fill-color: #536170 !important;
+  background: #e8edf2 !important;
+  border-color: #d3dbe4 !important;
+}
