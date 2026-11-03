@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       />
 
       <header lang={settings.language} dir={currentLangMeta.dir} className="nf-site-header sticky top-0 z-40 bg-[#070912]/95 backdrop-blur-md border-b border-white/10 transition-all">
-        <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+        <div className="nf-container min-h-[4.5rem] flex items-center justify-between">
           {/* Brand Logo */}
           <button
             onClick={() => {
