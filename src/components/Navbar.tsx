@@ -78,6 +78,23 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, []);
 
+  // Close transient navigation panels after route changes and support keyboard dismissal.
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setGeneratorsDropdownOpen(false);
+  }, [currentView]);
+
+  useEffect(() => {
+    const handleNavigationKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileMenuOpen(false);
+        setGeneratorsDropdownOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleNavigationKey);
+    return () => window.removeEventListener('keydown', handleNavigationKey);
+  }, []);
+
   const currentLangMeta = SUPPORTED_LANGUAGES.find((l) => l.code === settings.language) || SUPPORTED_LANGUAGES[0];
 
   return (
@@ -97,7 +114,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         }}
       />
 
-      <header lang={settings.language} dir={currentLangMeta.dir} className="nf-site-header sticky top-0 z-40 bg-[#070912]/95 backdrop-blur-md border-b border-white/10 transition-all">
+      <header lang={settings.language} dir={currentLangMeta.dir} className="nf-site-header nf-navigation-shell sticky top-0 z-40 bg-[#070912]/95 backdrop-blur-md border-b border-white/10 transition-all">
         <div className="nf-container min-h-[4.5rem] flex items-center justify-between">
           {/* Brand Logo */}
           <button
@@ -112,11 +129,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Desktop Nav */}
-          <nav aria-label={getShellLabels(settings.language).mainNavigation} className="hidden md:flex items-center gap-6">
+          <nav aria-label={getShellLabels(settings.language).mainNavigation} className="nf-desktop-navigation hidden xl:flex items-center gap-5">
             <button
               onClick={() => onNavigate('home')}
-              className={`text-sm font-semibold transition cursor-pointer ${
-                currentView === 'home' && !currentGenerator
+              aria-current={currentView === 'home' ? 'page' : undefined}
+              className={`nf-nav-link text-sm font-semibold transition cursor-pointer ${
+                currentView === 'home'
                   ? 'text-white border-b-2 border-purple-500 pb-1'
                   : 'text-slate-400 hover:text-white'
               }`}
@@ -129,6 +147,8 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => setGeneratorsDropdownOpen(!generatorsDropdownOpen)}
                 aria-expanded={generatorsDropdownOpen}
+                aria-controls="nameforge-generators-menu"
+                aria-current={currentView === 'generators' || currentView === 'generator-detail' ? 'page' : undefined}
                 aria-haspopup="true"
                 className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer py-1.5 ${
                   currentView === 'generators' || currentView === 'generator-detail'
@@ -146,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="fixed inset-0 z-20"
                     onClick={() => setGeneratorsDropdownOpen(false)}
                   />
-                  <div className="absolute start-0 mt-2 w-[520px] rounded-2xl bg-[#0b1020] border border-slate-800 shadow-2xl p-4 z-30 animate-fade-in max-h-[80vh] overflow-y-auto">
+                  <div id="nameforge-generators-menu" className="nf-generators-dropdown absolute start-0 mt-2 w-[520px] rounded-2xl bg-[#0b1020] border border-slate-800 shadow-2xl p-4 z-30 animate-fade-in max-h-[80vh] overflow-y-auto">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
                       <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                         {navText.all} {ALL_GENERATORS_LIST.length} {navText.generators}
@@ -198,7 +218,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Catalog Link */}
             <button
               onClick={() => onNavigate('generators')}
-              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+              aria-current={currentView === 'generators' ? 'page' : undefined}
+              className={`nf-nav-link text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${
                 currentView === 'generators'
                   ? 'text-white border-b-2 border-purple-500 pb-1'
                   : 'text-slate-400 hover:text-white'
@@ -225,7 +246,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               onClick={() => onNavigate('creative-studio')}
               aria-current={currentView === 'creative-studio' ? 'page' : undefined}
-              className={`text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${
+              className={`nf-nav-link text-sm font-semibold flex items-center gap-1.5 transition cursor-pointer ${
                 currentView === 'creative-studio'
                   ? 'text-white border-b-2 border-purple-500 pb-1'
                   : 'text-slate-400 hover:text-white'
@@ -238,7 +259,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* My Names with Live Counter */}
             <button
               onClick={() => onNavigate('my-names')}
-              className={`text-sm font-semibold flex items-center gap-2 transition cursor-pointer ${
+              aria-current={currentView === 'my-names' ? 'page' : undefined}
+              className={`nf-nav-link text-sm font-semibold flex items-center gap-2 transition cursor-pointer ${
                 currentView === 'my-names'
                   ? 'text-white border-b-2 border-purple-500 pb-1'
                   : 'text-slate-400 hover:text-white'
@@ -281,7 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="nf-navigation-actions flex xl:hidden items-center gap-2">
             <button
               onClick={() => setShowSettingsModal(true)}
               className="w-9 h-9 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300"
@@ -304,13 +326,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Menu Drawer */}
         {mobileMenuOpen && (
-          <div id="nameforge-mobile-menu" className="md:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
+          <nav id="nameforge-mobile-menu" aria-label={getShellLabels(settings.language).mainNavigation} className="nf-mobile-navigation xl:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
             <button
               onClick={() => {
                 onNavigate('home');
                 setMobileMenuOpen(false);
               }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800"
+              aria-current={currentView === 'home' ? 'page' : undefined}
+              className={`nf-mobile-nav-link w-full text-start py-2 px-3 rounded-xl text-sm font-semibold transition ${currentView === 'home' ? 'is-active' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
             >
               {t.home}
             </button>
@@ -320,7 +343,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onNavigate('generators');
                 setMobileMenuOpen(false);
               }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-between"
+              aria-current={currentView === 'generators' || currentView === 'generator-detail' ? 'page' : undefined}
+              className={`nf-mobile-nav-link w-full text-start py-2 px-3 rounded-xl text-sm font-semibold transition flex items-center justify-between ${currentView === 'generators' || currentView === 'generator-detail' ? 'is-active' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
             >
               <span>{t.allGenerators.replace(/\b134\b/g, String(ALL_GENERATORS_LIST.length))}</span>
               <span className="text-xs bg-purple-600/30 text-purple-300 px-2 py-0.5 rounded-full font-bold">
@@ -346,7 +370,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setMobileMenuOpen(false);
               }}
               aria-current={currentView === 'creative-studio' ? 'page' : undefined}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-fuchsia-300 hover:bg-slate-800 flex items-center gap-2"
+              className={`nf-mobile-nav-link w-full text-start py-2 px-3 rounded-xl text-sm font-semibold transition flex items-center gap-2 ${currentView === 'creative-studio' ? 'is-active' : 'text-fuchsia-300 hover:bg-slate-800'}`}
             >
               <Wand2 className="w-4 h-4 text-fuchsia-400" />
               <span>{settings.language === 'fr' ? 'Studio créatif' : settings.language === 'ar' ? 'الاستوديو الإبداعي' : 'Creative Studio'}</span>
@@ -357,7 +381,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onNavigate('my-names');
                 setMobileMenuOpen(false);
               }}
-              className="w-full text-start py-2 px-3 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-between"
+              aria-current={currentView === 'my-names' ? 'page' : undefined}
+              className={`nf-mobile-nav-link w-full text-start py-2 px-3 rounded-xl text-sm font-semibold transition flex items-center justify-between ${currentView === 'my-names' ? 'is-active' : 'text-slate-300 hover:text-white hover:bg-slate-800'}`}
             >
               <span className="flex items-center gap-2">
                 <Bookmark className="w-4 h-4 text-purple-400" />
@@ -396,7 +421,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Settings className="w-4 h-4 text-purple-400" />
               <span>{t.settings}</span>
             </button>
-          </div>
+          </nav>
         )}
       </header>
     </>
