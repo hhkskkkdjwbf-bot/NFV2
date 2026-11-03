@@ -94,7 +94,7 @@ export function generateUsernameSuggestions(options: UsernameOptions): string[] 
   const suffix = cleanPart(options.suffix || '');
   const quantity = Math.min(Math.max(options.quantity ?? 12, 1), 40);
   const cores = base
-    ? [base, ...words.roots.map((root) => (style === 'elegant' || style === 'fantasy' ? titleCase(base) : base) + (style === 'minimal' ? '' : root))]
+    ? [base, ...words.roots.map((root) => (style === 'elegant' || style === 'fantasy' ? titleCase(base) : base) + root)]
     : words.roots;
   const candidates: string[] = [];
   const seen = new Set<string>();
