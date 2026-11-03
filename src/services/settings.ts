@@ -333,11 +333,15 @@ function notifySettingsChange() {
  */
 export function resetAllLocalData(): void {
   try {
+    // User-created content lives in several independent tools. Keep preferences
+    // (nameforge_settings) intact, but clear every personal workspace dataset.
     const keysToRemove = [
       'nameforge_saved_names',
       'nameforge_collections',
       'nameforge_generation_history',
       'nameforge_recent_names',
+      'nameforge.unified-designs.v1',
+      'nameforge.text-art.favorites.v1',
     ];
     for (const k of keysToRemove) {
       localStorage.removeItem(k);
