@@ -144,6 +144,31 @@ html.light {
   padding-inline: clamp(1rem, 3vw, 2rem);
 }
 
+.nf-home.nf-page-layout,
+.nf-generator-detail.nf-page-layout,
+.nf-creative-studio.nf-page-layout {
+  padding-inline: 0;
+}
+
+.nf-home.nf-page-layout,
+.nf-generator-detail.nf-page-layout,
+.nf-library.nf-page-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.nf-home.nf-page-layout {
+  gap: var(--nf-section-gap);
+}
+
+.nf-generator-detail.nf-page-layout {
+  gap: clamp(2.5rem, 5vw, 4rem);
+}
+
+.nf-library.nf-page-layout {
+  gap: 2rem;
+}
+
 .nf-container {
   box-sizing: border-box;
   width: 100%;
