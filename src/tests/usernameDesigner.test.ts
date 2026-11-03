@@ -24,6 +24,7 @@ for (const style of ['gaming', 'fantasy', 'minimal', 'elegant'] as const) {
   assert(names.length === 16, `${style} style returns the requested 16 unique suggestions`);
   assert(new Set(names.map((name) => name.toLowerCase())).size === names.length, `${style} style avoids duplicates`);
   assert(names.every((name) => validateUsername(name, 3, 18).valid), `${style} style respects character and length rules`);
+  assert(names.every((name) => !name.startsWith('_') && !name.endsWith('_')), `${style} style avoids dangling separators`);
 }
 
 const prefixed = generateUsernameSuggestions({
