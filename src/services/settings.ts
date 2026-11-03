@@ -337,6 +337,7 @@ export function resetAllLocalData(): void {
     // (nameforge_settings) intact, but clear every personal workspace dataset.
     const keysToRemove = [
       'nameforge_saved_names',
+      'nameforge_saved_projects',
       'nameforge_collections',
       'nameforge_generation_history',
       'nameforge_recent_names',
@@ -346,12 +347,11 @@ export function resetAllLocalData(): void {
     for (const k of keysToRemove) {
       localStorage.removeItem(k);
     }
-    // Remove any rating items
-    const allKeys = Object.keys(localStorage);
-    for (const key of allKeys) {
-      if (key.startsWith('nameforge_rating_')) {
-        localStorage.removeItem(key);
-      }
+    // Remove rating keys through the Storage API (rather than relying on
+    // enumerable implementation details of the browser's Storage object).
+    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+      const key = localStorage.key(index);
+      if (key?.startsWith('nameforge_rating_')) localStorage.removeItem(key);
     }
     notifySettingsChange();
     window.dispatchEvent(new CustomEvent('nameforge:storage'));
