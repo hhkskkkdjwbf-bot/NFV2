@@ -100,7 +100,7 @@ export const ProjectWorkspace: React.FC = () => {
   };
 
   return (
-    <section className="rounded-2xl border border-slate-800 bg-[#0d1424] p-4 sm:p-6 space-y-4" aria-labelledby="saved-projects-title">
+    <section className="nf-project-workspace rounded-2xl border border-slate-800 bg-[#0d1424] p-4 sm:p-6 space-y-4" aria-labelledby="saved-projects-title">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 shrink-0 rounded-xl bg-purple-500/15 text-purple-300 flex items-center justify-center"><FolderOpen className="w-5 h-5" /></div>
         <div>
