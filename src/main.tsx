@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 import './styles/design-system.css';
+import './styles/light-theme.css';
 
 // Cache content-hashed assets for repeat visits and offline resilience.
 // GitHub Pages controls HTTP cache headers, so this adds a browser-managed layer.
