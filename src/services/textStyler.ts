@@ -260,8 +260,8 @@ function toInverted(text: string): string {
 // Combining marks (Strikethrough, Underline, Slash)
 function toCombining(text: string, markCode: number): string {
   const mark = String.fromCodePoint(markCode);
-  return Array.from(text)
-    .map((c) => (c === ' ' ? ' ' : `${c}${mark}`))
+  return splitGraphemes(text)
+    .map((cluster) => (cluster === ' ' ? ' ' : `${cluster}${mark}`))
     .join('');
 }
 
