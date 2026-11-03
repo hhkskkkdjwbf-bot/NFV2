@@ -133,7 +133,7 @@ export const NameCard: React.FC<NameCardProps> = ({
         </Suspense>
       )}
 
-      <article className="group relative p-6 sm:p-7 rounded-3xl bg-gradient-to-b from-[#11182c] to-[#0a101d] border border-slate-700/70 hover:border-purple-500/80 transition-all duration-200 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-purple-900/30 flex flex-col justify-between text-center">
+      <article className="nf-name-result-card group relative p-6 sm:p-7 rounded-3xl bg-gradient-to-b from-[#11182c] to-[#0a101d] border border-slate-700/70 hover:border-purple-500/80 transition-all duration-200 hover:-translate-y-1.5 shadow-xl hover:shadow-2xl hover:shadow-purple-900/30 flex flex-col justify-between text-center">
         {/* Top info */}
         <div>
           <div className="flex items-center justify-between gap-1 mb-2">
