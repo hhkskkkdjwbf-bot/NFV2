@@ -223,7 +223,7 @@ export const App: React.FC = () => {
         </Suspense>
       </main>
 
-      <Footer onNavigate={handleNavigate} />
+      <Footer onNavigate={handleNavigate} currentView={currentView} />
     </div>
   );
 };
