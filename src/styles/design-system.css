@@ -1,18 +1,42 @@
-/* NameForge unified design system
-   Shared visual language for every route. Keep feature-specific layout in view components. */
+/* NameForge design foundation
+   Global tokens and reusable primitives. Feature-specific layout stays in views. */
 @layer base {
   :root {
+    color-scheme: dark;
     --nf-accent: #9b7cff;
     --nf-accent-strong: #7c5ce7;
+    --nf-accent-soft: rgba(155, 124, 255, .14);
     --nf-cyan: #55d6e8;
+    --nf-success: #34d399;
+    --nf-warning: #fbbf24;
+    --nf-danger: #fb7185;
+
     --nf-page-bg: #080b16;
-    --nf-surface: rgba(17, 24, 43, 0.88);
+    --nf-surface: #11182b;
     --nf-surface-raised: #151d31;
-    --nf-border: rgba(148, 163, 184, 0.16);
+    --nf-surface-muted: #0d1424;
+    --nf-border: rgba(148, 163, 184, .16);
     --nf-ink: #f4f6ff;
     --nf-muted: #a2aec3;
+    --nf-subtle: #8190a8;
+
+    --nf-content-width: 1440px;
+    --nf-reading-width: 960px;
+    --nf-section-gap: clamp(3rem, 6vw, 5.5rem);
+    --nf-control-height: 2.75rem;
+    --nf-radius-sm: .65rem;
+    --nf-radius-control: .8rem;
+    --nf-radius-card: 1.1rem;
+    --nf-radius-panel: 1.35rem;
     --nf-radius: 1.25rem;
-    --nf-shadow: 0 18px 55px rgba(0, 0, 0, 0.18);
+    --nf-shadow: 0 18px 55px rgba(0, 0, 0, .18);
+    --nf-shadow-soft: 0 8px 26px rgba(0, 0, 0, .12);
+
+    --nf-motion-fast: 140ms;
+    --nf-motion-normal: 200ms;
+    --nf-motion-slow: 280ms;
+    --nf-ease: cubic-bezier(.2, .7, .2, 1);
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -30,7 +54,7 @@
 
   ::selection {
     color: #fff;
-    background: rgba(124, 92, 231, 0.72);
+    background: rgba(124, 92, 231, .72);
   }
 
   :focus-visible {
@@ -42,20 +66,29 @@
     font: inherit;
   }
 
-  button:disabled {
+  button:disabled,
+  [aria-disabled="true"] {
     cursor: not-allowed;
     opacity: .55;
+  }
+
+  img, canvas, svg, video {
+    max-width: 100%;
   }
 }
 
 html.light {
-  --nf-page-bg: #f4f8ff;
-  --nf-surface: rgba(255, 255, 255, 0.94);
+  color-scheme: light;
+  --nf-page-bg: #f4f7fc;
+  --nf-surface: #ffffff;
   --nf-surface-raised: #ffffff;
-  --nf-border: rgba(83, 125, 169, 0.2);
-  --nf-ink: #173653;
-  --nf-muted: #526d86;
-  --nf-shadow: 0 16px 42px rgba(36, 92, 145, 0.08);
+  --nf-surface-muted: #edf2f8;
+  --nf-border: rgba(71, 98, 130, .18);
+  --nf-ink: #172033;
+  --nf-muted: #526176;
+  --nf-subtle: #64748b;
+  --nf-shadow: 0 16px 42px rgba(36, 66, 105, .09);
+  --nf-shadow-soft: 0 8px 24px rgba(36, 66, 105, .07);
 }
 
 .nf-app-shell {
@@ -80,8 +113,10 @@ html.light {
 .nf-site-header nav > button,
 .nf-site-header nav > div > button {
   min-height: 2.65rem;
-  border-radius: .75rem;
-  transition: color .18s ease, background-color .18s ease, border-color .18s ease;
+  border-radius: var(--nf-radius-control);
+  transition: color var(--nf-motion-normal) var(--nf-ease),
+    background-color var(--nf-motion-normal) var(--nf-ease),
+    border-color var(--nf-motion-normal) var(--nf-ease);
 }
 
 .nf-site-header nav > button:hover,
@@ -122,21 +157,21 @@ html.light {
 }
 
 .nf-page article {
-  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-}
-
-.nf-page article:hover {
-  box-shadow: var(--nf-shadow);
+  transition: border-color var(--nf-motion-normal) var(--nf-ease),
+    box-shadow var(--nf-motion-normal) var(--nf-ease),
+    transform var(--nf-motion-normal) var(--nf-ease);
 }
 
 .nf-page :is(input, select, textarea) {
   min-width: 0;
-  border-radius: .8rem;
-  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+  border-radius: var(--nf-radius-control);
+  transition: border-color var(--nf-motion-normal) var(--nf-ease),
+    box-shadow var(--nf-motion-normal) var(--nf-ease),
+    background-color var(--nf-motion-normal) var(--nf-ease);
 }
 
 .nf-page :is(input, select, textarea):focus {
-  box-shadow: 0 0 0 3px rgba(155, 124, 255, .16);
+  box-shadow: 0 0 0 3px var(--nf-accent-soft);
 }
 
 .nf-page :is(button, a) {
@@ -145,8 +180,44 @@ html.light {
 
 .nf-page button {
   transition-property: color, background-color, border-color, box-shadow, transform;
-  transition-duration: .18s;
-  transition-timing-function: ease;
+  transition-duration: var(--nf-motion-normal);
+  transition-timing-function: var(--nf-ease);
+}
+
+/* Reusable page primitives for progressive adoption across views. */
+.nf-page-title {
+  color: var(--nf-ink);
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  font-weight: 850;
+  letter-spacing: -.04em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.nf-section-title {
+  color: var(--nf-ink);
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+  font-weight: 800;
+  letter-spacing: -.025em;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.nf-muted {
+  color: var(--nf-muted);
+}
+
+.nf-surface {
+  background: var(--nf-surface);
+  border: 1px solid var(--nf-border);
+  border-radius: var(--nf-radius-card);
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-panel {
+  background: var(--nf-surface-muted);
+  border: 1px solid var(--nf-border);
+  border-radius: var(--nf-radius-panel);
 }
 
 .nf-home > section {
@@ -159,7 +230,7 @@ html.light {
 
 .nf-catalog .grid > article {
   min-height: 16rem;
-  border-radius: 1.35rem;
+  border-radius: var(--nf-radius-panel);
   background-color: var(--nf-surface);
 }
 
@@ -179,7 +250,8 @@ html.light {
 
 .nf-site-footer a,
 .nf-site-footer button {
-  transition: color .18s ease, transform .18s ease;
+  transition: color var(--nf-motion-normal) var(--nf-ease),
+    transform var(--nf-motion-normal) var(--nf-ease);
 }
 
 .nf-site-footer a:hover,
@@ -201,7 +273,8 @@ html.light {
     padding-inline: 1rem;
   }
 
-  .nf-page h1 {
+  .nf-page h1,
+  .nf-page-title {
     font-size: clamp(1.9rem, 8vw, 2.8rem);
   }
 
