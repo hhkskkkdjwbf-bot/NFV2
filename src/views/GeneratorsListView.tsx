@@ -110,8 +110,8 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(language);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-catalog max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 py-12 space-y-12">
-      <div className="text-center max-w-3xl mx-auto">
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-page-layout nf-catalog py-12 space-y-12">
+      <div className="nf-page-header text-center max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-extrabold uppercase tracking-widest mb-4">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
           <span>{t.eyebrow} {ALL_GENERATORS_LIST.length} {t.generatorWord}</span>
