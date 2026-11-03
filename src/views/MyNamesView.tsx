@@ -360,8 +360,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(currentLanguage);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={currentLanguage} className="nf-page nf-library max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 py-10 space-y-8 text-start">
-      <ProjectWorkspace />
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={currentLanguage} className="nf-page nf-page-layout nf-library py-10 text-start">
       {/* Hidden file input for import */}
       <input
         type="file"
@@ -459,7 +458,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
       )}
 
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto">
+      <div className="nf-page-header text-center max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-extrabold uppercase tracking-widest mb-3">
           <Bookmark className="w-3.5 h-3.5" />
           <span>{controls.localBadge}</span>
@@ -471,6 +470,8 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
           {t.settingsModal.dataDesc}
         </p>
       </div>
+
+      <ProjectWorkspace />
 
       {/* Import Status Alert */}
       {importStatus && (
