@@ -738,3 +738,180 @@ html.light {
     padding: 1rem !important;
   }
 }
+
+
+/* Phase 5 — Creative Studio workspace */
+.nf-creative-studio > .nf-container {
+  max-width: 100rem;
+}
+
+.nf-studio-workspace {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 330px;
+  align-items: start;
+  gap: clamp(.85rem, 1.5vw, 1.25rem);
+}
+
+.nf-studio-tools,
+.nf-studio-settings,
+.nf-studio-preview {
+  min-width: 0;
+  border-radius: var(--nf-radius-panel) !important;
+  border-color: var(--nf-border) !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+
+.nf-studio-tools,
+.nf-studio-settings {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.nf-studio-tools nav button,
+.nf-studio-settings button,
+.nf-studio-canvas button {
+  transition:
+    background-color var(--nf-motion-fast) var(--nf-ease),
+    border-color var(--nf-motion-fast) var(--nf-ease),
+    color var(--nf-motion-fast) var(--nf-ease),
+    transform var(--nf-motion-fast) var(--nf-ease);
+}
+
+.nf-studio-tools nav button[aria-pressed="true"],
+.nf-studio-settings button[aria-pressed="true"] {
+  border-color: var(--nf-accent);
+}
+
+.nf-studio-canvas {
+  width: 100%;
+  min-width: 0;
+}
+
+.nf-studio-preview {
+  width: 100%;
+}
+
+.nf-studio-preview-stage {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: clamp(17rem, 38vh, 27rem) !important;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.nf-studio-preview-stage > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.nf-studio-settings :is(input, select, textarea),
+.nf-creative-studio :is(input, select, textarea) {
+  max-width: 100%;
+  min-width: 0;
+  border-radius: var(--nf-radius-control);
+}
+
+.nf-studio-settings :is(input, select, textarea):focus,
+.nf-creative-studio :is(input, select, textarea):focus {
+  outline: 2px solid transparent;
+  border-color: var(--nf-accent) !important;
+  box-shadow: 0 0 0 3px var(--nf-accent-soft);
+}
+
+.nf-creative-studio button {
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .nf-studio-workspace {
+    grid-template-columns: minmax(175px, .38fr) minmax(0, 1fr);
+  }
+
+  .nf-studio-tools {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .nf-studio-canvas {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .nf-studio-settings {
+    position: static;
+    grid-column: 2;
+    grid-row: 2;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .nf-studio-settings > div {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .nf-creative-studio.nf-page-layout {
+    padding-inline: 0;
+  }
+
+  .nf-creative-studio > .nf-container {
+    padding-inline: 1rem;
+  }
+
+  .nf-studio-workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .9rem;
+  }
+
+  .nf-studio-tools,
+  .nf-studio-settings {
+    position: static;
+    grid-column: auto;
+    grid-row: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .nf-studio-tools nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .nf-studio-tools nav button {
+    min-width: 0;
+    justify-content: flex-start;
+    padding-inline: .7rem;
+    font-size: .8rem;
+  }
+
+  .nf-studio-preview-stage {
+    min-height: 15rem !important;
+    padding: 1.25rem !important;
+    font-size: clamp(1.5rem, 8vw, 2.5rem) !important;
+  }
+
+  .nf-studio-settings .max-h-\\[350px\\],
+  .nf-studio-settings .max-h-\\[420px\\] {
+    max-height: 16rem;
+  }
+
+  .nf-studio-settings > div,
+  .nf-studio-canvas > section {
+    min-width: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-studio-tools nav button,
+  .nf-studio-settings button,
+  .nf-studio-canvas button {
+    transition: none !important;
+  }
+}
