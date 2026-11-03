@@ -42,12 +42,15 @@ export const CreativeStudioView:React.FC<Props>=({initialText,onNavigate})=>{
  useEffect(()=>{try{localStorage.setItem('nameforge.unified-designs.v1',JSON.stringify(saved))}catch{}},[saved]);
  useEffect(()=>{saveTextArtFavorites(favorites)},[favorites]);
  const style=UNICODE_STYLES.find(v=>v.id===styleId)||UNICODE_STYLES[0],effect=VISUAL_EFFECTS.find(v=>v.id===effectId);
- const output=prefix+style.transform(name||'')+suffix;\n const activeOutput=tool==='bio'&&bio?bio:output;
+ const output=prefix+style.transform(name||'')+suffix;
+ const activeOutput=tool==='bio'&&bio?bio:output;
  const symbols=useMemo(()=>filterTextArtItems(TEXT_ART_ITEMS,query,category as 'all'|'stars'|'arrows'|'hearts'|'decorative'|'nature'|'kaomoji',favorites,favoritesOnly),[category,query,favorites,favoritesOnly]);
  const templates=getBioCaptionTemplates(lang,bioKind);
  const notify=(v:string)=>{setNotice(v);window.setTimeout(()=>setNotice(''),1600)};
  const applyNick=(v:string)=>{setName(v);setPrefix('');setSuffix('');setStyleId('bold-sans');setEffectId('');setTool('type');};
- const save=()=>{const snapshot:Saved={id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,name,output:activeOutput,tool,styleId,effectId,prefix,suffix,bio,bioKind,nickStyle};setSaved(v=>[snapshot,...v].slice(0,25));notify(t.save);};\n const restore=(v:Saved)=>{setName(v.name);setTool(v.tool||'type');setStyleId(v.styleId||'bold-sans');setEffectId(v.effectId||'');setPrefix(v.prefix||'');setSuffix(v.suffix||'');setBio(v.bio||'');setBioKind(v.bioKind||'bio');setNickStyle(v.nickStyle||'gaming');};\n const toggleFavorite=(id:string)=>setFavorites(v=>v.includes(id)?v.filter(x=>x!==id):[...v,id]);
+ const save=()=>{const snapshot:Saved={id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,name,output:activeOutput,tool,styleId,effectId,prefix,suffix,bio,bioKind,nickStyle};setSaved(v=>[snapshot,...v].slice(0,25));notify(t.save);};
+ const restore=(v:Saved)=>{setName(v.name);setTool(v.tool||'type');setStyleId(v.styleId||'bold-sans');setEffectId(v.effectId||'');setPrefix(v.prefix||'');setSuffix(v.suffix||'');setBio(v.bio||'');setBioKind(v.bioKind||'bio');setNickStyle(v.nickStyle||'gaming');};
+ const toggleFavorite=(id:string)=>setFavorites(v=>v.includes(id)?v.filter(x=>x!==id):[...v,id]);
  const download=()=>{const u=URL.createObjectURL(new Blob([activeOutput],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='nameforge-design.txt';a.click();URL.revokeObjectURL(u);};
  const tools:[Tool,string,React.ElementType][]=[['type',t.type,Type],['nickname',t.nick,Dices],['symbols',t.symbols,Shapes],['bio',t.bio,FileText]];
  const card=light?'border-slate-200 bg-white text-slate-900':'border-white/10 bg-[#11182b] text-white';
