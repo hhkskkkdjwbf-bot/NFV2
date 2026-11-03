@@ -327,7 +327,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(language);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="space-y-16 pb-20">
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-generator-detail space-y-16 pb-20">
       {/* Note Modal */}
       {noteModalData && (
         <NoteModal
