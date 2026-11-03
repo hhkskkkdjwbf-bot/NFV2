@@ -81,7 +81,9 @@ function buildCandidate(core: string, prefix: string, suffix: string, style: Use
   const prefixPart = prefix || (index % 3 === 1 ? STYLE_WORDS[style].prefixes[index % STYLE_WORDS[style].prefixes.length] : '');
   const suffixPart = suffix || (index % 3 === 2 ? STYLE_WORDS[style].suffixes[index % STYLE_WORDS[style].suffixes.length] : '');
   const separator = style === 'minimal' ? '' : (index % 2 === 0 ? '_' : '');
-  return cleanPart(prefixPart) + separator + cleanPart(styledCore) + (separator && suffixPart ? separator : '') + cleanPart(suffixPart);
+  const leftSeparator = prefixPart && separator ? separator : '';
+  const rightSeparator = suffixPart && separator ? separator : '';
+  return cleanPart(prefixPart) + leftSeparator + cleanPart(styledCore) + rightSeparator + cleanPart(suffixPart);
 }
 
 export function generateUsernameSuggestions(options: UsernameOptions): string[] {
