@@ -327,7 +327,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
   const isRtlLanguage = ['ar', 'he', 'fa', 'ur', 'ps'].includes(language);
 
   return (
-    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-generator-detail space-y-16 pb-20">
+    <div dir={isRtlLanguage ? 'rtl' : 'ltr'} lang={language} className="nf-page nf-page-layout nf-generator-detail pb-20">
       {/* Note Modal */}
       {noteModalData && (
         <NoteModal
@@ -340,7 +340,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
       )}
 
       {/* Back link + Hero */}
-      <div className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8 pt-8">
+      <div className="nf-container pt-8">
         <button
           onClick={() => onNavigate('generators')}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-purple-300 transition mb-6 cursor-pointer"
@@ -349,7 +349,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
           <span>{text.back}</span>
         </button>
 
-        <div className="text-center max-w-4xl mx-auto">
+        <div className="nf-page-header text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-extrabold uppercase tracking-widest mb-4">
             <span>{meta.badge}</span>
           </div>
@@ -375,7 +375,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
       </div>
 
       {/* Interactive Generator Card */}
-      <section id="generator" className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section id="generator" className="nf-container">
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#141d2f]/95 to-[#0c111d]/95 border border-slate-700/80 shadow-2xl relative overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
@@ -521,7 +521,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
       </section>
 
       {/* Category-Specific Top Rated Leaderboard */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#12182c] via-[#0e1424] to-[#090d18] border border-amber-500/20 shadow-xl space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
             <div>
@@ -605,7 +605,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
       </section>
 
       {/* Guidance Section */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6">
+      <section className="nf-reading-container">
         <div className="p-8 rounded-3xl bg-[#0c1222] border border-slate-800 shadow-xl space-y-6">
           <h2 className="nf-animated-heading text-xl sm:text-2xl font-black">
             {meta.guideTitle}
@@ -622,7 +622,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
       </section>
 
       {/* Category Cards Section */}
-      <section className="max-w-7xl xl:max-w-[1440px] mx-auto px-4 sm:px-8">
+      <section className="nf-container">
         <h2 className="nf-animated-heading text-xl sm:text-2xl font-black text-center mb-8">
           {meta.cardsTitle}
         </h2>
@@ -644,7 +644,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
 
       {/* Advantages vs Limits */}
       {(meta.advantages || meta.limits) && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6">
+        <section className="nf-reading-container">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {meta.advantages && (
               <div className="p-5 rounded-2xl bg-[#0e1628] border border-emerald-500/30">
@@ -685,7 +685,7 @@ export const GeneratorDetailView: React.FC<GeneratorDetailViewProps> = ({
 
       {/* FAQ specific to category */}
       {meta.faq && meta.faq.length > 0 && (
-        <section className="max-w-4xl mx-auto px-4 sm:px-6">
+        <section className="nf-reading-container">
           <h2 className="nf-animated-heading text-xl sm:text-2xl font-black text-center mb-6">
             {meta.faqTitle}
           </h2>
