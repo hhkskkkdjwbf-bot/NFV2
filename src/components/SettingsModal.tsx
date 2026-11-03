@@ -111,6 +111,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     key={lang.code}
                     onClick={() => handleUpdate({ language: lang.code })}
+                    aria-pressed={isActive}
                     className={`py-2 px-3 rounded-xl border text-start transition flex items-center gap-2.5 cursor-pointer ${
                       isActive
                         ? 'bg-purple-600/35 border-purple-500 text-white font-bold shadow-sm'
@@ -139,6 +140,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => handleUpdate({ theme: 'dark' })}
+                aria-pressed={settings.theme === 'dark'}
                 className={`py-2.5 px-3 rounded-xl border flex flex-col items-center gap-1.5 transition cursor-pointer ${
                   settings.theme === 'dark'
                     ? 'bg-purple-600/30 border-purple-500 text-white font-bold'
@@ -151,6 +153,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <button
                 onClick={() => handleUpdate({ theme: 'light' })}
+                aria-pressed={settings.theme === 'light'}
                 className={`py-2.5 px-3 rounded-xl border flex flex-col items-center gap-1.5 transition cursor-pointer ${
                   settings.theme === 'light'
                     ? 'bg-purple-600/30 border-purple-500 text-white font-bold'
@@ -163,6 +166,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <button
                 onClick={() => handleUpdate({ theme: 'system' })}
+                aria-pressed={settings.theme === 'system'}
                 className={`py-2.5 px-3 rounded-xl border flex flex-col items-center gap-1.5 transition cursor-pointer ${
                   settings.theme === 'system'
                     ? 'bg-purple-600/30 border-purple-500 text-white font-bold'
@@ -194,6 +198,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     key={size}
                     onClick={() => handleUpdate({ textSize: size })}
+                    aria-pressed={isActive}
                     className={`py-2 px-3 rounded-xl border text-center transition cursor-pointer ${
                       isActive
                         ? 'bg-purple-600/30 border-purple-500 text-white font-bold'
