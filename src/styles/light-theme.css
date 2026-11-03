@@ -596,3 +596,191 @@ html.light .nf-app-shell button:not(:disabled):not([class*="bg-red-"]):not([clas
 html.light .nf-app-shell a[role="button"]:not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
   color: #12385f !important;
 }
+
+
+/* Final visual direction — neutral surfaces, black typography, balanced blue actions.
+   This block intentionally affects LIGHT MODE ONLY. */
+html.light {
+  --nf-page-bg: #f5f7fa;
+  --nf-surface: #ffffff;
+  --nf-surface-raised: #ffffff;
+  --nf-surface-muted: #edf1f5;
+  --nf-border: #d5dde7;
+  --nf-ink: #101820;
+  --nf-muted: #263442;
+  --nf-subtle: #465767;
+  --nf-accent: #3478b5;
+  --nf-accent-strong: #28669f;
+  --nf-accent-soft: #e7f1fa;
+  color: #101820 !important;
+  background: #f5f7fa !important;
+}
+
+html.light body,
+html.light .nf-app-shell,
+html.light .nf-page,
+html.light main {
+  color: #101820 !important;
+  background-color: transparent;
+}
+
+html.light body {
+  background: #f5f7fa !important;
+  background-image: none !important;
+}
+
+html.light .nf-page :is(h1, h2, h3, h4, h5, h6),
+html.light .nf-app-shell :is(h1, h2, h3, h4, h5, h6),
+html.light .nf-page-header,
+html.light .nf-footer-heading {
+  color: #101820 !important;
+  text-shadow: none !important;
+}
+
+html.light .nf-page .nf-animated-heading {
+  color: #101820 !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #101820 !important;
+}
+
+html.light .nf-app-shell :is(p, li, label, small, span, strong, em, dt, dd) {
+  color: #202b36;
+}
+
+html.light .nf-site-header,
+html.light .nf-site-footer,
+html.light .nf-page :is(.nf-generator-panel, .nf-catalog-filters, .nf-library-toolbar,
+  .nf-project-workspace, .nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-surface, .nf-panel),
+html.light .nf-page :is(.nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result, article) {
+  border-color: #d5dde7 !important;
+  box-shadow: 0 4px 16px rgba(22, 39, 58, .055) !important;
+}
+
+html.light .nf-site-header {
+  background: #ffffff !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+html.light .nf-site-footer {
+  background: #edf1f5 !important;
+  color: #202b36 !important;
+}
+
+html.light .nf-page :is(.nf-generator-panel, .nf-catalog-filters, .nf-library-toolbar,
+  .nf-project-workspace, .nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-surface, .nf-name-result-card, .nf-generator-card, .nf-featured-card,
+  .nf-top-rated-card, .nf-family-result, article) {
+  background: #ffffff !important;
+}
+
+/* Every actionable button uses one consistent medium blue.
+   Destructive actions remain red; disabled controls remain neutral. */
+html.light .nf-app-shell :is(
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled)
+):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+  color: #ffffff !important;
+  background: #3478b5 !important;
+  background-color: #3478b5 !important;
+  background-image: none !important;
+  border: 1px solid #2d6fa9 !important;
+  box-shadow: 0 2px 5px rgba(31, 78, 119, .14) !important;
+  font-weight: 650;
+}
+
+html.light .nf-app-shell :is(
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled)
+):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
+  color: #ffffff !important;
+  background: #28669f !important;
+  background-color: #28669f !important;
+  border-color: #225b90 !important;
+  box-shadow: 0 4px 10px rgba(31, 78, 119, .2) !important;
+}
+
+html.light .nf-app-shell :is(
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"])
+):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+  color: #ffffff !important;
+}
+
+html.light .nf-app-shell :is(button:disabled, button[aria-disabled="true"], [role="button"][aria-disabled="true"]) {
+  color: #536170 !important;
+  background: #e8edf2 !important;
+  border-color: #d3dbe4 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-app-shell :is(button[aria-pressed="true"], button[aria-selected="true"], [role="tab"][aria-selected="true"]) {
+  color: #ffffff !important;
+  background: #28669f !important;
+  border-color: #225b90 !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea) {
+  color: #101820 !important;
+  background: #ffffff !important;
+  border: 1px solid #aebdcb !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea)::placeholder {
+  color: #586777 !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-app-shell :is(input, select, textarea):focus {
+  border-color: #3478b5 !important;
+  box-shadow: 0 0 0 3px rgba(52, 120, 181, .2) !important;
+}
+
+html.light .nf-app-shell :is(a, button, input, select, textarea, [role="button"], [tabindex]):focus-visible {
+  outline: 3px solid #245f94 !important;
+  outline-offset: 3px !important;
+}
+
+html.light .nf-site-header :is(a, button),
+html.light .nf-site-footer :is(a, button) {
+  color: #17232e !important;
+}
+
+html.light .nf-site-header :is(a, button)[aria-current="page"] {
+  color: #ffffff !important;
+  background: #3478b5 !important;
+  border-color: #2d6fa9 !important;
+}
+
+html.light .nf-app-shell [role="dialog"] {
+  color: #101820 !important;
+  background: #ffffff !important;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4, p, label, span) {
+  color: #202b36 !important;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4) {
+  color: #101820 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.light .nf-app-shell *,
+  html.light .nf-app-shell *::before,
+  html.light .nf-app-shell *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
