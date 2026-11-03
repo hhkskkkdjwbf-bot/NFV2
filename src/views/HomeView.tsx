@@ -943,11 +943,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
           {/* Top rated grid or empty state */}
           {topRatedItems.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="nf-top-rated-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {topRatedItems.map((entry) => (
                 <div
                   key={entry.id}
-                  className="p-4 rounded-2xl bg-[#090d1a] border border-slate-800 hover:border-amber-500/40 transition flex flex-col justify-between"
+                  className="nf-top-rated-card p-4 rounded-2xl bg-[#090d1a] border border-slate-800 hover:border-amber-500/40 transition flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
