@@ -33,6 +33,7 @@ import { getAppSettings, resolveGenerationLanguage, subscribeToSettings } from '
 import { getTranslations } from '../i18n';
 import { getShellLabels } from '../i18n/shell';
 import { NameCard } from '../components/NameCard';
+import { normalizeSearchText } from '../services/search';
 
 interface HomeViewProps {
   onNavigate: (view: string, generatorId?: GeneratorId) => void;
@@ -162,18 +163,23 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
   // Filtered generators for interactive search bar
   const searchedGenerators = useMemo(() => {
     if (!searchQuery.trim()) return [];
-    const q = searchQuery.toLowerCase().trim();
+    const q = normalizeSearchText(searchQuery);
     return ALL_GENERATORS_LIST.filter(
       (gen) =>
-        getLocalizedGeneratorTitle(gen.id, settings.language, gen.title).toLowerCase().includes(q) || gen.title.toLowerCase().includes(q) ||
-        getLocalizedGeneratorShortTitle(gen.id, settings.language, gen.shortTitle).toLowerCase().includes(q) || gen.shortTitle.toLowerCase().includes(q) ||
-        getLocalizedGeneratorDescription(gen, settings.language).toLowerCase().includes(q) || gen.description.toLowerCase().includes(q) ||
-        gen.badge.toLowerCase().includes(q)
+        normalizeSearchText(getLocalizedGeneratorTitle(gen.id, settings.language, gen.title)).includes(q) || normalizeSearchText(gen.title).includes(q) ||
+        normalizeSearchText(getLocalizedGeneratorShortTitle(gen.id, settings.language, gen.shortTitle)).includes(q) || normalizeSearchText(gen.shortTitle).includes(q) ||
+        normalizeSearchText(getLocalizedGeneratorDescription(gen, settings.language)).includes(q) || normalizeSearchText(gen.description).includes(q) ||
+        normalizeSearchText(gen.badge).includes(q)
     );
   }, [searchQuery, settings.language]);
 
   // Featured Generators: prioritize the broadest, most intuitive naming needs.
   // This is a curated editorial selection, not a live search-volume ranking.
+  const familyGenerators = useMemo(() => {
+    if (selectedFamily === 'all') return [];
+    return ALL_GENERATORS_LIST.filter((generator) => generator.category === selectedFamily);
+  }, [selectedFamily]);
+
   const featuredGenerators = useMemo(() => {
     const featuredIds: GeneratorId[] = [
       'brand',
@@ -429,7 +435,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           1. SECTION HERO & INTRODUCTION
       ========================================================= */}
-      <section className="relative text-center pt-16 pb-8 px-4 max-w-5xl mx-auto">
+      <section className="nf-home-hero relative text-center pt-16 pb-8">
         {/* Glow ambient background circles */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[radial-gradient(ellipse_at_center,rgba(147,51,234,0.10),transparent_70%)] pointer-events-none -z-10" />
 
@@ -500,7 +506,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           1.5. SECTION FORGE EXPRESS DIRECTE (TESTEZ IMMÉDIATEMENT)
       ========================================================= */}
-      <section className="nf-container -mt-10 sm:-mt-8 relative z-20">
+      <section className="nf-container relative z-20">
         <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#131b2e] via-[#0d1424] to-[#080d19] border border-purple-500/40 shadow-2xl space-y-6 relative overflow-hidden">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
             <div>
@@ -623,7 +629,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="nf-benefits-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {/* Adv 1 */}
           <div className="p-6 rounded-3xl bg-gradient-to-b from-[#10182c] to-[#0a0f1e] border border-slate-800 hover:border-purple-500/40 transition-all duration-200 hover:-translate-y-1 shadow-lg">
             <div className="w-12 h-12 rounded-2xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
@@ -665,7 +671,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           3. BARRE DE RECHERCHE INTERACTIVE DE GÉNÉRATEURS
       ========================================================= */}
-      <section className="max-w-4xl mx-auto px-4">
+      <section className="nf-reading-container">
         <div className="p-8 rounded-3xl bg-gradient-to-br from-[#121a30] via-[#0d1426] to-[#080d1a] border border-purple-500/30 shadow-2xl space-y-5">
           <div className="text-center max-w-lg mx-auto">
             <h3 className="nf-animated-heading text-xl sm:text-2xl font-black">
@@ -747,11 +753,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="nf-featured-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {featuredGenerators.map((gen) => (
             <div
               key={gen.id}
-              className="p-6 rounded-3xl bg-gradient-to-b from-[#10182c] to-[#0a0f1e] border border-slate-800 hover:border-purple-500/60 transition-all duration-200 hover:-translate-y-1 shadow-lg flex flex-col justify-between group"
+              className="nf-featured-card p-6 rounded-3xl bg-gradient-to-b from-[#10182c] to-[#0a0f1e] border border-slate-800 hover:border-purple-500/60 transition-all duration-200 hover:-translate-y-1 shadow-lg flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -763,11 +769,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                   </span>
                 </div>
 
-                <h3 className="text-base font-black text-white group-hover:text-cyan-200 transition mb-2">
+                <h3 className="nf-featured-card-title text-base font-black text-white group-hover:text-cyan-200 transition mb-2">
                   {getLocalizedGeneratorShortTitle(gen.id, settings.language, gen.shortTitle)}
                 </h3>
 
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                <p className="nf-featured-card-description text-xs text-slate-400 leading-relaxed line-clamp-3">
                   {getLocalizedGeneratorDescription(gen, settings.language)}
                 </p>
               </div>
@@ -806,7 +812,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               ? t.categories.subtitle
               : `${familyLabels[selectedFamily as keyof typeof familyLabels]} · ${t.categories.subtitle}`}
           </p>
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <div className="nf-family-filter mt-6 flex flex-wrap items-center justify-center gap-2">
             {GENERATOR_FAMILIES_CONFIG.map((fam) => (
               <button
                 key={fam.id}
@@ -823,6 +829,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               </button>
             ))}
           </div>
+          {familyGenerators.length > 0 && (
+            <div className="nf-family-results mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-start">
+              {familyGenerators.slice(0, 8).map((gen) => (
+                <button
+                  key={gen.id}
+                  onClick={() => onNavigate('generator-detail', gen.id)}
+                  className="nf-family-result flex min-w-0 items-center gap-3 rounded-xl border border-slate-700/80 bg-slate-950/40 p-4 text-start transition hover:border-purple-400/60 hover:bg-slate-900/70"
+                >
+                  <span className="text-2xl" aria-hidden="true">{gen.icon}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-bold text-white">{getLocalizedGeneratorShortTitle(gen.id, settings.language, gen.shortTitle)}</span>
+                    <span className="mt-0.5 block text-xs text-slate-400 line-clamp-2">{getLocalizedGeneratorDescription(gen, settings.language)}</span>
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-slate-500" />
+                </button>
+              ))}
+            </div>
+          )}
           <button
             onClick={() => onNavigate('generators')}
             className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-purple-600/20 transition hover:-translate-y-0.5 hover:shadow-cyan-500/20"
