@@ -388,7 +388,14 @@ try {
       if (!initialPreview) failures.push('creative-studio: live canvas did not render the shared name');
       const initialEffectSelect = page.locator('aside').last().locator('select').first();
       await initialEffectSelect.selectOption('cyber-neon');
+      await page.waitForFunction(() => {
+        const select = [...document.querySelectorAll('aside select')].find((item) => item.value === 'cyber-neon');
+        const canvas = document.querySelector('[data-testid="designer-live-preview"]');
+        return Boolean(select && canvas && getComputedStyle(canvas).backgroundColor === 'rgb(5, 7, 20)');
+      }, null, { timeout: 5000 }).catch(() => {});
+      const selectedEffect = await initialEffectSelect.inputValue();
       const effectBackground = await preview.evaluate((el) => getComputedStyle(el).backgroundColor);
+      if (selectedEffect !== 'cyber-neon') failures.push('creative-studio: visual effect selector did not retain cyber-neon (' + selectedEffect + ')');
       if (effectBackground !== 'rgb(5, 7, 20)') failures.push('creative-studio: selected visual effect did not apply its background color (' + effectBackground + ')');
       await page.getByRole('button', { name: 'Symbols & art' }).click();
       const symbol = page.locator('aside').last().locator('button[title]:visible').first();
