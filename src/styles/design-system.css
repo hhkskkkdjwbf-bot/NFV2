@@ -1179,3 +1179,23 @@ html.light {
     animation: none !important;
   }
 }
+
+
+/* Creative Studio mobile flow: start with the shared canvas, then choose a tool,
+   and keep contextual settings after the selected tool controls. */
+@media (max-width: 767px) {
+  .nf-studio-workspace .nf-studio-canvas {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .nf-studio-workspace .nf-studio-tools {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .nf-studio-workspace .nf-studio-settings {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
