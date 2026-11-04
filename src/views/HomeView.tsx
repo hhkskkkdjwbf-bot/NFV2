@@ -459,7 +459,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         <div className="nf-home-hero-actions flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-xl mx-auto mb-14">
           <button
             onClick={() => onNavigate('generators')}
-            className="nf-home-action w-full sm:w-auto h-13 px-7 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-xl shadow-purple-600/30 hover:shadow-cyan-500/30 transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
+            className="nf-home-action nf-home-action--primary w-full sm:w-auto h-13 px-7 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-xl shadow-purple-600/30 hover:shadow-cyan-500/30 transition-all duration-200 transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>{t.hero.exploreBtn.replace(/\b134\b/g, String(ALL_GENERATORS_LIST.length))}</span>
             <ArrowRight className="w-4 h-4" />
@@ -470,7 +470,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
               const randomGen = ALL_GENERATORS_LIST[Math.floor(Math.random() * ALL_GENERATORS_LIST.length)];
               onNavigate('generator-detail', randomGen.id);
             }}
-            className="nf-home-action w-full sm:w-auto h-13 px-6 rounded-2xl bg-gradient-to-r from-amber-500/20 to-purple-600/20 hover:from-amber-500/30 hover:to-purple-600/30 text-amber-300 font-extrabold text-sm border border-amber-500/40 hover:border-amber-400 transition flex items-center justify-center gap-2 cursor-pointer"
+            className="nf-home-action nf-home-action--secondary w-full sm:w-auto h-13 px-6 rounded-2xl bg-gradient-to-r from-amber-500/20 to-purple-600/20 hover:from-amber-500/30 hover:to-purple-600/30 text-amber-300 font-extrabold text-sm border border-amber-500/40 hover:border-amber-400 transition flex items-center justify-center gap-2 cursor-pointer"
             title={quickCopy.randomTitle || getShellLabels(settings.language).randomGeneratorTitle.replace('{count}', String(ALL_GENERATORS_LIST.length))}
           >
             <Dices className="w-4 h-4 text-amber-400" />
@@ -479,7 +479,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('my-names')}
-            className="nf-home-action w-full sm:w-auto h-13 px-6 rounded-2xl bg-[#0f172a] hover:bg-[#18233c] text-slate-200 font-bold text-sm border border-slate-700/80 hover:border-slate-600 transition flex items-center justify-center gap-2 cursor-pointer"
+            className="nf-home-action nf-home-action--tertiary w-full sm:w-auto h-13 px-6 rounded-2xl bg-[#0f172a] hover:bg-[#18233c] text-slate-200 font-bold text-sm border border-slate-700/80 hover:border-slate-600 transition flex items-center justify-center gap-2 cursor-pointer"
           >
             <Bookmark className="w-4 h-4 text-purple-400" />
             <span>{t.hero.myNamesBtn}</span>
