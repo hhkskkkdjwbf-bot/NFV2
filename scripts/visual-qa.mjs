@@ -32,6 +32,7 @@ try {
   browser = await chromium.launch({ headless: true });
   const viewports = [
     { name: 'desktop', width: 1440, height: 1000 },
+    { name: 'tablet', width: 1024, height: 900 },
     { name: 'mobile', width: 390, height: 844 },
     { name: 'mobile-narrow', width: 320, height: 740 },
   ];
@@ -101,6 +102,7 @@ try {
           const inkColor = getComputedStyle(document.querySelector('main') || document.body).color;
           const pageBackground = getComputedStyle(document.body).backgroundColor;
           const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
+          const catalogCardHeights = [...document.querySelectorAll('.nf-generator-card')].map((element) => Math.round(element.getBoundingClientRect().height));
           const motionDurations = motionNodes.map((element) => getComputedStyle(element).transitionDuration.split(',').map((value) => parseFloat(value) || 0));
           return {
           title: document.title,
@@ -139,6 +141,7 @@ try {
           inkContrast: contrast(inkColor, pageBackground),
           reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
           maxTransitionSeconds: motionDurations.flat().reduce((max, value) => Math.max(max, value), 0),
+          catalogCardHeights,
           };
         });
 
@@ -278,6 +281,10 @@ try {
         }
         if (view.name === 'home' && state.visiblePressedChoiceCount < 5) failures.push(label + ': home-page multi-choice filters are missing selected-state semantics or are not visible');
         if (view.name === 'catalog' && state.articleCount !== 234) failures.push(label + ': expected 234 generator cards, found ' + state.articleCount);
+        if (view.name === 'catalog' && state.catalogCardHeights.length > 1) {
+          const spread = Math.max(...state.catalogCardHeights) - Math.min(...state.catalogCardHeights);
+          if (spread > 3) failures.push(label + ': catalogue card heights are inconsistent (' + spread + 'px spread)');
+        }
         if (view.name === 'catalog' && state.visiblePressedChoiceCount < 2) failures.push(label + ': category choice buttons are missing or not visible');
         if (view.name === 'style-studio' && state.visiblePressedChoiceCount < 4) failures.push(label + ': expected the four visible Style Studio tab choices');
         if (view.name === 'generator-detail') {
@@ -585,6 +592,45 @@ try {
       if (!(await mobile.getByTestId('designer-live-preview').isVisible())) failures.push('creative-studio-' + viewport.name + ': live canvas is not visible');
       await mobile.close();
     }
+  }
+
+
+  // Validate normal motion separately from the reduced-motion matrix.
+  for (const theme of ['light', 'dark']) {
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 1000 },
+      reducedMotion: 'no-preference',
+    });
+    await page.addInitScript((selectedTheme) => {
+      localStorage.setItem('nameforge_settings', JSON.stringify({
+        language: 'en', theme: selectedTheme, defaultGenLanguage: 'auto', textSize: 'normal',
+      }));
+    }, theme);
+    await page.goto(baseUrl, { waitUntil: 'networkidle', timeout: 45000 });
+    const motion = await page.evaluate(() => ({
+      headingAnimation: getComputedStyle(document.querySelector('main h1.nf-animated-heading') || document.querySelector('main h1')).animationName,
+      headingDuration: getComputedStyle(document.querySelector('main h1.nf-animated-heading') || document.querySelector('main h1')).animationDuration,
+      brandAnimation: getComputedStyle(document.querySelector('.nf-brand-title') || document.querySelector('header')).animationName,
+      reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
+    }));
+    if (motion.reduced) failures.push('normal-motion-' + theme + ': browser unexpectedly requested reduced motion');
+    if (motion.headingAnimation !== 'none') failures.push('normal-motion-' + theme + ': section/hero heading still animates continuously');
+    if (motion.brandAnimation === 'none') failures.push('normal-motion-' + theme + ': brand animation is missing');
+    await page.close();
+
+    const reducedPage = await browser.newPage({
+      viewport: { width: 1440, height: 900 },
+      reducedMotion: 'reduce',
+    });
+    await reducedPage.addInitScript((selectedTheme) => {
+      localStorage.setItem('nameforge_settings', JSON.stringify({
+        language: 'en', theme: selectedTheme, defaultGenLanguage: 'auto', textSize: 'normal',
+      }));
+    }, theme);
+    await reducedPage.goto(baseUrl, { waitUntil: 'networkidle', timeout: 45000 });
+    const reducedDuration = await reducedPage.locator('.nf-brand-title').first().evaluate((element) => getComputedStyle(element).animationDuration).catch(() => '0s');
+    if (parseFloat(reducedDuration) > 0.02) failures.push('reduced-motion-' + theme + ': brand animation remains active (' + reducedDuration + ')');
+    await reducedPage.close();
   }
 
 } finally {
