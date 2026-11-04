@@ -946,97 +946,19 @@ html.light .nf-home > .nf-reading-container {
 }
 
 
-/* Visual QA repair — enforce one readable action treatment in the light theme.
-   The previous broad Tailwind remapping left some nested controls with white text
-   on white surfaces (notably the mobile hero, quick-forge chips and header tools). */
-html.light .nf-app-shell button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell input[type="button"]:not(:disabled),
-html.light .nf-app-shell input[type="submit"]:not(:disabled),
-html.light .nf-app-shell input[type="reset"]:not(:disabled) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #3478b5 !important;
-  background-color: #3478b5 !important;
-  background-image: none !important;
-  border-color: #2d6fa9 !important;
-  box-shadow: 0 2px 6px rgba(31, 78, 119, .14) !important;
-}
-
-html.light .nf-app-shell button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):is(:hover, :focus-visible),
-html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):is(:hover, :focus-visible) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #28669f !important;
-  background-color: #28669f !important;
-  border-color: #225b90 !important;
-}
-
-html.light .nf-app-shell button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-html.light .nf-app-shell button:disabled,
-html.light .nf-app-shell button[aria-disabled="true"],
-html.light .nf-app-shell [role="button"][aria-disabled="true"] {
-  color: #536170 !important;
-  -webkit-text-fill-color: #536170 !important;
-  background: #e8edf2 !important;
-  background-color: #e8edf2 !important;
-  border-color: #d3dbe4 !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-}
-
-html.light .nf-app-shell button[class*="bg-red-"],
-html.light .nf-app-shell button[class*="bg-rose-"],
-html.light .nf-app-shell [role="button"][class*="bg-red-"],
-html.light .nf-app-shell [role="button"][class*="bg-rose-"] {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #b93845 !important;
-  background-color: #b93845 !important;
-  border-color: #a52e3a !important;
-}
-
-html.light .nf-app-shell .nf-site-header .nf-navigation-actions button,
-html.light .nf-app-shell .nf-site-header .nf-navigation-actions button svg,
-html.light .nf-app-shell .nf-site-header .nf-navigation-actions button svg * {
-  color: #ffffff !important;
-  stroke: currentColor !important;
-}
-
-html.light .nf-app-shell .nf-home-hero-actions .nf-home-action {
-  min-height: 3.25rem !important;
-  width: 100%;
-  white-space: normal;
-}
-
-@media (min-width: 640px) {
-  html.light .nf-app-shell .nf-home-hero-actions .nf-home-action {
-    width: auto;
-  }
-}
-
-@media (max-width: 767px) {
-  html.light .nf-app-shell .nf-site-header .nf-container {
-    min-height: 4.25rem;
-    gap: .75rem;
-  }
-
-  html.light .nf-app-shell .nf-home-hero-actions {
-    gap: .75rem !important;
-    margin-bottom: 2.5rem !important;
-  }
-
-  html.light .nf-app-shell .nf-home-hero-actions .nf-home-action {
-    min-height: 3.25rem !important;
-    padding-inline: 1rem !important;
-  }
-
-  html.light .nf-app-shell .nf-page :is(.nf-catalog-filters, .nf-generator-panel, .nf-library-toolbar) {
-    padding: 1rem !important;
-  }
-}
+/* Component-level light theme: preserve hierarchy instead of recoloring every button. */
+html.light .nf-app-shell .nf-home-hero-actions .nf-home-action { min-height:3.25rem!important; border-radius:.9rem!important; font-weight:750!important; box-shadow:0 5px 14px rgba(25,55,90,.10)!important; }
+html.light .nf-app-shell .nf-home-action--primary, html.light .nf-app-shell .nf-card-action { color:#fff!important; -webkit-text-fill-color:#fff!important; background:#3478b5!important; border:1px solid #2d6fa9!important; }
+html.light .nf-app-shell .nf-home-action--primary:hover, html.light .nf-app-shell .nf-card-action:hover { background:#28669f!important; }
+html.light .nf-app-shell .nf-home-action--secondary, html.light .nf-app-shell .nf-home-action--tertiary, html.light .nf-app-shell .nf-category-random { color:#26364a!important; -webkit-text-fill-color:#26364a!important; background:#fff!important; border:1px solid #d5dfeb!important; box-shadow:none!important; }
+html.light .nf-app-shell .nf-home-action--secondary *, html.light .nf-app-shell .nf-home-action--tertiary *, html.light .nf-app-shell .nf-category-random * { color:inherit!important; -webkit-text-fill-color:currentColor!important; }
+html.light .nf-app-shell .nf-category-filter { min-height:2.5rem; color:#40516a!important; -webkit-text-fill-color:#40516a!important; background:#f1f5f9!important; border:1px solid #dbe3ee!important; box-shadow:none!important; }
+html.light .nf-app-shell .nf-category-filter[aria-pressed="true"] { color:#fff!important; -webkit-text-fill-color:#fff!important; background:#3478b5!important; border-color:#2d6fa9!important; box-shadow:0 3px 9px rgba(52,120,181,.18)!important; }
+html.light .nf-app-shell .nf-category-filter[aria-pressed="true"] * { color:#fff!important; -webkit-text-fill-color:#fff!important; }
+html.light .nf-app-shell .nf-generator-card { background:#fff!important; border:1px solid #dce4ee!important; border-radius:1.25rem!important; box-shadow:0 8px 24px rgba(20,40,70,.06)!important; }
+html.light .nf-app-shell .nf-generator-card:hover { border-color:#8bb7dc!important; box-shadow:0 14px 30px rgba(20,60,100,.10)!important; transform:translateY(-2px); }
+html.light .nf-app-shell .nf-generator-card-title { color:#172033!important; }
+html.light .nf-app-shell .nf-generator-card-description { color:#526176!important; }
+html.light .nf-app-shell .nf-site-header .nf-navigation-actions button { color:#34465c!important; background:#f1f5f9!important; border:1px solid #dbe3ee!important; box-shadow:none!important; }
+html.light .nf-app-shell .nf-site-header .nf-navigation-actions button svg { color:currentColor!important; stroke:currentColor!important; }
+@media(max-width:767px) { html.light .nf-app-shell .nf-home-hero-actions { gap:.75rem!important; } html.light .nf-app-shell .nf-home-hero-actions .nf-home-action { width:100%; min-height:3.15rem!important; padding-inline:1rem!important; } html.light .nf-app-shell .nf-category-filter { flex:1 1 auto; } }
