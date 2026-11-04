@@ -610,12 +610,12 @@ try {
     const motion = await page.evaluate(() => ({
       headingAnimation: getComputedStyle(document.querySelector('main h1.nf-animated-heading') || document.querySelector('main h1')).animationName,
       headingDuration: getComputedStyle(document.querySelector('main h1.nf-animated-heading') || document.querySelector('main h1')).animationDuration,
-      brandAnimation: getComputedStyle(document.querySelector('.nf-brand-title') || document.querySelector('header')).animationName,
+      interactiveTransition: getComputedStyle(document.querySelector('main button') || document.querySelector('main a')).transitionDuration,
       reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
     }));
     if (motion.reduced) failures.push('normal-motion-' + theme + ': browser unexpectedly requested reduced motion');
     if (motion.headingAnimation !== 'none') failures.push('normal-motion-' + theme + ': section/hero heading still animates continuously');
-    if (motion.brandAnimation === 'none') failures.push('normal-motion-' + theme + ': brand animation is missing');
+    if (Math.max(...motion.interactiveTransition.split(',').map((value) => parseFloat(value) || 0)) < 0.08) failures.push('normal-motion-' + theme + ': interactive transitions are not active');
     await page.close();
 
     const reducedPage = await browser.newPage({
@@ -628,8 +628,8 @@ try {
       }));
     }, theme);
     await reducedPage.goto(baseUrl, { waitUntil: 'networkidle', timeout: 45000 });
-    const reducedDuration = await reducedPage.locator('.nf-brand-title').first().evaluate((element) => getComputedStyle(element).animationDuration).catch(() => '0s');
-    if (parseFloat(reducedDuration) > 0.02) failures.push('reduced-motion-' + theme + ': brand animation remains active (' + reducedDuration + ')');
+    const reducedDuration = await reducedPage.locator('main button').first().evaluate((element) => getComputedStyle(element).transitionDuration).catch(() => '0s');
+    if (Math.max(...reducedDuration.split(',').map((value) => parseFloat(value) || 0)) > 0.02) failures.push('reduced-motion-' + theme + ': interactive transition remains active (' + reducedDuration + ')');
     await reducedPage.close();
   }
 
