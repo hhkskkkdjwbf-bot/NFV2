@@ -481,7 +481,7 @@ export const MyNamesView: React.FC<MyNamesViewProps> = ({ onNavigate }) => {
       )}
 
       {/* Stats Bar */}
-      <div className="nf-library-stats grid grid-cols-2 sm:grid-cols-6 gap-2.5">
+      <div className="nf-library-stats grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5">
         <div className="p-3.5 rounded-2xl bg-[#0f172a] border border-slate-800 text-center">
           <div className="text-xl sm:text-2xl font-black text-white">{stats.total}</div>
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">
