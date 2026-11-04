@@ -1276,3 +1276,118 @@ html.light {
   .nf-studio-preview-stage { min-height: 15rem !important; }
   .nf-studio-tools, .nf-studio-settings { position: static; max-height: none; overflow: visible; }
 }
+
+
+/* Creative Studio — targeted layout refresh (selectors match the rendered component). */
+.nf-creative-studio .nf-page-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(1.35rem, 3vw, 2.4rem) !important;
+  margin-bottom: 1.25rem !important;
+  border: 1px solid color-mix(in srgb, var(--nf-accent) 30%, var(--nf-border));
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at 88% 0%, color-mix(in srgb, var(--nf-accent) 22%, transparent), transparent 45%),
+    linear-gradient(125deg, var(--nf-surface), var(--nf-surface-muted));
+  box-shadow: var(--nf-shadow-soft);
+}
+.nf-creative-studio .nf-page-header h1 {
+  font-size: clamp(2rem, 4.4vw, 3.35rem) !important;
+  letter-spacing: -.045em;
+  line-height: 1.04;
+}
+.nf-creative-studio .nf-page-header > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .65rem;
+}
+.nf-creative-studio .nf-page-header > div:last-child button {
+  min-height: 2.85rem;
+  border-radius: .9rem !important;
+  padding-inline: 1rem;
+  font-weight: 700;
+}
+.nf-creative-studio > .nf-container > div:nth-child(2) {
+  padding: 1.15rem !important;
+  border-radius: 1.25rem !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+.nf-creative-studio > .nf-container > div:nth-child(2) input {
+  min-height: 3.25rem;
+}
+.nf-creative-studio .nf-studio-workspace {
+  align-items: start;
+  gap: 1.1rem !important;
+}
+.nf-creative-studio .nf-studio-tools,
+.nf-creative-studio .nf-studio-settings {
+  border-radius: 1.2rem !important;
+  padding: 1rem !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+.nf-creative-studio .nf-studio-tools nav button {
+  min-height: 3rem;
+  border: 1px solid transparent;
+  border-radius: .9rem !important;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
+}
+.nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--nf-accent) 55%, transparent);
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--nf-accent) 20%, transparent);
+}
+.nf-creative-studio .nf-studio-canvas { min-width: 0; }
+.nf-creative-studio .nf-studio-preview {
+  border-radius: 1.35rem !important;
+  box-shadow: var(--nf-shadow) !important;
+}
+.nf-creative-studio .nf-studio-preview-stage {
+  min-height: clamp(22rem, 48vh, 34rem) !important;
+  padding: clamp(1.5rem, 5vw, 3.5rem) !important;
+  font-size: clamp(2.1rem, 5.2vw, 4.25rem) !important;
+}
+.nf-creative-studio .nf-studio-preview > div:first-child {
+  padding: 1rem 1.25rem !important;
+}
+.nf-creative-studio .nf-studio-preview > div:last-child {
+  padding: 1rem !important;
+  gap: .7rem !important;
+}
+.nf-creative-studio .nf-studio-preview > div:last-child button {
+  min-height: 3rem;
+  border-radius: .9rem !important;
+  font-weight: 750;
+}
+.nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
+  border-color: var(--nf-accent) !important;
+  background: color-mix(in srgb, var(--nf-accent) 14%, var(--nf-surface)) !important;
+}
+.nf-creative-studio :is(input, select, textarea) {
+  min-height: 2.85rem;
+  border-radius: .85rem !important;
+}
+.nf-creative-studio :is(button, input, select, textarea):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--nf-accent) 55%, transparent);
+  outline-offset: 2px;
+}
+@media (min-width: 1280px) {
+  .nf-creative-studio .nf-studio-tools,
+  .nf-creative-studio .nf-studio-settings { position: sticky; top: 6.5rem; }
+}
+@media (max-width: 1279px) {
+  .nf-creative-studio .nf-studio-workspace { grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr); }
+  .nf-creative-studio .nf-studio-canvas { grid-column: 2; grid-row: 1 / span 2; }
+  .nf-creative-studio .nf-studio-settings { grid-column: 1; grid-row: 2; }
+}
+@media (max-width: 767px) {
+  .nf-creative-studio .nf-page-header { border-radius: 1.1rem; padding: 1.1rem !important; }
+  .nf-creative-studio .nf-page-header > div:last-child { width: 100%; }
+  .nf-creative-studio .nf-page-header > div:last-child button { flex: 1 1 auto; }
+  .nf-creative-studio .nf-studio-workspace { display: flex !important; flex-direction: column; }
+  .nf-creative-studio .nf-studio-canvas { order: 1; width: 100%; }
+  .nf-creative-studio .nf-studio-tools { order: 2; width: 100%; }
+  .nf-creative-studio .nf-studio-settings { order: 3; width: 100%; }
+  .nf-creative-studio .nf-studio-preview-stage { min-height: 18rem !important; }
+  .nf-creative-studio .nf-studio-tools nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
