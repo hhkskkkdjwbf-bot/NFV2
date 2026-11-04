@@ -137,11 +137,11 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
             <button onClick={() => {
               const randomGen = ALL_GENERATORS_LIST[Math.floor(Math.random() * ALL_GENERATORS_LIST.length)];
               onNavigate('generator-detail', randomGen.id);
-            }} className="py-1.5 px-3 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-purple-600/20 hover:from-amber-500/30 hover:to-purple-600/30 text-amber-300 border border-amber-500/40 cursor-pointer" title={t.randomTitle}>
+            }} className="nf-category-random py-1.5 px-3 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 to-purple-600/20 hover:from-amber-500/30 hover:to-purple-600/30 text-amber-300 border border-amber-500/40 cursor-pointer" title={t.randomTitle}>
               <Dices className="w-3.5 h-3.5 text-amber-400" /><span>{t.random}</span>
             </button>
             {GENERATOR_FAMILIES_CONFIG.map((cat) => (
-              <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} aria-pressed={selectedCategory === cat.id} className={`py-1.5 px-3 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${selectedCategory === cat.id ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30' : 'bg-[#10182c] text-slate-400 hover:text-white border border-slate-700/80'}`}>
+              <button key={cat.id} onClick={() => setSelectedCategory(cat.id)} aria-pressed={selectedCategory === cat.id} className={`nf-category-filter py-1.5 px-3 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${selectedCategory === cat.id ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30' : 'bg-[#10182c] text-slate-400 hover:text-white border border-slate-700/80'}`}>
                 <span>{cat.icon}</span><span>{categoryLabel(cat.id, cat.label)}</span>
               </button>
             ))}
@@ -178,7 +178,7 @@ export const GeneratorsListView: React.FC<GeneratorsListViewProps> = ({ onNaviga
               <p className="nf-generator-card-description text-xs text-slate-400 leading-relaxed line-clamp-3">{getLocalizedGeneratorDescription(gen, language)}</p>
             </div>
             <div className="nf-generator-card-footer mt-auto pt-5 border-t border-slate-800/80 flex items-center justify-end">
-              <button onClick={() => onNavigate('generator-detail', gen.id)} className="py-2 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-purple-600/30">
+              <button onClick={() => onNavigate('generator-detail', gen.id)} className="nf-card-action py-2 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-md shadow-purple-600/30">
                 <span>{t.forge}</span><ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
