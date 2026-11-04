@@ -982,3 +982,57 @@ html.light .nf-home > .nf-home-hero--balanced {
   max-width: 72rem !important;
   margin-inline: auto !important;
 }
+
+
+/* Light-mode finishing pass for the redesigned Creative Studio and footer. */
+html.light .nf-creative-studio > header {
+  background:
+    radial-gradient(ellipse at 88% 0%, rgba(64, 125, 190, .13), transparent 44%),
+    linear-gradient(135deg, #ffffff 0%, #f0f5fc 100%) !important;
+  border-color: #d4e0ef !important;
+  box-shadow: 0 18px 42px rgba(40, 73, 112, .09) !important;
+}
+html.light .nf-creative-studio .nf-studio-tools,
+html.light .nf-creative-studio .nf-studio-settings,
+html.light .nf-creative-studio .nf-studio-preview,
+html.light .nf-creative-studio section:not(.nf-studio-preview) {
+  background: #ffffff !important;
+  border-color: #d8e2ef !important;
+  box-shadow: 0 9px 26px rgba(38, 65, 100, .065) !important;
+}
+html.light .nf-creative-studio .nf-studio-preview-stage {
+  color: #17243b;
+  background-color: #f5f8fd !important;
+  border-block: 1px solid #e4eaf3;
+}
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"],
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #3478b5 !important;
+  border-color: #2d6fa9 !important;
+}
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * ,
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) {
+  color: #26364a !important;
+  background: #f8fafd !important;
+  border-color: #dce5f0 !important;
+}
+html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) span {
+  color: inherit;
+}
+html.light .nf-site-footer .nf-footer-social-link {
+  color: #315f8b !important;
+  -webkit-text-fill-color: #315f8b !important;
+  background: #edf4fb !important;
+  border: 1px solid #d6e4f2 !important;
+  box-shadow: none !important;
+}
+html.light .nf-site-footer .nf-footer-social-link:hover {
+  color: #234d77 !important;
+  background: #e3eef9 !important;
+}
