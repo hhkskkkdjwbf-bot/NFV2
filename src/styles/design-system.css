@@ -1080,7 +1080,6 @@ html.light {
 
 .nf-page {
   box-sizing: border-box;
-  padding-inline: var(--nf-page-gutter);
 }
 
 .nf-page > .nf-container,
@@ -1166,10 +1165,6 @@ html.light {
 }
 
 @media (max-width: 767px) {
-  .nf-page {
-    padding-inline: 1rem;
-  }
-
   .nf-page-header {
     margin-block-end: 1.5rem;
   }
