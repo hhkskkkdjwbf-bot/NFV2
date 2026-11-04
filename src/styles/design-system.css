@@ -1053,3 +1053,134 @@ html.light {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Unified visual foundation — semantic tokens and predictable page hierarchy. */
+@layer base {
+  :root {
+    --nf-primary: #8b6cf0;
+    --nf-primary-strong: #7352d7;
+    --nf-primary-soft: color-mix(in srgb, var(--nf-primary) 14%, transparent);
+    --nf-secondary: #42bfd2;
+    --nf-page-gutter: clamp(1rem, 3vw, 2rem);
+    --nf-card-gap: clamp(.85rem, 1.6vw, 1.25rem);
+    --nf-section-space: clamp(2.75rem, 5vw, 4.75rem);
+    --nf-heading-display: clamp(2rem, 4vw, 3.5rem);
+    --nf-heading-section: clamp(1.25rem, 2.2vw, 1.75rem);
+    --nf-heading-card: 1rem;
+  }
+
+  html.light {
+    --nf-primary: #6846c8;
+    --nf-primary-strong: #5535ad;
+    --nf-primary-soft: rgba(104, 70, 200, .10);
+    --nf-secondary: #087e96;
+  }
+}
+
+.nf-page {
+  box-sizing: border-box;
+  padding-inline: var(--nf-page-gutter);
+}
+
+.nf-page > .nf-container,
+.nf-page > .nf-reading-container {
+  box-sizing: border-box;
+}
+
+.nf-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .65rem;
+  margin-block-end: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.nf-page-header h1,
+.nf-page > h1,
+.nf-page h1.nf-page-title {
+  max-width: 100%;
+  font-size: var(--nf-heading-display);
+  line-height: 1.08;
+  font-weight: 850;
+  letter-spacing: -.04em;
+  text-wrap: balance;
+}
+
+.nf-page h2:not(.nf-animated-heading),
+.nf-page .nf-section-title {
+  color: var(--nf-ink);
+  font-size: var(--nf-heading-section);
+  line-height: 1.22;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.nf-page h3:not(.nf-animated-heading),
+.nf-page h4:not(.nf-animated-heading) {
+  color: var(--nf-ink);
+  font-weight: 750;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.nf-page .nf-animated-heading {
+  color: var(--nf-ink);
+  background: none;
+  background-image: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  animation: none;
+}
+
+.nf-page h1.nf-animated-heading {
+  color: transparent;
+  background-image: linear-gradient(105deg, var(--nf-primary) 0%, var(--nf-secondary) 100%);
+  background-size: 100% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nf-page :is(p, li, label, small) {
+  overflow-wrap: anywhere;
+}
+
+.nf-page :is(.nf-surface, .nf-panel, .nf-generator-card, .nf-featured-card, .nf-top-rated-card) {
+  border-radius: var(--nf-radius-card);
+}
+
+.nf-page :is(.nf-generator-grid, .nf-featured-grid, .nf-benefits-grid, .nf-top-rated-grid) {
+  column-gap: var(--nf-card-gap);
+  row-gap: var(--nf-card-gap);
+}
+
+.nf-page :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+
+.nf-page :is(button, a) {
+  touch-action: manipulation;
+}
+
+@media (max-width: 767px) {
+  .nf-page {
+    padding-inline: 1rem;
+  }
+
+  .nf-page-header {
+    margin-block-end: 1.5rem;
+  }
+
+  .nf-page :is(.nf-generator-grid, .nf-featured-grid, .nf-benefits-grid, .nf-top-rated-grid) {
+    row-gap: .85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-page .nf-animated-heading {
+    animation: none !important;
+  }
+}
