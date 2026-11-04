@@ -962,3 +962,23 @@ html.light .nf-app-shell .nf-generator-card-description { color:#526176!importan
 html.light .nf-app-shell .nf-site-header .nf-navigation-actions button { color:#34465c!important; background:#f1f5f9!important; border:1px solid #dbe3ee!important; box-shadow:none!important; }
 html.light .nf-app-shell .nf-site-header .nf-navigation-actions button svg { color:currentColor!important; stroke:currentColor!important; }
 @media(max-width:767px) { html.light .nf-app-shell .nf-home-hero-actions { gap:.75rem!important; } html.light .nf-app-shell .nf-home-hero-actions .nf-home-action { width:100%; min-height:3.15rem!important; padding-inline:1rem!important; } html.light .nf-app-shell .nf-category-filter { flex:1 1 auto; } }
+
+
+/* Final shared layout guardrails: preserve reading width and full content width in light mode. */
+html.light .nf-home > .nf-container {
+  width: 100% !important;
+  max-width: var(--nf-content-width, 1440px) !important;
+  margin-inline: auto !important;
+  padding-inline: var(--nf-page-gutter, clamp(1rem, 3vw, 2rem)) !important;
+}
+html.light .nf-home > .nf-reading-container {
+  width: 100% !important;
+  max-width: var(--nf-reading-width, 960px) !important;
+  margin-inline: auto !important;
+  padding-inline: var(--nf-page-gutter, clamp(1rem, 3vw, 2rem)) !important;
+}
+html.light .nf-home > .nf-home-hero--balanced {
+  width: min(calc(100% - 2rem), 72rem) !important;
+  max-width: 72rem !important;
+  margin-inline: auto !important;
+}
