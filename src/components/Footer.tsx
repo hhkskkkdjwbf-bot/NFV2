@@ -77,7 +77,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook — NameForge"
-              className="nf-footer-social-link inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-xs font-semibold text-blue-300 transition hover:border-blue-400/60 hover:bg-blue-500/20 hover:text-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+              className="nf-footer-social-link inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-800/45 px-4 py-2 text-xs font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-800/75 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
             >
               <Facebook className="h-4 w-4" aria-hidden="true" />
               <span>Facebook</span>
