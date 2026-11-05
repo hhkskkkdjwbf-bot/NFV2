@@ -1202,3 +1202,104 @@ html.light .nf-site-footer a.nf-footer-social-link:focus-visible {
   outline: 2px solid #6b91b5 !important;
   outline-offset: 3px !important;
 }
+
+
+/* LIGHT MODE — unified editorial and action system.
+   Deliberately scoped to html.light: dark mode remains unchanged. */
+html.light .nf-app-shell,
+html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])) {
+  color: #111827 !important;
+  -webkit-text-fill-color: currentColor;
+}
+
+/* All native buttons use the same accessible medium-blue action treatment. */
+html.light .nf-app-shell button,
+html.light .nf-app-shell [role="button"],
+html.light .nf-app-shell input[type="button"],
+html.light .nf-app-shell input[type="submit"],
+html.light .nf-app-shell input[type="reset"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #3478b5 !important;
+  border-color: #2d6fa9 !important;
+  box-shadow: 0 2px 5px rgba(38, 94, 145, .12);
+}
+
+html.light .nf-app-shell button *,
+html.light .nf-app-shell [role="button"] *,
+html.light .nf-app-shell input[type="button"] *,
+html.light .nf-app-shell input[type="submit"] *,
+html.light .nf-app-shell input[type="reset"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .nf-app-shell button:hover:not(:disabled),
+html.light .nf-app-shell [role="button"]:hover:not([aria-disabled="true"]),
+html.light .nf-app-shell input[type="button"]:hover:not(:disabled),
+html.light .nf-app-shell input[type="submit"]:hover:not(:disabled),
+html.light .nf-app-shell input[type="reset"]:hover:not(:disabled) {
+  background-color: #28699f !important;
+  border-color: #245f91 !important;
+  box-shadow: 0 4px 10px rgba(38, 94, 145, .18);
+}
+
+html.light .nf-app-shell button:focus-visible,
+html.light .nf-app-shell [role="button"]:focus-visible,
+html.light .nf-app-shell input[type="button"]:focus-visible,
+html.light .nf-app-shell input[type="submit"]:focus-visible,
+html.light .nf-app-shell input[type="reset"]:focus-visible {
+  outline: 3px solid rgba(52, 120, 181, .32) !important;
+  outline-offset: 2px;
+}
+
+html.light .nf-app-shell button:disabled,
+html.light .nf-app-shell [role="button"][aria-disabled="true"],
+html.light .nf-app-shell input[type="button"]:disabled,
+html.light .nf-app-shell input[type="submit"]:disabled,
+html.light .nf-app-shell input[type="reset"]:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+}
+
+/* Button-like links keep the same blue action color; ordinary text links stay black. */
+html.light .nf-app-shell a[role="button"],
+html.light .nf-app-shell a[class*="bg-blue-"],
+html.light .nf-app-shell a[class*="bg-indigo-"],
+html.light .nf-app-shell a[class*="bg-violet-"],
+html.light .nf-app-shell a[class*="bg-purple-"],
+html.light .nf-app-shell a[class*="bg-cyan-"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #3478b5 !important;
+  border-color: #2d6fa9 !important;
+}
+
+html.light .nf-app-shell a[role="button"] *,
+html.light .nf-app-shell a[class*="bg-blue-"] *,
+html.light .nf-app-shell a[class*="bg-indigo-"] *,
+html.light .nf-app-shell a[class*="bg-violet-"] *,
+html.light .nf-app-shell a[class*="bg-purple-"] *,
+html.light .nf-app-shell a[class*="bg-cyan-"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Form controls remain neutral and readable instead of looking like action buttons. */
+html.light .nf-app-shell :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+html.light .nf-app-shell :is(input,textarea)::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1;
+}
+
+html.light .nf-app-shell :is(input,select,textarea):focus {
+  border-color: #3478b5 !important;
+  box-shadow: 0 0 0 3px rgba(52, 120, 181, .16) !important;
+}
