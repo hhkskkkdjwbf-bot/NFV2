@@ -1362,3 +1362,62 @@ html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:focus-vi
   outline-offset: 2px;
   box-shadow: 0 0 0 3px rgba(0, 191, 255, .20) !important;
 }
+
+
+/* LIGHT MODE SURFACES — dialogs, saved projects and footer.
+   These overrides deliberately stay under html.light. */
+html.light .nf-app-shell [role="dialog"] > div:not([aria-hidden="true"]) {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border-color: #dce5ed !important;
+  box-shadow: 0 18px 55px rgba(15, 35, 55, .16) !important;
+}
+
+html.light .nf-app-shell [role="dialog"] [class*="bg-slate-900"],
+html.light .nf-app-shell [role="dialog"] [class*="bg-slate-800"],
+html.light .nf-app-shell [role="dialog"] [class*="bg-[#"],
+html.light .nf-app-shell [role="dialog"] [class*="bg-indigo-950"],
+html.light .nf-app-shell [role="dialog"] [class*="from-purple-900"],
+html.light .nf-app-shell [role="dialog"] [class*="via-slate-900"],
+html.light .nf-app-shell [role="dialog"] [class*="to-indigo-900"] {
+  background: #f6f9fc !important;
+  background-color: #f6f9fc !important;
+  border-color: #e1e8ef !important;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell [role="dialog"] :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
+  color: #000000 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #d9e1e8 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-project-workspace,
+html.light .nf-app-shell .nf-project-workspace article {
+  color: #000000 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border-color: #e1e8ef !important;
+}
+
+html.light .nf-app-shell .nf-site-footer {
+  color: #000000 !important;
+  background: #f6f9fc !important;
+  background-color: #f6f9fc !important;
+  border-color: #e1e8ef !important;
+}
+
+html.light .nf-app-shell .nf-site-footer :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,a:not([role="button"])) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-site-footer :is(svg) {
+  color: #334155;
+}
