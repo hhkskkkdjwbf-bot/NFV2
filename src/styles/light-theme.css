@@ -1162,3 +1162,43 @@ html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings) .text-
     box-shadow: 0 2px 9px rgba(24, 45, 70, .04) !important;
   }
 }
+
+
+/* Footer Facebook link — quiet secondary social action in light mode. */
+html.light .nf-site-footer a.nf-footer-social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 2.45rem;
+  padding: .55rem .9rem !important;
+  color: #42566d !important;
+  -webkit-text-fill-color: #42566d !important;
+  background: #f7f9fc !important;
+  background-color: #f7f9fc !important;
+  border: 1px solid #e1e7ef !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 1px 3px rgba(28, 48, 72, .035) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+
+html.light .nf-site-footer a.nf-footer-social-link svg {
+  color: #527da7 !important;
+  stroke: currentColor !important;
+}
+
+html.light .nf-site-footer a.nf-footer-social-link:hover {
+  color: #294d70 !important;
+  -webkit-text-fill-color: #294d70 !important;
+  background: #eef3f8 !important;
+  background-color: #eef3f8 !important;
+  border-color: #cbd8e5 !important;
+  box-shadow: 0 2px 6px rgba(28, 48, 72, .055) !important;
+  transform: translateY(-1px) !important;
+}
+
+html.light .nf-site-footer a.nf-footer-social-link:focus-visible {
+  outline: 2px solid #6b91b5 !important;
+  outline-offset: 3px !important;
+}
