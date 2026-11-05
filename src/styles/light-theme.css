@@ -1314,3 +1314,51 @@ html.light .nf-app-shell :is(input,select,textarea):focus {
   border-color: #00aeea !important;
   box-shadow: 0 0 0 2px rgba(0, 191, 255, .16) !important;
 }
+
+
+/* Final palette pass: keep Studio controls consistent with the site-wide
+   light-mode button specification, including its higher-specificity states. */
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"],
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #00BFFF !important;
+  background-color: #00BFFF !important;
+  border: 1px solid rgba(0, 145, 195, .42) !important;
+  box-shadow: 0 1px 3px rgba(0, 110, 160, .10) !important;
+}
+
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] *,
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]),
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #00BFFF99 !important;
+  background-color: #00BFFF99 !important;
+  border: 1px solid rgba(0, 145, 195, .32) !important;
+  box-shadow: none !important;
+}
+
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) *,
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:hover:not(:disabled),
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:hover:not(:disabled) {
+  background-color: #00aeea !important;
+  border-color: #0099cf !important;
+}
+
+html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:focus-visible,
+html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:focus-visible {
+  outline: 2px solid #008fc5 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, .20) !important;
+}
