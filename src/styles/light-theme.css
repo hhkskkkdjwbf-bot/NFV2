@@ -1036,3 +1036,129 @@ html.light .nf-site-footer .nf-footer-social-link:hover {
   color: #234d77 !important;
   background: #e3eef9 !important;
 }
+
+
+/* Creative Studio — light-theme contrast and calm surfaces.
+   Scoped overrides keep the shared blue action system while making selection states unmistakable. */
+html.light .nf-creative-studio {
+  --nf-studio-selected: #245f98;
+  --nf-studio-selected-hover: #1d507f;
+  --nf-studio-selected-soft: #e6f1fb;
+  --nf-studio-panel-border: #dce4ed;
+  --nf-studio-panel-shadow: 0 3px 12px rgba(24, 45, 70, .045);
+  color: #172331 !important;
+}
+
+html.light .nf-creative-studio .nf-page-header {
+  padding: clamp(1.25rem, 2.6vw, 2rem);
+  border: 1px solid #dce6f0;
+  border-radius: 1.35rem;
+  background:
+    radial-gradient(ellipse at 88% 0%, rgba(64, 125, 190, .10), transparent 46%),
+    linear-gradient(135deg, #ffffff 0%, #f5f8fc 100%);
+  box-shadow: var(--nf-studio-panel-shadow);
+}
+
+html.light .nf-creative-studio .nf-page-header > div > p:first-child {
+  color: #365f88 !important;
+}
+
+html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-creative-studio > .nf-container > div.mb-5, .nf-studio-canvas > section:not(.nf-studio-preview)) {
+  border-color: var(--nf-studio-panel-border) !important;
+  box-shadow: var(--nf-studio-panel-shadow) !important;
+}
+
+html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
+  .nf-creative-studio > .nf-container > div.mb-5, .nf-studio-canvas > section:not(.nf-studio-preview)) {
+  background: #ffffff !important;
+}
+
+html.light .nf-creative-studio .nf-studio-preview-stage {
+  color: #172331 !important;
+  background: #f8fafc !important;
+  border-block: 1px solid #e5ebf2 !important;
+  box-shadow: inset 0 1px 2px rgba(24, 45, 70, .025) !important;
+}
+
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"],
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: var(--nf-studio-selected) !important;
+  background-color: var(--nf-studio-selected) !important;
+  border: 1px solid #1e5488 !important;
+  box-shadow: 0 2px 6px rgba(31, 79, 125, .16) !important;
+}
+
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] *,
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"]:hover,
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"]:hover {
+  background: var(--nf-studio-selected-hover) !important;
+  background-color: var(--nf-studio-selected-hover) !important;
+  border-color: #19466f !important;
+}
+
+html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]),
+html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) {
+  color: #26384b !important;
+  -webkit-text-fill-color: #26384b !important;
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  border: 1px solid #dce5ef !important;
+  box-shadow: none !important;
+}
+
+html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) * ,
+html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) * {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]):hover,
+html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]):hover {
+  color: #194f7c !important;
+  background: var(--nf-studio-selected-soft) !important;
+  border-color: #b9d2e8 !important;
+}
+
+html.light .nf-creative-studio :is(input, select, textarea) {
+  color: #172331 !important;
+  background: #ffffff !important;
+  border-color: #cbd7e3 !important;
+}
+
+html.light .nf-creative-studio :is(input, select, textarea)::placeholder {
+  color: #667789 !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-creative-studio :is(input, select, textarea):focus {
+  border-color: #3478b5 !important;
+  box-shadow: 0 0 0 3px rgba(52, 120, 181, .16) !important;
+}
+
+html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings) :is(h2, h3, label) {
+  color: #26384b !important;
+}
+
+html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings) .text-slate-500 {
+  color: #5d6e80 !important;
+}
+
+@media (max-width: 767px) {
+  html.light .nf-creative-studio .nf-page-header {
+    padding: 1.1rem;
+    border-radius: 1rem;
+  }
+
+  html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview) {
+    border-radius: 1rem !important;
+    box-shadow: 0 2px 9px rgba(24, 45, 70, .04) !important;
+  }
+}
