@@ -1421,3 +1421,98 @@ html.light .nf-app-shell .nf-site-footer :is(h1,h2,h3,h4,h5,h6,p,span,label,smal
 html.light .nf-app-shell .nf-site-footer :is(svg) {
   color: #334155;
 }
+
+
+/* FINAL LIGHT THEME CONSISTENCY PASS
+   Only html.light is targeted. The dark theme and custom preview rendering stay untouched. */
+html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Reconcile legacy dark utility surfaces across every studio and workspace. */
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-950"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-900"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-800"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-gray-900"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-gray-800"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-[#0"],
+html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-[#1"] {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  border-color: #c5d1df !important;
+}
+
+/* Neutralize legacy dark gradient panels without affecting the dark theme. */
+html.light .nf-app-shell .nf-page [class*="from-slate-950"],
+html.light .nf-app-shell .nf-page [class*="from-slate-900"],
+html.light .nf-app-shell .nf-page [class*="via-slate-900"],
+html.light .nf-app-shell .nf-page [class*="to-slate-950"],
+html.light .nf-app-shell .nf-page [class*="to-slate-900"],
+html.light .nf-app-shell .nf-page [class*="from-[#0"],
+html.light .nf-app-shell .nf-page [class*="via-[#0"],
+html.light .nf-app-shell .nf-page [class*="to-[#0"] {
+  background-image: linear-gradient(145deg, #ffffff 0%, #f5f8fc 100%) !important;
+  border-color: #c5d1df !important;
+}
+
+/* Input borders are deliberately darker than the surface for clear affordance. */
+html.light .nf-app-shell :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #b8c7d8 !important;
+}
+
+html.light .nf-app-shell :is(input,select,textarea):focus {
+  border-color: #009fce !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, .19) !important;
+}
+
+/* Uniform interactive controls: DeepSkyBlue fill, black text, visible blue hover/focus. */
+html.light .nf-app-shell button:not(:disabled),
+html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]),
+html.light .nf-app-shell input[type="button"]:not(:disabled),
+html.light .nf-app-shell input[type="submit"]:not(:disabled),
+html.light .nf-app-shell input[type="reset"]:not(:disabled) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #00BFFF !important;
+  border-color: #009fce !important;
+}
+
+html.light .nf-app-shell button:not(:disabled) *,
+html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]) * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell button:hover:not(:disabled),
+html.light .nf-app-shell [role="button"]:hover:not([aria-disabled="true"]),
+html.light .nf-app-shell input[type="button"]:hover:not(:disabled),
+html.light .nf-app-shell input[type="submit"]:hover:not(:disabled),
+html.light .nf-app-shell input[type="reset"]:hover:not(:disabled) {
+  color: #000000 !important;
+  background-color: #00aeea !important;
+  border-color: #008fbe !important;
+}
+
+html.light .nf-app-shell button:focus-visible,
+html.light .nf-app-shell [role="button"]:focus-visible,
+html.light .nf-app-shell input[type="button"]:focus-visible,
+html.light .nf-app-shell input[type="submit"]:focus-visible,
+html.light .nf-app-shell input[type="reset"]:focus-visible {
+  outline: 2px solid #008fc5 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, .22) !important;
+}
+
+html.light .nf-app-shell button:disabled,
+html.light .nf-app-shell [role="button"][aria-disabled="true"] {
+  color: #000000 !important;
+  background-color: #b8eafa !important;
+  border-color: #9bd9ef !important;
+  opacity: .72 !important;
+}
