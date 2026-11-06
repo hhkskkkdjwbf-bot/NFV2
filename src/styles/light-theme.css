@@ -1207,7 +1207,7 @@ html.light .nf-site-footer a.nf-footer-social-link:focus-visible {
 /* LIGHT MODE — black typography and DeepSkyBlue actions.
    Scoped to html.light only: dark mode remains untouched. */
 html.light .nf-app-shell,
-html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])) {
+html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])):not([data-testid="designer-live-preview"]):not([data-testid="designer-live-preview"] *) {
   color: #000000 !important;
   -webkit-text-fill-color: currentColor;
 }
