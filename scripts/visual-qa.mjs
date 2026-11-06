@@ -71,8 +71,11 @@ try {
               textSize: 'normal',
             }));
           } catch {}
-          document.documentElement.classList.toggle('light', selectedTheme === 'light');
-          document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+          // addInitScript also runs on the initial about:blank document,
+          // where documentElement may not exist yet. The script runs again
+          // for the app navigation, and the wait below confirms the class.
+          document.documentElement?.classList.toggle('light', selectedTheme === 'light');
+          document.documentElement?.classList.toggle('dark', selectedTheme === 'dark');
         }, theme);
 
         const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
