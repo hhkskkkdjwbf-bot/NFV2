@@ -51,8 +51,8 @@ try {
             return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
           };
           const heading = [...document.querySelectorAll('main h1, main h2')].find(visible);
-          const button = [...document.querySelectorAll('main .nf-studio-tools button[aria-pressed], main button:not(:disabled)')].find(visible);
-          const field = [...document.querySelectorAll('main input:not([type="button"]):not([type="submit"]):not([type="reset"]), main select, main textarea')].find(visible);
+          const button = [...document.querySelectorAll('main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]), main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"])')].find(visible);
+          const field = [...document.querySelectorAll('main input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]), main select, main textarea')].find(visible);
           return {
             lang: document.documentElement.lang,
             dir: document.documentElement.dir,
