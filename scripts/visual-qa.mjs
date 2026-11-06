@@ -101,6 +101,29 @@ try {
           const colors = Object.fromEntries(tokens.map((token) => [token, rootStyle.getPropertyValue(token).trim()]));
           const inkColor = getComputedStyle(document.querySelector('main') || document.body).color;
           const pageBackground = getComputedStyle(document.body).backgroundColor;
+          const isVisible = (element) => {
+            if (!element) return false;
+            const rect = element.getBoundingClientRect();
+            const style = getComputedStyle(element);
+            return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+          };
+          const paletteHeading = [...document.querySelectorAll('main h1, main h2')].find(isVisible);
+          const paletteButton = [...document.querySelectorAll('main .nf-studio-tools button[aria-pressed], main button:not(:disabled)')].find(isVisible);
+          const paletteField = [...document.querySelectorAll('main input:not([type="button"]):not([type="submit"]):not([type="reset"]), main select, main textarea')].find(isVisible);
+          const palette = {
+            heading: paletteHeading ? {
+              color: getComputedStyle(paletteHeading).color,
+              textFill: getComputedStyle(paletteHeading).webkitTextFillColor,
+            } : null,
+            button: paletteButton ? {
+              color: getComputedStyle(paletteButton).color,
+              background: getComputedStyle(paletteButton).backgroundColor,
+            } : null,
+            field: paletteField ? {
+              color: getComputedStyle(paletteField).color,
+              background: getComputedStyle(paletteField).backgroundColor,
+            } : null,
+          };
           const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
           const catalogCardHeights = [...document.querySelectorAll('.nf-generator-card')].map((element) => Math.round(element.getBoundingClientRect().height));
           const motionDurations = motionNodes.map((element) => getComputedStyle(element).transitionDuration.split(',').map((value) => parseFloat(value) || 0));
@@ -138,6 +161,7 @@ try {
           })),
           geometry,
           colors,
+          palette,
           inkContrast: contrast(inkColor, pageBackground),
           reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches,
           maxTransitionSeconds: motionDurations.flat().reduce((max, value) => Math.max(max, value), 0),
@@ -156,6 +180,18 @@ try {
         }
         if (state.inkContrast !== null && state.inkContrast < 4.5) {
           failures.push(label + ': primary text contrast is below WCAG AA (ratio ' + state.inkContrast + ')');
+        }
+        if (theme === 'light') {
+          const isBlack = (value) => value === 'rgb(0, 0, 0)';
+          if (!state.palette.heading || !(isBlack(state.palette.heading.textFill) || isBlack(state.palette.heading.color))) {
+            failures.push(label + ': visible page heading is not black in light mode');
+          }
+          if (!state.palette.button || !isBlack(state.palette.button.color) || !state.palette.button.background.includes('0, 191, 255')) {
+            failures.push(label + ': visible action button does not use the blue background with black text');
+          }
+          if (!state.palette.field || !isBlack(state.palette.field.color) || state.palette.field.background !== 'rgb(255, 255, 255)') {
+            failures.push(label + ': visible form field is not white with black text in light mode');
+          }
         }
         if (!state.reducedMotion) failures.push(label + ': reduced-motion preference was not applied in the browser context');
         if (state.maxTransitionSeconds > 0.02) failures.push(label + ': reduced-motion leaves a long transition (' + state.maxTransitionSeconds + 's)');
