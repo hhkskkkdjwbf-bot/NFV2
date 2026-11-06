@@ -1667,3 +1667,40 @@ html.light main textarea {
   background-color: #fff !important;
   border: 1px solid #9aabba !important;
 }
+
+/* Final route-level control normalization.
+   Some views render interactive cards as non-button elements with role=button;
+   others use form controls with component-level utility classes. Target both
+   semantic controls and native fields after the component styles are loaded. */
+html.light body main :is(button, [role="button"]):not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #00BFFF !important;
+  background-image: none !important;
+  border-color: #009ed4 !important;
+}
+
+html.light body main :is(button, [role="button"]):not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) :is(span, svg, strong, b) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light body main :is(input, select, textarea):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #9aafc5 !important;
+  opacity: 1 !important;
+}
+
+html.light body main :is(input, select, textarea)::placeholder {
+  color: #66788d !important;
+  -webkit-text-fill-color: #66788d !important;
+  opacity: 1 !important;
+}
+
+html.light body main :is(input, select, textarea):disabled {
+  color: #66788d !important;
+  background-color: #f1f4f8 !important;
+}
