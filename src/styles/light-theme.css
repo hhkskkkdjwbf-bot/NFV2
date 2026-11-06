@@ -1516,3 +1516,88 @@ html.light .nf-app-shell [role="button"][aria-disabled="true"] {
   border-color: #9bd9ef !important;
   opacity: .72 !important;
 }
+
+
+/* Authoritative light-mode contract — black typography, DeepSkyBlue actions, white fields.
+   Keep generated preview styling and the dark theme completely untouched. */
+html.light .nf-app-shell .nf-page :is(h1,h2,h3,h4,h5,h6,p,li,label,small,strong,em,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])):not([data-testid="designer-live-preview"]):not([data-testid="designer-live-preview"] *) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]),
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]),
+html.light .nf-app-shell .nf-page input[type="button"]:not(:disabled),
+html.light .nf-app-shell .nf-page input[type="submit"]:not(:disabled),
+html.light .nf-app-shell .nf-page input[type="reset"]:not(:disabled) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #00BFFF !important;
+  background-color: #00BFFF !important;
+  background-image: none !important;
+  border: 1px solid #009fce !important;
+  box-shadow: 0 2px 5px rgba(0, 90, 125, .14) !important;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]) *,
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell .nf-page input[type="button"]:hover:not(:disabled),
+html.light .nf-app-shell .nf-page input[type="submit"]:hover:not(:disabled),
+html.light .nf-app-shell .nf-page input[type="reset"]:hover:not(:disabled) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #00AEEA !important;
+  background-color: #00AEEA !important;
+  border-color: #008fbe !important;
+}
+
+html.light .nf-app-shell .nf-page :is(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select, textarea
+) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #b8c7d8 !important;
+  box-shadow: 0 1px 3px rgba(20, 40, 60, .05) !important;
+}
+
+html.light .nf-app-shell .nf-page :is(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select, textarea
+)::placeholder {
+  color: #586777 !important;
+  -webkit-text-fill-color: #586777 !important;
+  opacity: 1 !important;
+}
+
+html.light .nf-app-shell .nf-page :is(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select, textarea
+):focus {
+  border-color: #008fbe !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, .2) !important;
+}
+
+html.light .nf-app-shell .nf-page button:disabled,
+html.light .nf-app-shell .nf-page button[aria-disabled="true"],
+html.light .nf-app-shell .nf-page [role="button"][aria-disabled="true"] {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #dff6fd !important;
+  border-color: #b8eafa !important;
+  box-shadow: none !important;
+  opacity: .8 !important;
+}
