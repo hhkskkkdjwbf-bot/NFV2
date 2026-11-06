@@ -30,26 +30,47 @@ try {
     { hash: '#/text-art-studio' },
   ];
   for (const language of ['en', 'fr', 'ar']) {
-    for (const route of routes) {
-      const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-      const pageErrors = [];
-      page.on('pageerror', (error) => pageErrors.push(error.message));
-      await page.addInitScript((selectedLanguage) => {
-        localStorage.setItem('nameforge_settings', JSON.stringify({
-          language: selectedLanguage, theme: 'dark', defaultGenLanguage: 'auto', textSize: 'normal',
-        }));
-      }, language);
+    for (const theme of ['light', 'dark']) {
+      for (const route of routes) {
+        const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+        const pageErrors = [];
+        page.on('pageerror', (error) => pageErrors.push(error.message));
+        await page.addInitScript(({ selectedLanguage, selectedTheme }) => {
+          localStorage.setItem('nameforge_settings', JSON.stringify({
+            language: selectedLanguage, theme: selectedTheme, defaultGenLanguage: 'auto', textSize: 'normal',
+          }));
+        }, { selectedLanguage: language, selectedTheme: theme });
       const pageResponse = await page.goto(baseUrl + route.hash, { waitUntil: 'networkidle', timeout: 60000 });
       const heading = (await page.locator('h1').first().innerText().catch(() => '')).trim();
       const studioTools = await page.locator('button[aria-pressed]').allInnerTexts();
-      const state = await page.evaluate(() => ({
-        lang: document.documentElement.lang,
-        dir: document.documentElement.dir,
-        width: document.documentElement.scrollWidth,
-        viewport: window.innerWidth,
-        textLength: (document.body?.innerText || '').trim().length,
-      }));
-      const label = language + ' ' + route.hash;
+        const state = await page.evaluate(() => {
+          const visible = (element) => {
+            if (!element) return false;
+            const rect = element.getBoundingClientRect();
+            const style = getComputedStyle(element);
+            return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+          };
+          const heading = [...document.querySelectorAll('main h1, main h2')].find(visible);
+          const button = [...document.querySelectorAll('main .nf-studio-tools button[aria-pressed], main button:not(:disabled)')].find(visible);
+          const field = [...document.querySelectorAll('main input:not([type="button"]):not([type="submit"]):not([type="reset"]), main select, main textarea')].find(visible);
+          return {
+            lang: document.documentElement.lang,
+            dir: document.documentElement.dir,
+            width: document.documentElement.scrollWidth,
+            viewport: window.innerWidth,
+            textLength: (document.body?.innerText || '').trim().length,
+            themeClass: document.documentElement.className,
+            palette: {
+              headingColor: heading ? getComputedStyle(heading).color : null,
+              headingTextFill: heading ? getComputedStyle(heading).webkitTextFillColor : null,
+              buttonColor: button ? getComputedStyle(button).color : null,
+              buttonBackground: button ? getComputedStyle(button).backgroundColor : null,
+              fieldColor: field ? getComputedStyle(field).color : null,
+              fieldBackground: field ? getComputedStyle(field).backgroundColor : null,
+            },
+          };
+        });
+        const label = language + ' ' + theme + ' ' + route.hash;
       if (!pageResponse || pageResponse.status() >= 400) failures.push(label + ': route failed to load');
       if (heading !== ({ en: 'Name Designer Studio', fr: 'Studio de création de noms', ar: 'استوديو تصميم الأسماء' })[language]) failures.push(label + ': incorrect Name Designer Studio heading "' + heading + '"');
       for (const toolLabel of ({ en: ['Typography', 'Nicknames', 'Symbols & art', 'Bio & captions'], fr: ['Typographie', 'Pseudos', 'Symboles & art', 'Bios & légendes'], ar: ['الخطوط', 'الألقاب', 'الرموز والفن', 'النبذات والتعليقات'] })[language]) {
@@ -58,10 +79,18 @@ try {
       if (state.lang !== language) failures.push(label + ': html lang is ' + state.lang);
       if (state.dir !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push(label + ': incorrect document direction ' + state.dir);
       if (state.width > state.viewport + 2) failures.push(label + ': horizontal overflow at 390px');
-      if (state.textLength < 100) failures.push(label + ': page content appears incomplete');
-      if (pageErrors.length) failures.push(label + ': JavaScript errors: ' + pageErrors.join(' | '));
-      checks.push({ type: 'route', language, route: route.hash, status: pageResponse?.status() ?? null, heading, ...state, pageErrors });
-      await page.close();
+        if (state.textLength < 100) failures.push(label + ': page content appears incomplete');
+        if (!state.themeClass.includes(theme)) failures.push(label + ': requested theme class is missing');
+        if (theme === 'light') {
+          const isBlack = (value) => value === 'rgb(0, 0, 0)';
+          if (!(isBlack(state.palette.headingTextFill) || isBlack(state.palette.headingColor))) failures.push(label + ': page heading is not black in light mode');
+          if (!isBlack(state.palette.buttonColor) || !state.palette.buttonBackground?.includes('0, 191, 255')) failures.push(label + ': action button palette is incorrect in light mode');
+          if (!isBlack(state.palette.fieldColor) || state.palette.fieldBackground !== 'rgb(255, 255, 255)') failures.push(label + ': form field palette is incorrect in light mode');
+        }
+        if (pageErrors.length) failures.push(label + ': JavaScript errors: ' + pageErrors.join(' | '));
+        checks.push({ type: 'route', language, theme, route: route.hash, status: pageResponse?.status() ?? null, heading, ...state, pageErrors });
+        await page.close();
+      }
     }
   }
 
