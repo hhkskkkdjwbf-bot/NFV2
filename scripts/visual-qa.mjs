@@ -60,15 +60,27 @@ try {
         const pageErrors = [];
         page.on('pageerror', (error) => pageErrors.push(error.message));
         await page.addInitScript((selectedTheme) => {
-          localStorage.setItem('nameforge_settings', JSON.stringify({
-            language: 'en',
-            theme: selectedTheme,
-            defaultGenLanguage: 'auto',
-            textSize: 'normal',
-          }));
+          // Seed the preference and theme class before the app's first paint.
+          // The explicit class avoids relying on localStorage access from an
+          // opaque about:blank origin during Playwright's init-script lifecycle.
+          try {
+            localStorage.setItem('nameforge_settings', JSON.stringify({
+              language: 'en',
+              theme: selectedTheme,
+              defaultGenLanguage: 'auto',
+              textSize: 'normal',
+            }));
+          } catch {}
+          document.documentElement.classList.toggle('light', selectedTheme === 'light');
+          document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
         }, theme);
 
         const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
+        await page.waitForFunction(
+          (selectedTheme) => document.documentElement.classList.contains(selectedTheme),
+          theme,
+          { timeout: 10000 },
+        );
         await page.waitForTimeout(500);
 
         const state = await page.evaluate(() => {
