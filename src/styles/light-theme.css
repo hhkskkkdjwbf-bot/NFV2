@@ -1601,3 +1601,42 @@ html.light .nf-app-shell .nf-page [role="button"][aria-disabled="true"] {
   box-shadow: none !important;
   opacity: .8 !important;
 }
+
+
+/* Final control coverage: apply the light palette to every real control in main,
+   including controls rendered outside legacy .nf-page wrappers. */
+html.light .nf-app-shell main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell main input[type="button"]:not(:disabled),
+html.light .nf-app-shell main input[type="submit"]:not(:disabled),
+html.light .nf-app-shell main input[type="reset"]:not(:disabled) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #00BFFF !important;
+  background-color: #00BFFF !important;
+  background-image: none !important;
+  border: 1px solid #009fce !important;
+}
+html.light .nf-app-shell main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+html.light .nf-app-shell main :is(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select, textarea
+) {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  border: 1px solid #b8c7d8 !important;
+}
+html.light .nf-app-shell main :is(
+  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+  select, textarea
+)::placeholder {
+  color: #586777 !important;
+  -webkit-text-fill-color: #586777 !important;
+  opacity: 1 !important;
+}
