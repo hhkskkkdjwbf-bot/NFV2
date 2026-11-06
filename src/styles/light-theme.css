@@ -1640,3 +1640,30 @@ html.light .nf-app-shell main :is(
   -webkit-text-fill-color: #586777 !important;
   opacity: 1 !important;
 }
+
+
+/* Highest-priority app-wide light controls. Deliberately not tied to wrapper
+   class names: route layouts mount different page shells, but all live in main. */
+html.light main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #00BFFF !important;
+  background-color: #00BFFF !important;
+  background-image: none !important;
+  border-color: #008fbe !important;
+}
+html.light main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+html.light main input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+html.light main select,
+html.light main textarea {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #fff !important;
+  background-color: #fff !important;
+  border: 1px solid #9aabba !important;
+}
