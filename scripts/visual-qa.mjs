@@ -108,8 +108,12 @@ try {
             return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
           };
           const paletteHeading = [...document.querySelectorAll('main h1, main h2')].find(isVisible);
-          const paletteButton = [...document.querySelectorAll('main .nf-studio-tools button[aria-pressed], main button:not(:disabled)')].find(isVisible);
-          const paletteField = [...document.querySelectorAll('main input:not([type="button"]):not([type="submit"]):not([type="reset"]), main select, main textarea')].find(isVisible);
+          const paletteButton = [...document.querySelectorAll(
+            'main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]), main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"])'
+          )].find(isVisible);
+          const paletteField = [...document.querySelectorAll(
+            'main input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]), main select, main textarea'
+          )].find(isVisible);
           const palette = {
             heading: paletteHeading ? {
               color: getComputedStyle(paletteHeading).color,
@@ -118,10 +122,13 @@ try {
             button: paletteButton ? {
               color: getComputedStyle(paletteButton).color,
               background: getComputedStyle(paletteButton).backgroundColor,
+              label: (paletteButton.innerText || paletteButton.getAttribute('aria-label') || '').trim().slice(0, 80),
+              disabled: paletteButton.matches(':disabled,[aria-disabled="true"]'),
             } : null,
             field: paletteField ? {
               color: getComputedStyle(paletteField).color,
               background: getComputedStyle(paletteField).backgroundColor,
+              type: paletteField.tagName.toLowerCase() === 'input' ? paletteField.type : paletteField.tagName.toLowerCase(),
             } : null,
           };
           const motionNodes = [...document.querySelectorAll('main button, main a, main article')].slice(0, 80);
