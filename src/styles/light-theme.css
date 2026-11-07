@@ -1790,3 +1790,311 @@ html.light body #root :is(input, select, textarea):disabled {
   color: #596b78 !important;
   -webkit-text-fill-color: #596b78 !important;
 }
+
+
+/* Final homepage visual system — November 2026.
+   Single source of truth for the light palette; dark theme is intentionally untouched. */
+html.light {
+  color-scheme: light;
+  --nf-page-bg: #f3f6fa;
+  --nf-surface: #ffffff;
+  --nf-surface-raised: #ffffff;
+  --nf-surface-muted: #f0f4f8;
+  --nf-border: #d5dee8;
+  --nf-ink: #000000;
+  --nf-muted: #263442;
+  --nf-subtle: #526273;
+  --nf-accent: #00bfff;
+  --nf-accent-strong: #009fd6;
+  --nf-accent-soft: rgba(0, 191, 255, .18);
+  --nf-shadow: 0 16px 42px rgba(25, 45, 68, .08);
+  --nf-shadow-soft: 0 5px 18px rgba(25, 45, 68, .055);
+  background: var(--nf-page-bg) !important;
+  color: #000 !important;
+}
+
+html.light body {
+  color: #000 !important;
+  background: #f3f6fa !important;
+  background-image: none !important;
+}
+
+html.light .nf-app-shell,
+html.light .nf-site-main,
+html.light .nf-page {
+  color: #000 !important;
+  background: transparent !important;
+}
+
+html.light .nf-page {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-bottom: clamp(3rem, 6vw, 5rem);
+  gap: clamp(2.75rem, 5vw, 4.5rem);
+}
+
+html.light .nf-page :is(h1,h2,h3,h4,h5,h6,.nf-page-title,.nf-section-title,.nf-animated-heading) {
+  color: #000 !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-text-fill-color: #000 !important;
+  text-shadow: none !important;
+}
+
+html.light .nf-page :is(p,li,label,small,dt,dd,.text-slate-300,.text-slate-400,.text-slate-500,.text-slate-600) {
+  color: #263442 !important;
+}
+
+html.light .nf-page :is(.nf-container,.nf-reading-container) {
+  box-sizing: border-box;
+}
+
+html.light .nf-home > .nf-container {
+  max-width: 1280px !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+html.light .nf-home > .nf-reading-container {
+  max-width: 1120px !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+html.light .nf-home-hero--balanced {
+  width: min(calc(100% - 2rem), 72rem) !important;
+  margin-inline: auto !important;
+  padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) !important;
+  border: 1px solid #d5e0eb;
+  border-radius: 1.75rem;
+  background: linear-gradient(145deg,#fff 0%,#f2f8fc 58%,#edf8fc 100%);
+  box-shadow: 0 16px 40px rgba(29,56,82,.07);
+}
+
+html.light .nf-home-hero--balanced::before {
+  inset: 0 !important;
+  border: 0 !important;
+  border-radius: inherit !important;
+  background: radial-gradient(circle at 85% 12%,rgba(0,191,255,.10),transparent 35%) !important;
+  box-shadow: none !important;
+}
+
+html.light .nf-home-hero-actions {
+  gap: .75rem !important;
+  margin-bottom: 2rem !important;
+}
+
+html.light .nf-page :is(.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar,
+  .nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,
+  .nf-surface,.nf-panel,.nf-faq-item) {
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #d5dee8 !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+
+html.light .nf-page :is(.nf-featured-card,.nf-top-rated-card,.nf-family-result,
+  .nf-name-result-card,.nf-generator-card,.nf-benefits-grid > *) {
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #d5dee8 !important;
+  border-radius: 1.15rem !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+
+html.light .nf-page :is(.nf-featured-card,.nf-top-rated-card,.nf-family-result,
+  .nf-name-result-card,.nf-generator-card):hover {
+  border-color: rgba(0,159,214,.65) !important;
+  box-shadow: 0 12px 28px rgba(20,65,95,.11) !important;
+  transform: translateY(-2px);
+}
+
+html.light .nf-home :is(.nf-generator-card-title,.nf-featured-card-title) {
+  color: #000 !important;
+}
+html.light .nf-home :is(.nf-generator-card-description,.nf-featured-card-description) {
+  color: #344454 !important;
+}
+
+/* Every enabled action is the requested cyan-blue with black, legible text. */
+html.light .nf-app-shell :is(
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled)
+):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #00bfff !important;
+  background-color: #00bfff !important;
+  background-image: none !important;
+  border: 1px solid #00a9e3 !important;
+  box-shadow: 0 2px 5px rgba(0,110,155,.12) !important;
+  font-weight: 700;
+}
+html.light .nf-app-shell :is(
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="button"]:not(:disabled),
+  input[type="submit"]:not(:disabled),
+  input[type="reset"]:not(:disabled)
+):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #00a9e3 !important;
+  background-color: #00a9e3 !important;
+  border-color: #008fca !important;
+  box-shadow: 0 4px 11px rgba(0,110,155,.18) !important;
+}
+html.light .nf-app-shell :is(button,[role="button"]):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+html.light .nf-app-shell :is(button:disabled,button[aria-disabled="true"],[role="button"][aria-disabled="true"]) {
+  color: #647383 !important;
+  -webkit-text-fill-color: #647383 !important;
+  background: #e8edf2 !important;
+  border-color: #d5dee8 !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+html.light .nf-app-shell :is(button[class*="bg-red-"],button[class*="bg-rose-"],[role="button"][class*="bg-red-"],[role="button"][class*="bg-rose-"]) {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  background: #bd3545 !important;
+  border-color: #a92c3b !important;
+}
+html.light .nf-app-shell :is(input,select,textarea) {
+  min-height: 2.75rem;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #fff !important;
+  border: 1px solid #aebdca !important;
+  border-radius: .7rem !important;
+  box-shadow: 0 1px 3px rgba(20,40,60,.04) !important;
+}
+html.light .nf-app-shell :is(input,select,textarea)::placeholder {
+  color: #667585 !important;
+  -webkit-text-fill-color: #667585 !important;
+  opacity: 1 !important;
+}
+html.light .nf-app-shell :is(input,select,textarea):focus {
+  border-color: #009fd6 !important;
+  box-shadow: 0 0 0 3px rgba(0,191,255,.2) !important;
+  outline: none !important;
+}
+html.light .nf-app-shell :is(a,button,input,select,textarea,[tabindex]):focus-visible {
+  outline: 3px solid #008fca !important;
+  outline-offset: 3px !important;
+}
+
+/* FAQ rebuilt as a compact, readable accordion grid rather than 18 empty-looking bars. */
+html.light .nf-faq-section {
+  max-width: 1160px !important;
+  width: 100%;
+}
+html.light .nf-faq-section > div:first-child {
+  margin-bottom: 1.75rem !important;
+}
+html.light .nf-faq-filters {
+  gap: .6rem !important;
+}
+html.light .nf-faq-list {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  align-items: start;
+  gap: .85rem;
+}
+html.light .nf-faq-item {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: .95rem !important;
+  transition: border-color .18s ease,box-shadow .18s ease;
+}
+html.light .nf-faq-item:has(.nf-faq-answer) {
+  border-color: #9acfe2 !important;
+  box-shadow: 0 6px 18px rgba(0,120,165,.08) !important;
+}
+html.light .nf-faq-question {
+  width: 100%;
+  min-height: 4rem !important;
+  padding: 1rem 1.15rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: start;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: rgba(0,191,255,.60) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  box-shadow: none !important;
+}
+html.light .nf-faq-question:hover {
+  background: rgba(0,191,255,.78) !important;
+}
+html.light .nf-faq-question span,
+html.light .nf-faq-question svg {
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+}
+html.light .nf-faq-answer {
+  padding: 1rem 1.15rem 1.2rem !important;
+  color: #263442 !important;
+  background: #fff !important;
+  border-top: 1px solid #dce5ed !important;
+  line-height: 1.7 !important;
+  font-size: .9rem !important;
+}
+html.light .nf-faq-item > button:focus-visible {
+  outline-offset: -4px !important;
+}
+html.light .nf-home > .nf-container > div[class*="bg-gradient"],
+html.light .nf-home > .nf-reading-container > div[class*="bg-gradient"] {
+  border: 1px solid #d5dee8 !important;
+  border-radius: 1.25rem !important;
+  background: #fff !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+html.light .nf-home .nf-home-hero-actions .nf-home-action--secondary,
+html.light .nf-home .nf-home-hero-actions .nf-home-action--tertiary {
+  background: rgba(0,191,255,.6) !important;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  border-color: #00a9e3 !important;
+}
+html.light .nf-site-header {
+  min-height: 4.25rem;
+  background: rgba(255,255,255,.96) !important;
+  border-bottom: 1px solid #d5dee8 !important;
+  box-shadow: 0 3px 14px rgba(20,40,60,.06) !important;
+  backdrop-filter: blur(12px);
+}
+html.light .nf-site-footer {
+  background: #edf2f7 !important;
+  color: #000 !important;
+  border-top: 1px solid #d5dee8 !important;
+}
+html.light .nf-site-footer :is(p,li,a,small,span) {
+  color: #263442 !important;
+}
+html.light .nf-site-footer :is(h2,h3,h4) {
+  color: #000 !important;
+}
+@media (max-width: 767px) {
+  html.light .nf-faq-list { grid-template-columns: 1fr; gap: .7rem; }
+  html.light .nf-faq-question { min-height: 3.6rem !important; padding: .9rem !important; }
+  html.light .nf-home-hero--balanced { width: calc(100% - 1rem) !important; border-radius: 1.15rem; }
+  html.light .nf-home > .nf-container,
+  html.light .nf-home > .nf-reading-container { padding-inline: 1rem !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.light .nf-app-shell *,
+  html.light .nf-app-shell *::before,
+  html.light .nf-app-shell *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
