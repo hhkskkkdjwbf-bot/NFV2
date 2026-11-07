@@ -1051,7 +1051,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
       {/* ========================================================
           8. SECTION FAQ RÉÉCRITE (18 QUESTIONS COMPLÈTES)
       ========================================================= */}
-      <section ref={faqSectionRef} data-testid="home-faq-section" className="nf-reading-container">
+      <section ref={faqSectionRef} data-testid="home-faq-section" className="nf-reading-container nf-faq-section">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider mb-2">
             <HelpCircle className="w-3.5 h-3.5" />
@@ -1065,7 +1065,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
           </p>
 
           {/* Category Filter Pills for FAQ */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+          <div className="nf-faq-filters flex flex-wrap items-center justify-center gap-2 mt-6">
             {[
               { id: 'all', label: faqLabels.all },
               { id: 'general', label: faqLabels.general },
@@ -1090,17 +1090,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
         </div>
 
         {/* Accordion FAQ List */}
-        <div className="space-y-3">
+        <div className="nf-faq-list">
           {filteredFaq.map((item, idx) => {
             const isOpen = openFaqIndex === idx;
             return (
               <div
                 key={idx}
-                className="rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden transition"
+                className="nf-faq-item rounded-2xl bg-[#0f172a] border border-slate-800 overflow-hidden transition"
               >
                 <button
                   onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                  className="w-full p-4 sm:p-5 text-start flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-800/40 transition"
+                  className="nf-faq-question w-full p-4 sm:p-5 text-start flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-800/40 transition"
                 >
                   <span className="font-bold text-white text-sm sm:text-base leading-snug">
                     {item.q}
@@ -1113,7 +1113,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate }) => {
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 bg-[#0a0f1e]/60 animate-fade-in">
+                  <div className="nf-faq-answer px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 bg-[#0a0f1e]/60 animate-fade-in">
                     {item.a}
                   </div>
                 )}
