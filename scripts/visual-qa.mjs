@@ -280,14 +280,14 @@ try {
           // validates the lazy-loading contract instead of expecting eager rendering.
           await faqSection.scrollIntoViewIfNeeded();
           await page.waitForTimeout(150);
-          const faqItems = faqSection.locator('div.space-y-3 > div');
+          const faqItems = faqSection.locator('.nf-faq-list > .nf-faq-item');
           const faqButtons = faqItems.locator('button');
           const faqCount = await faqButtons.count();
           if (faqCount < 10) failures.push(label + ': expected a substantial FAQ list, found ' + faqCount + ' items');
           for (let index = 0; index < faqCount; index++) {
             const item = faqItems.nth(index);
             const button = item.locator('button');
-            const answer = item.locator('div.px-5.pb-5.pt-1');
+            const answer = item.locator('.nf-faq-answer');
             await button.scrollIntoViewIfNeeded();
             if (!(await answer.isVisible())) await button.click();
             if (!(await answer.isVisible())) {
