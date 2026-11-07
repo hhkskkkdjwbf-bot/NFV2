@@ -537,6 +537,7 @@ try {
     const preview = page.getByTestId('designer-live-preview');
     if (!(await nameInput.count())) failures.push('creative-studio: shared name input is missing');
     if (!(await preview.count())) failures.push('creative-studio: live canvas is missing');
+    if (await preview.count() && await preview.getAttribute('aria-live') !== 'polite') failures.push('creative-studio: live canvas does not announce preview updates politely');
     if (await nameInput.count() && await preview.count()) {
       // The Studio theme switch must update the shared site preference, not a local-only palette.
       const lightThemeButton = page.getByRole('button', { name: 'Light', exact: true });
@@ -567,6 +568,8 @@ try {
       if (selectedEffect !== 'cyber-neon') failures.push('creative-studio: visual effect selector did not retain cyber-neon (' + selectedEffect + ')');
       if (effectBackground !== 'rgb(5, 7, 20)') failures.push('creative-studio: selected visual effect did not apply its background color (' + effectBackground + ')');
       await page.getByRole('button', { name: 'Symbols & art' }).click();
+      const symbolSearch = page.locator('aside').last().locator('input').first();
+      if (!(await symbolSearch.getAttribute('aria-label'))?.trim()) failures.push('creative-studio: symbol search input has no accessible name');
       const symbol = page.locator('aside').last().locator('button[title]:visible').first();
       if (!(await symbol.count())) failures.push('creative-studio: searchable symbol library is missing');
       else {
