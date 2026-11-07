@@ -1355,3 +1355,44 @@ html.light body .nf-app-shell .nf-site-main :is(
     max-width: 100%;
   }
 }
+
+
+/* Creative Studio refinement: target the actual nested workspace markup. */
+
+html.light .nf-creative-studio .nf-container { max-width: 1440px; padding-inline: clamp(1rem, 2.4vw, 2rem) !important; }
+
+html.light .nf-creative-studio .nf-page-header { display:flex; align-items:center; padding:clamp(1.25rem,2.5vw,2rem); margin-bottom:1.25rem !important; border:1px solid #d7e0e9; border-radius:1.25rem; background:linear-gradient(125deg,#fff 0%,#f3f9fc 100%); box-shadow:0 8px 24px rgba(25,45,68,.055); }
+
+html.light .nf-creative-studio .nf-page-header > div:first-child { min-width:0; }
+
+html.light .nf-creative-studio .nf-page-header h1 { margin-inline:0; font-size:clamp(1.75rem,3vw,2.5rem); }
+
+html.light .nf-creative-studio .nf-page-header p { color:#263442 !important; }
+
+html.light .nf-creative-studio .nf-studio-input-card { padding:clamp(1rem,2vw,1.5rem) !important; border:1px solid #d7e0e9 !important; border-radius:1.15rem !important; background:#fff !important; box-shadow:0 6px 20px rgba(25,45,68,.05) !important; }
+
+html.light .nf-creative-studio .nf-studio-workspace { align-items:start; gap:1rem !important; }
+
+@media (min-width:1024px) and (max-width:1199px) { html.light .nf-creative-studio .nf-studio-workspace { grid-template-columns:minmax(190px,.72fr) minmax(0,1.65fr); } html.light .nf-creative-studio .nf-studio-settings { grid-column:1 / -1; } }
+
+@media (min-width:1200px) { html.light .nf-creative-studio .nf-studio-workspace { grid-template-columns:minmax(190px,220px) minmax(0,1fr) minmax(285px,320px); gap:1.25rem !important; } html.light .nf-creative-studio .nf-studio-tools, html.light .nf-creative-studio .nf-studio-settings { position:sticky; top:5.25rem; max-height:calc(100svh - 6.25rem); overflow:auto; overscroll-behavior:contain; } }
+
+html.light .nf-creative-studio .nf-studio-tools, html.light .nf-creative-studio .nf-studio-settings, html.light .nf-creative-studio .nf-studio-preview, html.light .nf-creative-studio .nf-studio-workspace > main > section { border:1px solid #d7e0e9 !important; border-radius:1.1rem !important; background:#fff !important; box-shadow:0 7px 22px rgba(25,45,68,.055) !important; }
+
+html.light .nf-creative-studio .nf-studio-tools nav { gap:.55rem; }
+
+html.light .nf-creative-studio .nf-studio-tools nav button, html.light .nf-creative-studio .nf-studio-settings button { min-height:2.65rem; border-radius:.75rem !important; text-align:start; overflow-wrap:anywhere; }
+
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed=true], html.light .nf-creative-studio .nf-studio-settings button[aria-pressed=true] { border:2px solid #007da5 !important; box-shadow:inset 0 0 0 1px rgba(255,255,255,.55),0 0 0 2px rgba(0,191,255,.16) !important; font-weight:800; }
+
+html.light .nf-creative-studio .nf-studio-preview-stage { min-height:clamp(260px,34vw,390px); padding:clamp(1.25rem,3vw,2.5rem); overflow-wrap:anywhere; }
+
+html.light .nf-creative-studio .nf-studio-workspace h2, html.light .nf-creative-studio .nf-studio-workspace h3 { color:#000 !important; }
+
+html.light .nf-creative-studio .nf-studio-workspace label, html.light .nf-creative-studio .nf-studio-workspace p, html.light .nf-creative-studio .nf-studio-workspace span { overflow-wrap:anywhere; }
+
+html.light .nf-creative-studio .nf-studio-settings select, html.light .nf-creative-studio .nf-studio-settings input, html.light .nf-creative-studio .nf-studio-workspace textarea { width:100%; min-width:0; }
+
+@media (max-width:767px) { html.light .nf-creative-studio { padding-top:1.25rem !important; padding-bottom:2rem !important; } html.light .nf-creative-studio .nf-page-header { align-items:flex-start; flex-direction:column; gap:1rem; padding:1.1rem; } html.light .nf-creative-studio .nf-page-header > div:last-child { display:flex; flex-wrap:wrap; width:100%; } html.light .nf-creative-studio .nf-page-header > div:last-child button { flex:1 1 auto; } html.light .nf-creative-studio .nf-studio-tools nav { grid-template-columns:repeat(2,minmax(0,1fr)); } html.light .nf-creative-studio .nf-studio-preview-stage { min-height:230px; } }
+
+@media (max-width:360px) { html.light .nf-creative-studio .nf-container { padding-inline:.75rem !important; } html.light .nf-creative-studio .nf-page-header { padding:.9rem; } html.light .nf-creative-studio .nf-page-header > div:last-child { gap:.4rem; } html.light .nf-creative-studio .nf-page-header > div:last-child button { padding-inline:.65rem; font-size:.75rem; } }
