@@ -1706,95 +1706,98 @@ html.light body main :is(input, select, textarea):disabled {
 }
 
 
-/* NFV2 LIGHT PALETTE — authoritative route-level controls.
-   Higher-specificity selectors win over legacy Tailwind color utilities.
-   Scoped to html.light; the dark theme is intentionally untouched. */
-html.light body #root .nf-app-shell main :is(
-  button:not(:disabled):not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  a[role="button"]
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border-color: #009dcc !important;
-  box-shadow: 0 2px 5px rgba(0, 105, 145, .12) !important;
-}
+/* Authoritative light control palette.
+   Tailwind v4 puts utility declarations in cascade layers. Important declarations
+   in the earlier base layer outrank important utility-layer declarations, so
+   these scoped overrides must live in @layer base (not as unlayered CSS). */
+@layer base {
+  html.light body #root .nf-app-shell main :is(
+    button:not(:disabled):not([aria-disabled="true"]),
+    [role="button"]:not(:disabled):not([aria-disabled="true"]),
+    a[role="button"]
+  ) {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    background-color: #00BFFF !important;
+    background-image: none !important;
+    border-color: #009dcc !important;
+    box-shadow: 0 2px 5px rgba(0, 105, 145, .12) !important;
+  }
 
-html.light body #root .nf-app-shell main :is(
-  button:not(:disabled):not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  a[role="button"]
-) * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
+  html.light body #root .nf-app-shell main :is(
+    button:not(:disabled):not([aria-disabled="true"]),
+    [role="button"]:not(:disabled):not([aria-disabled="true"]),
+    a[role="button"]
+  ) * {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
 
-html.light body #root .nf-app-shell main :is(
-  button[aria-pressed="false"],
-  button[aria-selected="false"],
-  [role="button"][aria-pressed="false"],
-  [role="button"][aria-selected="false"],
-  .nf-secondary-action
-) {
-  background-color: #00BFFF99 !important;
-  border-color: #66cfee !important;
-}
+  html.light body #root .nf-app-shell main :is(
+    button[aria-pressed="false"],
+    button[aria-selected="false"],
+    [role="button"][aria-pressed="false"],
+    [role="button"][aria-selected="false"],
+    .nf-secondary-action
+  ) {
+    background-color: #00BFFF99 !important;
+    border-color: #66cfee !important;
+  }
 
-html.light body #root .nf-app-shell main :is(
-  button:not(:disabled):not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  a[role="button"]
-):hover {
-  background-color: #00a9e0 !important;
-  border-color: #008fbd !important;
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
+  html.light body #root .nf-app-shell main :is(
+    button:not(:disabled):not([aria-disabled="true"]),
+    [role="button"]:not(:disabled):not([aria-disabled="true"]),
+    a[role="button"]
+  ):hover {
+    background-color: #00a9e0 !important;
+    border-color: #008fbd !important;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
 
-html.light body #root .nf-app-shell main :is(
-  button, [role="button"], a[role="button"],
-  input, select, textarea
-):focus-visible {
-  outline: 3px solid #007fa8 !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 4px rgba(0, 191, 255, .22) !important;
-}
+  html.light body #root .nf-app-shell main :is(
+    button, [role="button"], a[role="button"],
+    input, select, textarea
+  ):focus-visible {
+    outline: 3px solid #007fa8 !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 4px rgba(0, 191, 255, .22) !important;
+  }
 
-html.light body #root .nf-app-shell main :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #ffffff !important;
-  background-image: none !important;
-  border: 1px solid #899eaf !important;
-  box-shadow: inset 0 1px 2px rgba(15, 35, 50, .04) !important;
-  opacity: 1 !important;
-}
+  html.light body #root .nf-app-shell main :is(
+    input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+    select, textarea
+  ) {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border: 1px solid #899eaf !important;
+    box-shadow: inset 0 1px 2px rgba(15, 35, 50, .04) !important;
+    opacity: 1 !important;
+  }
 
-html.light body #root .nf-app-shell main :is(input, select, textarea)::placeholder {
-  color: #596b78 !important;
-  -webkit-text-fill-color: #596b78 !important;
-  opacity: 1 !important;
-}
+  html.light body #root .nf-app-shell main :is(input, select, textarea)::placeholder {
+    color: #596b78 !important;
+    -webkit-text-fill-color: #596b78 !important;
+    opacity: 1 !important;
+  }
 
-html.light body #root .nf-app-shell main :is(input, select, textarea):hover {
-  border-color: #008fbd !important;
-}
+  html.light body #root .nf-app-shell main :is(input, select, textarea):hover {
+    border-color: #008fbd !important;
+  }
 
-html.light body #root .nf-app-shell main :is(input, select, textarea):focus {
-  border-color: #007fa8 !important;
-  outline: 3px solid rgba(0, 191, 255, .24) !important;
-  outline-offset: 1px !important;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .18) !important;
-}
+  html.light body #root .nf-app-shell main :is(input, select, textarea):focus {
+    border-color: #007fa8 !important;
+    outline: 3px solid rgba(0, 191, 255, .24) !important;
+    outline-offset: 1px !important;
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, .18) !important;
+  }
 
-html.light body #root .nf-app-shell main :is(input, select, textarea):disabled {
-  background-color: #f1f4f6 !important;
-  border-color: #c4cdd4 !important;
-  color: #596b78 !important;
-  -webkit-text-fill-color: #596b78 !important;
+  html.light body #root .nf-app-shell main :is(input, select, textarea):disabled {
+    background-color: #f1f4f6 !important;
+    border-color: #c4cdd4 !important;
+    color: #596b78 !important;
+    -webkit-text-fill-color: #596b78 !important;
+  }
 }
