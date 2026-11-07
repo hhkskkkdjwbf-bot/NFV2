@@ -367,6 +367,11 @@ try {
           htmlClass: state.htmlClass,
           viewportWidth: state.viewportWidth,
           documentWidth: state.documentWidth,
+          paletteDiagnostics: {
+            heading: state.palette.heading,
+            button: state.palette.button,
+            field: state.palette.field,
+          },
           articleCount: state.articleCount,
           imageCount: state.images.length,
           brokenImageCount: brokenImages.length,
