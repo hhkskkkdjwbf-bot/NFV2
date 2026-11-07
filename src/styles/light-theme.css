@@ -786,1055 +786,137 @@ html.light .nf-app-shell [role="dialog"] :is(h1, h2, h3, h4) {
 }
 
 
-/* Hotfix: restore a centered, full-width page rhythm and prevent washed-out CTAs.
-   All selectors are scoped to the light theme; dark mode remains untouched. */
-html.light .nf-home.nf-page-layout {
-  width: 100% !important;
-  max-width: 1440px !important;
-  margin-inline: auto !important;
-  align-items: stretch !important;
-}
-
-html.light .nf-home > .nf-home-hero {
-  display: block;
-  box-sizing: border-box;
-  width: min(100%, 72rem) !important;
-  max-width: 72rem !important;
-  margin-inline: auto !important;
-  align-self: center !important;
-}
-
-html.light .nf-home > .nf-container,
-html.light .nf-home > .nf-reading-container {
-  box-sizing: border-box;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-inline: auto !important;
-}
-
-html.light .nf-home > .nf-container > *,
-html.light .nf-home > .nf-reading-container > * {
-  min-width: 0;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]),
-html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background-color: #3478b5 !important;
-  background-image: none !important;
-  border-color: #2d6fa9 !important;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]) *,
-html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
-  background-color: #28669f !important;
-  border-color: #225b90 !important;
-}
-
-html.light .nf-app-shell .nf-page button[class*="bg-red-"],
-html.light .nf-app-shell .nf-page button[class*="bg-rose-"],
-html.light .nf-app-shell .nf-page [role="button"][class*="bg-red-"],
-html.light .nf-app-shell .nf-page [role="button"][class*="bg-rose-"] {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background-color: #b93845 !important;
-  background-image: none !important;
-  border-color: #a52e3a !important;
-}
-
-html.light .nf-app-shell .nf-page button:disabled,
-html.light .nf-app-shell .nf-page button[aria-disabled="true"] {
-  color: #536170 !important;
-  -webkit-text-fill-color: #536170 !important;
-  background: #e8edf2 !important;
-  border-color: #d3dbe4 !important;
-}
-
-
-/* Explicit home-page layout repair and dependable light-mode CTA styling. */
-html.light .nf-home.nf-page-layout {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  width: 100% !important;
-  max-width: 1440px !important;
-  margin-inline: auto !important;
-  padding-inline: 0 !important;
-}
-
-html.light .nf-home > .nf-home-hero--balanced {
-  box-sizing: border-box !important;
-  display: block !important;
-  width: min(calc(100% - 2rem), 72rem) !important;
-  max-width: 72rem !important;
-  min-width: 0 !important;
-  margin-inline: auto !important;
-  align-self: center !important;
-  padding-inline: clamp(1rem, 3vw, 2rem) !important;
-}
-
-html.light .nf-home-hero--balanced::before {
-  inset-inline: 0 !important;
-  border-radius: 2rem !important;
-}
-
-html.light .nf-home-hero-actions {
-  width: min(100%, 46rem) !important;
-  max-width: 46rem !important;
-  margin-inline: auto !important;
-  align-items: stretch !important;
-}
-
-html.light .nf-home-hero-actions .nf-home-action,
-html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action {
-  box-sizing: border-box !important;
-  min-height: 3.25rem !important;
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #3478b5 !important;
-  background-color: #3478b5 !important;
-  background-image: none !important;
-  border: 1px solid #2d6fa9 !important;
-  box-shadow: 0 2px 6px rgba(31, 78, 119, .16) !important;
-  opacity: 1 !important;
-}
-
-html.light .nf-home-hero-actions .nf-home-action:hover,
-html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action:hover {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #28669f !important;
-  background-color: #28669f !important;
-  border-color: #225b90 !important;
-}
-
-html.light .nf-home-hero-actions .nf-home-action *,
-html.light .nf-app-shell .nf-page .nf-home-hero-actions button.nf-home-action * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-html.light .nf-home > .nf-container,
-html.light .nf-home > .nf-reading-container {
-  box-sizing: border-box !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-inline: auto !important;
-}
-
-@media (max-width: 640px) {
-  html.light .nf-home > .nf-home-hero--balanced {
-    width: calc(100% - 1rem) !important;
-    padding-top: 2.5rem !important;
-    padding-bottom: 2rem !important;
-  }
-
-  html.light .nf-home-hero-actions {
-    width: 100% !important;
-  }
-}
-
-
-/* Component-level light theme: preserve hierarchy instead of recoloring every button. */
-html.light .nf-app-shell .nf-home-hero-actions .nf-home-action { min-height:3.25rem!important; border-radius:.9rem!important; font-weight:750!important; box-shadow:0 5px 14px rgba(25,55,90,.10)!important; }
-html.light .nf-app-shell .nf-home-action--primary, html.light .nf-app-shell .nf-card-action { color:#fff!important; -webkit-text-fill-color:#fff!important; background:#3478b5!important; border:1px solid #2d6fa9!important; }
-html.light .nf-app-shell .nf-home-action--primary:hover, html.light .nf-app-shell .nf-card-action:hover { background:#28669f!important; }
-html.light .nf-app-shell .nf-home-action--secondary, html.light .nf-app-shell .nf-home-action--tertiary, html.light .nf-app-shell .nf-category-random { color:#26364a!important; -webkit-text-fill-color:#26364a!important; background:#fff!important; border:1px solid #d5dfeb!important; box-shadow:none!important; }
-html.light .nf-app-shell .nf-home-action--secondary *, html.light .nf-app-shell .nf-home-action--tertiary *, html.light .nf-app-shell .nf-category-random * { color:inherit!important; -webkit-text-fill-color:currentColor!important; }
-html.light .nf-app-shell .nf-category-filter { min-height:2.5rem; color:#40516a!important; -webkit-text-fill-color:#40516a!important; background:#f1f5f9!important; border:1px solid #dbe3ee!important; box-shadow:none!important; }
-html.light .nf-app-shell .nf-category-filter[aria-pressed="true"] { color:#fff!important; -webkit-text-fill-color:#fff!important; background:#3478b5!important; border-color:#2d6fa9!important; box-shadow:0 3px 9px rgba(52,120,181,.18)!important; }
-html.light .nf-app-shell .nf-category-filter[aria-pressed="true"] * { color:#fff!important; -webkit-text-fill-color:#fff!important; }
-html.light .nf-app-shell .nf-generator-card { background:#fff!important; border:1px solid #dce4ee!important; border-radius:1.25rem!important; box-shadow:0 8px 24px rgba(20,40,70,.06)!important; }
-html.light .nf-app-shell .nf-generator-card:hover { border-color:#8bb7dc!important; box-shadow:0 14px 30px rgba(20,60,100,.10)!important; transform:translateY(-2px); }
-html.light .nf-app-shell .nf-generator-card-title { color:#172033!important; }
-html.light .nf-app-shell .nf-generator-card-description { color:#526176!important; }
-html.light .nf-app-shell .nf-site-header .nf-navigation-actions button { color:#34465c!important; background:#f1f5f9!important; border:1px solid #dbe3ee!important; box-shadow:none!important; }
-html.light .nf-app-shell .nf-site-header .nf-navigation-actions button svg { color:currentColor!important; stroke:currentColor!important; }
-@media(max-width:767px) { html.light .nf-app-shell .nf-home-hero-actions { gap:.75rem!important; } html.light .nf-app-shell .nf-home-hero-actions .nf-home-action { width:100%; min-height:3.15rem!important; padding-inline:1rem!important; } html.light .nf-app-shell .nf-category-filter { flex:1 1 auto; } }
-
-
-/* Final shared layout guardrails: preserve reading width and full content width in light mode. */
-html.light .nf-home > .nf-container {
-  width: 100% !important;
-  max-width: var(--nf-content-width, 1440px) !important;
-  margin-inline: auto !important;
-  padding-inline: var(--nf-page-gutter, clamp(1rem, 3vw, 2rem)) !important;
-}
-html.light .nf-home > .nf-reading-container {
-  width: 100% !important;
-  max-width: var(--nf-reading-width, 960px) !important;
-  margin-inline: auto !important;
-  padding-inline: var(--nf-page-gutter, clamp(1rem, 3vw, 2rem)) !important;
-}
-html.light .nf-home > .nf-home-hero--balanced {
-  width: min(calc(100% - 2rem), 72rem) !important;
-  max-width: 72rem !important;
-  margin-inline: auto !important;
-}
-
-
-/* Light-mode finishing pass for the redesigned Creative Studio and footer. */
-html.light .nf-creative-studio > header {
-  background:
-    radial-gradient(ellipse at 88% 0%, rgba(64, 125, 190, .13), transparent 44%),
-    linear-gradient(135deg, #ffffff 0%, #f0f5fc 100%) !important;
-  border-color: #d4e0ef !important;
-  box-shadow: 0 18px 42px rgba(40, 73, 112, .09) !important;
-}
-html.light .nf-creative-studio .nf-studio-tools,
-html.light .nf-creative-studio .nf-studio-settings,
-html.light .nf-creative-studio .nf-studio-preview,
-html.light .nf-creative-studio section:not(.nf-studio-preview) {
-  background: #ffffff !important;
-  border-color: #d8e2ef !important;
-  box-shadow: 0 9px 26px rgba(38, 65, 100, .065) !important;
-}
-html.light .nf-creative-studio .nf-studio-preview-stage {
-  color: #17243b;
-  background-color: #f5f8fd !important;
-  border-block: 1px solid #e4eaf3;
-}
-html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"],
-html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: #3478b5 !important;
-  border-color: #2d6fa9 !important;
-}
-html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * ,
-html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) {
-  color: #26364a !important;
-  background: #f8fafd !important;
-  border-color: #dce5f0 !important;
-}
-html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) span {
-  color: inherit;
-}
-html.light .nf-site-footer .nf-footer-social-link {
-  color: #315f8b !important;
-  -webkit-text-fill-color: #315f8b !important;
-  background: #edf4fb !important;
-  border: 1px solid #d6e4f2 !important;
-  box-shadow: none !important;
-}
-html.light .nf-site-footer .nf-footer-social-link:hover {
-  color: #234d77 !important;
-  background: #e3eef9 !important;
-}
-
-
-/* Creative Studio — light-theme contrast and calm surfaces.
-   Scoped overrides keep the shared blue action system while making selection states unmistakable. */
-html.light .nf-creative-studio {
-  --nf-studio-selected: #245f98;
-  --nf-studio-selected-hover: #1d507f;
-  --nf-studio-selected-soft: #e6f1fb;
-  --nf-studio-panel-border: #dce4ed;
-  --nf-studio-panel-shadow: 0 3px 12px rgba(24, 45, 70, .045);
-  color: #172331 !important;
-}
-
-html.light .nf-creative-studio .nf-page-header {
-  padding: clamp(1.25rem, 2.6vw, 2rem);
-  border: 1px solid #dce6f0;
-  border-radius: 1.35rem;
-  background:
-    radial-gradient(ellipse at 88% 0%, rgba(64, 125, 190, .10), transparent 46%),
-    linear-gradient(135deg, #ffffff 0%, #f5f8fc 100%);
-  box-shadow: var(--nf-studio-panel-shadow);
-}
-
-html.light .nf-creative-studio .nf-page-header > div > p:first-child {
-  color: #365f88 !important;
-}
-
-html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
-  .nf-creative-studio > .nf-container > div.mb-5, .nf-studio-canvas > section:not(.nf-studio-preview)) {
-  border-color: var(--nf-studio-panel-border) !important;
-  box-shadow: var(--nf-studio-panel-shadow) !important;
-}
-
-html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview,
-  .nf-creative-studio > .nf-container > div.mb-5, .nf-studio-canvas > section:not(.nf-studio-preview)) {
-  background: #ffffff !important;
-}
-
-html.light .nf-creative-studio .nf-studio-preview-stage {
-  color: #172331 !important;
-  background: #f8fafc !important;
-  border-block: 1px solid #e5ebf2 !important;
-  box-shadow: inset 0 1px 2px rgba(24, 45, 70, .025) !important;
-}
-
-html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"],
-html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: var(--nf-studio-selected) !important;
-  background-color: var(--nf-studio-selected) !important;
-  border: 1px solid #1e5488 !important;
-  box-shadow: 0 2px 6px rgba(31, 79, 125, .16) !important;
-}
-
-html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] *,
-html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-}
-
-html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"]:hover,
-html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"]:hover {
-  background: var(--nf-studio-selected-hover) !important;
-  background-color: var(--nf-studio-selected-hover) !important;
-  border-color: #19466f !important;
-}
-
-html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]),
-html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) {
-  color: #26384b !important;
-  -webkit-text-fill-color: #26384b !important;
-  background: #f8fafc !important;
-  background-color: #f8fafc !important;
-  border: 1px solid #dce5ef !important;
-  box-shadow: none !important;
-}
-
-html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) * ,
-html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) * {
-  color: inherit !important;
-  -webkit-text-fill-color: currentColor !important;
-}
-
-html.light .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]):hover,
-html.light .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]):hover {
-  color: #194f7c !important;
-  background: var(--nf-studio-selected-soft) !important;
-  border-color: #b9d2e8 !important;
-}
-
-html.light .nf-creative-studio :is(input, select, textarea) {
-  color: #172331 !important;
-  background: #ffffff !important;
-  border-color: #cbd7e3 !important;
-}
-
-html.light .nf-creative-studio :is(input, select, textarea)::placeholder {
-  color: #667789 !important;
-  opacity: 1 !important;
-}
-
-html.light .nf-creative-studio :is(input, select, textarea):focus {
-  border-color: #3478b5 !important;
-  box-shadow: 0 0 0 3px rgba(52, 120, 181, .16) !important;
-}
-
-html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings) :is(h2, h3, label) {
-  color: #26384b !important;
-}
-
-html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings) .text-slate-500 {
-  color: #5d6e80 !important;
-}
-
-@media (max-width: 767px) {
-  html.light .nf-creative-studio .nf-page-header {
-    padding: 1.1rem;
-    border-radius: 1rem;
-  }
-
-  html.light .nf-creative-studio :is(.nf-studio-tools, .nf-studio-settings, .nf-studio-preview) {
-    border-radius: 1rem !important;
-    box-shadow: 0 2px 9px rgba(24, 45, 70, .04) !important;
-  }
-}
-
-
-/* Footer Facebook link — quiet secondary social action in light mode. */
-html.light .nf-site-footer a.nf-footer-social-link {
-  display: inline-flex;
-  align-items: center;
-  gap: .55rem;
-  min-height: 2.45rem;
-  padding: .55rem .9rem !important;
-  color: #42566d !important;
-  -webkit-text-fill-color: #42566d !important;
-  background: #f7f9fc !important;
-  background-color: #f7f9fc !important;
-  border: 1px solid #e1e7ef !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 1px 3px rgba(28, 48, 72, .035) !important;
-  font-weight: 600 !important;
-  text-decoration: none !important;
-  transform: none !important;
-}
-
-html.light .nf-site-footer a.nf-footer-social-link svg {
-  color: #527da7 !important;
-  stroke: currentColor !important;
-}
-
-html.light .nf-site-footer a.nf-footer-social-link:hover {
-  color: #294d70 !important;
-  -webkit-text-fill-color: #294d70 !important;
-  background: #eef3f8 !important;
-  background-color: #eef3f8 !important;
-  border-color: #cbd8e5 !important;
-  box-shadow: 0 2px 6px rgba(28, 48, 72, .055) !important;
-  transform: translateY(-1px) !important;
-}
-
-html.light .nf-site-footer a.nf-footer-social-link:focus-visible {
-  outline: 2px solid #6b91b5 !important;
-  outline-offset: 3px !important;
-}
-
-
-/* LIGHT MODE — black typography and DeepSkyBlue actions.
-   Scoped to html.light only: dark mode remains untouched. */
-html.light .nf-app-shell,
-html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])):not([data-testid="designer-live-preview"]):not([data-testid="designer-live-preview"] *) {
-  color: #000000 !important;
-  -webkit-text-fill-color: currentColor;
-}
-
-/* Buttons: #00BFFF primary, #00BFFF99 secondary/translucent. */
-html.light .nf-app-shell button,
-html.light .nf-app-shell [role="button"],
-html.light .nf-app-shell input[type="button"],
-html.light .nf-app-shell input[type="submit"],
-html.light .nf-app-shell input[type="reset"] {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  border: 1px solid rgba(0, 145, 195, .42) !important;
-  box-shadow: 0 1px 3px rgba(0, 110, 160, .10);
-}
-
-html.light .nf-app-shell button *,
-html.light .nf-app-shell [role="button"] *,
-html.light .nf-app-shell input[type="button"] *,
-html.light .nf-app-shell input[type="submit"] *,
-html.light .nf-app-shell input[type="reset"] * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell button:hover:not(:disabled),
-html.light .nf-app-shell [role="button"]:hover:not([aria-disabled="true"]),
-html.light .nf-app-shell input[type="button"]:hover:not(:disabled),
-html.light .nf-app-shell input[type="submit"]:hover:not(:disabled),
-html.light .nf-app-shell input[type="reset"]:hover:not(:disabled) {
-  background-color: #00aeea !important;
-  border-color: #0099cf !important;
-  box-shadow: 0 2px 7px rgba(0, 110, 160, .17);
-}
-
-html.light .nf-app-shell button:focus-visible,
-html.light .nf-app-shell [role="button"]:focus-visible,
-html.light .nf-app-shell input[type="button"]:focus-visible,
-html.light .nf-app-shell input[type="submit"]:focus-visible,
-html.light .nf-app-shell input[type="reset"]:focus-visible {
-  outline: 2px solid #008fc5 !important;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .20) !important;
-}
-
-html.light .nf-app-shell button:disabled,
-html.light .nf-app-shell [role="button"][aria-disabled="true"],
-html.light .nf-app-shell input[type="button"]:disabled,
-html.light .nf-app-shell input[type="submit"]:disabled,
-html.light .nf-app-shell input[type="reset"]:disabled {
-  opacity: .58;
-  cursor: not-allowed;
-}
-
-/* Button-style links use the same blue and black text. */
-html.light .nf-app-shell a[role="button"],
-html.light .nf-app-shell a[class*="bg-blue-"],
-html.light .nf-app-shell a[class*="bg-indigo-"],
-html.light .nf-app-shell a[class*="bg-violet-"],
-html.light .nf-app-shell a[class*="bg-purple-"],
-html.light .nf-app-shell a[class*="bg-cyan-"] {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  border-color: rgba(0, 145, 195, .42) !important;
-}
-
-html.light .nf-app-shell a[role="button"] *,
-html.light .nf-app-shell a[class*="bg-blue-"] *,
-html.light .nf-app-shell a[class*="bg-indigo-"] *,
-html.light .nf-app-shell a[class*="bg-violet-"] *,
-html.light .nf-app-shell a[class*="bg-purple-"] *,
-html.light .nf-app-shell a[class*="bg-cyan-"] * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-/* Secondary/quiet button states may use the requested translucent blue. */
-html.light .nf-app-shell button[data-variant="secondary"],
-html.light .nf-app-shell button[data-variant="ghost"],
-html.light .nf-app-shell [role="button"][data-variant="secondary"],
-html.light .nf-app-shell [role="button"][data-variant="ghost"] {
-  background-color: #00BFFF99 !important;
-  border-color: rgba(0, 145, 195, .32) !important;
-}
-
-/* Inputs: light surface, black text, fine understated borders. */
-html.light .nf-app-shell :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border: 1px solid #d9e1e8 !important;
-  -webkit-text-fill-color: #000000 !important;
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, .025);
-}
-
-html.light .nf-app-shell :is(input,textarea)::placeholder {
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
-  opacity: 1;
-}
-
-html.light .nf-app-shell :is(input,select,textarea):focus {
-  border-color: #00aeea !important;
-  box-shadow: 0 0 0 2px rgba(0, 191, 255, .16) !important;
-}
-
-
-/* Final palette pass: keep Studio controls consistent with the site-wide
-   light-mode button specification, including its higher-specificity states. */
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"],
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #00BFFF !important;
-  background-color: #00BFFF !important;
-  border: 1px solid rgba(0, 145, 195, .42) !important;
-  box-shadow: 0 1px 3px rgba(0, 110, 160, .10) !important;
-}
-
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"] *,
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]),
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #00BFFF99 !important;
-  background-color: #00BFFF99 !important;
-  border: 1px solid rgba(0, 145, 195, .32) !important;
-  box-shadow: none !important;
-}
-
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:not([aria-pressed="true"]) *,
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:not([aria-pressed="true"]) * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:hover:not(:disabled),
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:hover:not(:disabled) {
-  background-color: #00aeea !important;
-  border-color: #0099cf !important;
-}
-
-html.light .nf-app-shell .nf-creative-studio .nf-studio-tools nav button:focus-visible,
-html.light .nf-app-shell .nf-creative-studio .nf-studio-settings button:focus-visible {
-  outline: 2px solid #008fc5 !important;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .20) !important;
-}
-
-
-/* LIGHT MODE SURFACES — dialogs, saved projects and footer.
-   These overrides deliberately stay under html.light. */
-html.light .nf-app-shell [role="dialog"] > div:not([aria-hidden="true"]) {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border-color: #dce5ed !important;
-  box-shadow: 0 18px 55px rgba(15, 35, 55, .16) !important;
-}
-
-html.light .nf-app-shell [role="dialog"] [class*="bg-slate-900"],
-html.light .nf-app-shell [role="dialog"] [class*="bg-slate-800"],
-html.light .nf-app-shell [role="dialog"] [class*="bg-[#"],
-html.light .nf-app-shell [role="dialog"] [class*="bg-indigo-950"],
-html.light .nf-app-shell [role="dialog"] [class*="from-purple-900"],
-html.light .nf-app-shell [role="dialog"] [class*="via-slate-900"],
-html.light .nf-app-shell [role="dialog"] [class*="to-indigo-900"] {
-  background: #f6f9fc !important;
-  background-color: #f6f9fc !important;
-  border-color: #e1e8ef !important;
-}
-
-html.light .nf-app-shell [role="dialog"] :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell [role="dialog"] :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
-  color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  border: 1px solid #d9e1e8 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-project-workspace,
-html.light .nf-app-shell .nf-project-workspace article {
-  color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  border-color: #e1e8ef !important;
-}
-
-html.light .nf-app-shell .nf-site-footer {
-  color: #000000 !important;
-  background: #f6f9fc !important;
-  background-color: #f6f9fc !important;
-  border-color: #e1e8ef !important;
-}
-
-html.light .nf-app-shell .nf-site-footer :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,a:not([role="button"])) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-site-footer :is(svg) {
-  color: #334155;
-}
-
-
-/* FINAL LIGHT THEME CONSISTENCY PASS
-   Only html.light is targeted. The dark theme and custom preview rendering stay untouched. */
-html.light .nf-app-shell :is(h1,h2,h3,h4,h5,h6,p,span,label,small,strong,em,li,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-/* Reconcile legacy dark utility surfaces across every studio and workspace. */
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-950"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-900"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-slate-800"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-gray-900"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-gray-800"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-[#0"],
-html.light .nf-app-shell :is(.nf-page,.nf-project-workspace,.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar) [class*="bg-[#1"] {
-  color: #000000 !important;
-  background-color: #ffffff !important;
-  border-color: #c5d1df !important;
-}
-
-/* Neutralize legacy dark gradient panels without affecting the dark theme. */
-html.light .nf-app-shell .nf-page [class*="from-slate-950"],
-html.light .nf-app-shell .nf-page [class*="from-slate-900"],
-html.light .nf-app-shell .nf-page [class*="via-slate-900"],
-html.light .nf-app-shell .nf-page [class*="to-slate-950"],
-html.light .nf-app-shell .nf-page [class*="to-slate-900"],
-html.light .nf-app-shell .nf-page [class*="from-[#0"],
-html.light .nf-app-shell .nf-page [class*="via-[#0"],
-html.light .nf-app-shell .nf-page [class*="to-[#0"] {
-  background-image: linear-gradient(145deg, #ffffff 0%, #f5f8fc 100%) !important;
-  border-color: #c5d1df !important;
-}
-
-/* Input borders are deliberately darker than the surface for clear affordance. */
-html.light .nf-app-shell :is(input:not([type="button"]):not([type="submit"]):not([type="reset"]),select,textarea) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  border: 1px solid #b8c7d8 !important;
-}
-
-html.light .nf-app-shell :is(input,select,textarea):focus {
-  border-color: #009fce !important;
-  outline: none !important;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .19) !important;
-}
-
-/* Uniform interactive controls: DeepSkyBlue fill, black text, visible blue hover/focus. */
-html.light .nf-app-shell button:not(:disabled),
-html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]),
-html.light .nf-app-shell input[type="button"]:not(:disabled),
-html.light .nf-app-shell input[type="submit"]:not(:disabled),
-html.light .nf-app-shell input[type="reset"]:not(:disabled) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  border-color: #009fce !important;
-}
-
-html.light .nf-app-shell button:not(:disabled) *,
-html.light .nf-app-shell [role="button"]:not([aria-disabled="true"]) * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell button:hover:not(:disabled),
-html.light .nf-app-shell [role="button"]:hover:not([aria-disabled="true"]),
-html.light .nf-app-shell input[type="button"]:hover:not(:disabled),
-html.light .nf-app-shell input[type="submit"]:hover:not(:disabled),
-html.light .nf-app-shell input[type="reset"]:hover:not(:disabled) {
-  color: #000000 !important;
-  background-color: #00aeea !important;
-  border-color: #008fbe !important;
-}
-
-html.light .nf-app-shell button:focus-visible,
-html.light .nf-app-shell [role="button"]:focus-visible,
-html.light .nf-app-shell input[type="button"]:focus-visible,
-html.light .nf-app-shell input[type="submit"]:focus-visible,
-html.light .nf-app-shell input[type="reset"]:focus-visible {
-  outline: 2px solid #008fc5 !important;
-  outline-offset: 2px !important;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .22) !important;
-}
-
-html.light .nf-app-shell button:disabled,
-html.light .nf-app-shell [role="button"][aria-disabled="true"] {
-  color: #000000 !important;
-  background-color: #b8eafa !important;
-  border-color: #9bd9ef !important;
-  opacity: .72 !important;
-}
-
-
-/* Authoritative light-mode contract — black typography, DeepSkyBlue actions, white fields.
-   Keep generated preview styling and the dark theme completely untouched. */
-html.light .nf-app-shell .nf-page :is(h1,h2,h3,h4,h5,h6,p,li,label,small,strong,em,dt,dd,th,td,legend,figcaption,blockquote,summary,a:not([role="button"])):not([data-testid="designer-live-preview"]):not([data-testid="designer-live-preview"] *) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]),
-html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]),
-html.light .nf-app-shell .nf-page input[type="button"]:not(:disabled),
-html.light .nf-app-shell .nf-page input[type="submit"]:not(:disabled),
-html.light .nf-app-shell .nf-page input[type="reset"]:not(:disabled) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #00BFFF !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border: 1px solid #009fce !important;
-  box-shadow: 0 2px 5px rgba(0, 90, 125, .14) !important;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]) *,
-html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
-html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
-html.light .nf-app-shell .nf-page input[type="button"]:hover:not(:disabled),
-html.light .nf-app-shell .nf-page input[type="submit"]:hover:not(:disabled),
-html.light .nf-app-shell .nf-page input[type="reset"]:hover:not(:disabled) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #00AEEA !important;
-  background-color: #00AEEA !important;
-  border-color: #008fbe !important;
-}
-
-html.light .nf-app-shell .nf-page :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  border: 1px solid #b8c7d8 !important;
-  box-shadow: 0 1px 3px rgba(20, 40, 60, .05) !important;
-}
-
-html.light .nf-app-shell .nf-page :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-)::placeholder {
-  color: #586777 !important;
-  -webkit-text-fill-color: #586777 !important;
-  opacity: 1 !important;
-}
-
-html.light .nf-app-shell .nf-page :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-):focus {
-  border-color: #008fbe !important;
-  outline: none !important;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .2) !important;
-}
-
-html.light .nf-app-shell .nf-page button:disabled,
-html.light .nf-app-shell .nf-page button[aria-disabled="true"],
-html.light .nf-app-shell .nf-page [role="button"][aria-disabled="true"] {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #dff6fd !important;
-  border-color: #b8eafa !important;
-  box-shadow: none !important;
-  opacity: .8 !important;
-}
-
-
-/* Final control coverage: apply the light palette to every real control in main,
-   including controls rendered outside legacy .nf-page wrappers. */
-html.light .nf-app-shell main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light .nf-app-shell main input[type="button"]:not(:disabled),
-html.light .nf-app-shell main input[type="submit"]:not(:disabled),
-html.light .nf-app-shell main input[type="reset"]:not(:disabled) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #00BFFF !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border: 1px solid #009fce !important;
-}
-html.light .nf-app-shell main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light .nf-app-shell main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-html.light .nf-app-shell main :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  border: 1px solid #b8c7d8 !important;
-}
-html.light .nf-app-shell main :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-)::placeholder {
-  color: #586777 !important;
-  -webkit-text-fill-color: #586777 !important;
-  opacity: 1 !important;
-}
-
-
-/* Highest-priority app-wide light controls. Deliberately not tied to wrapper
-   class names: route layouts mount different page shells, but all live in main. */
-html.light main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
-html.light main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
-  background: #00BFFF !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border-color: #008fbe !important;
-}
-html.light main button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
-html.light main [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
-}
-html.light main input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-html.light main select,
-html.light main textarea {
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
-  background: #fff !important;
-  background-color: #fff !important;
-  border: 1px solid #9aabba !important;
-}
-
-/* Final route-level control normalization.
-   Some views render interactive cards as non-button elements with role=button;
-   others use form controls with component-level utility classes. Target both
-   semantic controls and native fields after the component styles are loaded. */
-html.light body main :is(button, [role="button"]):not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border-color: #009ed4 !important;
-}
-
-html.light body main :is(button, [role="button"]):not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) :is(span, svg, strong, b) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-html.light body main :is(input, select, textarea):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #ffffff !important;
-  background-image: none !important;
-  border: 1px solid #9aafc5 !important;
-  opacity: 1 !important;
-}
-
-html.light body main :is(input, select, textarea)::placeholder {
-  color: #66788d !important;
-  -webkit-text-fill-color: #66788d !important;
-  opacity: 1 !important;
-}
-
-html.light body main :is(input, select, textarea):disabled {
-  color: #66788d !important;
-  background-color: #f1f4f8 !important;
-}
-
-
-/* NFV2 LIGHT PALETTE — authoritative final layer (2026-11-06). */
-/* Only html.light is targeted. html.dark and its descendants are untouched. */
-html.light body #root {
-  color: #000000 !important;
-}
-
-/* Black interface typography: headings, body copy, labels and descriptions. */
-html.light body #root :is(
-  h1, h2, h3, h4, h5, h6,
-  p, label, small, li, dt, dd, th, td,
-  legend, figcaption, blockquote, summary,
-  .nf-page-title, [data-text-role="description"], [data-text-role="label"]
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-
-/* Exact requested action palette: blue surface, black text. */
-html.light body #root :is(button, [role="button"], a[role="button"]) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #00BFFF !important;
-  background-image: none !important;
-  border-color: #009dcc !important;
-  box-shadow: 0 2px 5px rgba(0, 105, 145, .12) !important;
-}
-
-/* Inactive choices and secondary controls use the translucent blue. */
-html.light body #root :is(
-  button[aria-pressed="false"],
-  button[aria-selected="false"],
-  [role="button"][aria-pressed="false"],
-  [role="button"][aria-selected="false"],
-  .nf-secondary-action
-) {
-  background-color: #00BFFF99 !important;
-  border-color: #66cfee !important;
-}
-
-/* Visible, consistent pointer and keyboard interaction states. */
-html.light body #root :is(button, [role="button"], a[role="button"]):not(:disabled):not([aria-disabled="true"]):hover {
-  background-color: #00a9e0 !important;
-  border-color: #008fbd !important;
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-}
-html.light body #root :is(button, [role="button"], a[role="button"]):focus-visible {
-  outline: 3px solid #007fa8 !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 4px rgba(0, 191, 255, .22) !important;
-}
-
-/* Inputs: bright surface, black content and a clearly visible darker border. */
-html.light body #root :is(
-  input:not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
-  select, textarea
-) {
-  color: #000000 !important;
-  -webkit-text-fill-color: #000000 !important;
-  background-color: #ffffff !important;
-  background-image: none !important;
-  border: 1px solid #899eaf !important;
-  box-shadow: inset 0 1px 2px rgba(15, 35, 50, .04) !important;
-}
-html.light body #root :is(input, select, textarea)::placeholder {
-  color: #596b78 !important;
-  -webkit-text-fill-color: #596b78 !important;
-  opacity: 1 !important;
-}
-html.light body #root :is(input, select, textarea):hover {
-  border-color: #008fbd !important;
-}
-html.light body #root :is(input, select, textarea):focus {
-  border-color: #007fa8 !important;
-  outline: 3px solid rgba(0, 191, 255, .24) !important;
-  outline-offset: 1px !important;
-  box-shadow: 0 0 0 3px rgba(0, 191, 255, .18) !important;
-}
-html.light body #root :is(input, select, textarea):disabled {
-  background-color: #f1f4f6 !important;
-  border-color: #c4cdd4 !important;
-  color: #596b78 !important;
-  -webkit-text-fill-color: #596b78 !important;
-}
-
-
-/* Final homepage visual system — November 2026.
-   Single source of truth for the light palette; dark theme is intentionally untouched. */
+/* ================================================================
+   NameForge light theme — single authoritative component layer.
+   Keep this section last. Dark mode is intentionally untouched.
+   ================================================================ */
 html.light {
   color-scheme: light;
   --nf-page-bg: #f3f6fa;
   --nf-surface: #ffffff;
   --nf-surface-raised: #ffffff;
-  --nf-surface-muted: #f0f4f8;
-  --nf-border: #d5dee8;
+  --nf-surface-muted: #f5f8fb;
+  --nf-border: #d7e0e9;
   --nf-ink: #000000;
   --nf-muted: #263442;
   --nf-subtle: #526273;
   --nf-accent: #00bfff;
   --nf-accent-strong: #009fd6;
   --nf-accent-soft: rgba(0, 191, 255, .18);
+  --nf-cyan: #009fd6;
   --nf-shadow: 0 16px 42px rgba(25, 45, 68, .08);
   --nf-shadow-soft: 0 5px 18px rgba(25, 45, 68, .055);
+  --nf-line: #d7e0e9;
   background: var(--nf-page-bg) !important;
   color: #000 !important;
 }
 
 html.light body {
+  min-width: 320px;
   color: #000 !important;
   background: #f3f6fa !important;
   background-image: none !important;
 }
 
 html.light .nf-app-shell,
-html.light .nf-site-main,
-html.light .nf-page {
+html.light .nf-site-main {
+  min-width: 0;
   color: #000 !important;
   background: transparent !important;
 }
 
-html.light .nf-page {
+html.light .nf-page,
+html.light .nf-page-layout {
+  box-sizing: border-box;
   width: 100%;
-  max-width: 1440px;
-  margin-inline: auto;
-  padding-bottom: clamp(3rem, 6vw, 5rem);
-  gap: clamp(2.75rem, 5vw, 4.5rem);
+  max-width: 1440px !important;
+  min-width: 0;
+  margin-inline: auto !important;
+  color: #000 !important;
 }
 
-html.light .nf-page :is(h1,h2,h3,h4,h5,h6,.nf-page-title,.nf-section-title,.nf-animated-heading) {
+html.light .nf-page-layout {
+  padding-inline: clamp(1rem, 3vw, 2.25rem) !important;
+}
+
+html.light .nf-home.nf-page-layout,
+html.light .nf-generator-detail.nf-page-layout,
+html.light .nf-creative-studio.nf-page-layout {
+  padding-inline: 0 !important;
+}
+
+html.light .nf-home.nf-page-layout {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: clamp(2.75rem, 5vw, 4.5rem) !important;
+  padding-bottom: clamp(3rem, 6vw, 5rem) !important;
+}
+
+html.light .nf-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px !important;
+  min-width: 0;
+  margin-inline: auto !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+html.light .nf-reading-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px !important;
+  min-width: 0;
+  margin-inline: auto !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+html.light .nf-home > .nf-container,
+html.light .nf-home > .nf-reading-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+html.light .nf-home > .nf-home-hero--balanced {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(calc(100% - 2rem), 72rem) !important;
+  max-width: 72rem !important;
+  min-width: 0;
+  margin: clamp(1.25rem, 3vw, 2.5rem) auto 0 !important;
+  padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) !important;
+  overflow: hidden;
+  border: 1px solid #d7e0e9 !important;
+  border-radius: 1.5rem !important;
+  background: linear-gradient(145deg, #ffffff 0%, #f5f9fc 62%, #edf8fc 100%) !important;
+  box-shadow: 0 14px 38px rgba(25, 45, 68, .07) !important;
+  text-align: center;
+}
+
+html.light .nf-home > .nf-home-hero--balanced::before {
+  inset: 0 !important;
+  border: 0 !important;
+  border-radius: inherit !important;
+  background: radial-gradient(circle at 85% 12%, rgba(0,191,255,.11), transparent 36%) !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+html.light .nf-home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: .75rem !important;
+  width: 100%;
+  max-width: 48rem;
+  margin: 1.25rem auto 0 !important;
+}
+
+html.light .nf-page :is(h1,h2,h3,h4,h5,h6,.nf-page-title,.nf-section-title,.nf-animated-heading),
+html.light .nf-site-footer :is(h1,h2,h3,h4,h5,h6) {
   color: #000 !important;
   background: none !important;
   background-image: none !important;
@@ -1842,45 +924,12 @@ html.light .nf-page :is(h1,h2,h3,h4,h5,h6,.nf-page-title,.nf-section-title,.nf-a
   text-shadow: none !important;
 }
 
-html.light .nf-page :is(p,li,label,small,dt,dd,.text-slate-300,.text-slate-400,.text-slate-500,.text-slate-600) {
+html.light .nf-page :is(p,li,label,small,dt,dd,legend,.text-slate-300,.text-slate-400,.text-slate-500,.text-slate-600) {
   color: #263442 !important;
 }
 
-html.light .nf-page :is(.nf-container,.nf-reading-container) {
-  box-sizing: border-box;
-}
-
-html.light .nf-home > .nf-container {
-  max-width: 1280px !important;
-  padding-inline: clamp(1rem, 3vw, 2rem) !important;
-}
-
-html.light .nf-home > .nf-reading-container {
-  max-width: 1120px !important;
-  padding-inline: clamp(1rem, 3vw, 2rem) !important;
-}
-
-html.light .nf-home-hero--balanced {
-  width: min(calc(100% - 2rem), 72rem) !important;
-  margin-inline: auto !important;
-  padding: clamp(2.75rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) !important;
-  border: 1px solid #d5e0eb;
-  border-radius: 1.75rem;
-  background: linear-gradient(145deg,#fff 0%,#f2f8fc 58%,#edf8fc 100%);
-  box-shadow: 0 16px 40px rgba(29,56,82,.07);
-}
-
-html.light .nf-home-hero--balanced::before {
-  inset: 0 !important;
-  border: 0 !important;
-  border-radius: inherit !important;
-  background: radial-gradient(circle at 85% 12%,rgba(0,191,255,.10),transparent 35%) !important;
-  box-shadow: none !important;
-}
-
-html.light .nf-home-hero-actions {
-  gap: .75rem !important;
-  margin-bottom: 2rem !important;
+html.light .nf-page :is(.nf-muted,.text-gray-400,.text-gray-500) {
+  color: #526273 !important;
 }
 
 html.light .nf-page :is(.nf-generator-panel,.nf-catalog-filters,.nf-library-toolbar,
@@ -1888,69 +937,84 @@ html.light .nf-page :is(.nf-generator-panel,.nf-catalog-filters,.nf-library-tool
   .nf-surface,.nf-panel,.nf-faq-item) {
   color: #000 !important;
   background: #fff !important;
-  border: 1px solid #d5dee8 !important;
+  border: 1px solid #d7e0e9 !important;
   box-shadow: var(--nf-shadow-soft) !important;
 }
 
 html.light .nf-page :is(.nf-featured-card,.nf-top-rated-card,.nf-family-result,
   .nf-name-result-card,.nf-generator-card,.nf-benefits-grid > *) {
+  box-sizing: border-box;
+  min-width: 0;
   color: #000 !important;
   background: #fff !important;
-  border: 1px solid #d5dee8 !important;
-  border-radius: 1.15rem !important;
+  border: 1px solid #d7e0e9 !important;
+  border-radius: 1.1rem !important;
   box-shadow: var(--nf-shadow-soft) !important;
 }
 
 html.light .nf-page :is(.nf-featured-card,.nf-top-rated-card,.nf-family-result,
   .nf-name-result-card,.nf-generator-card):hover {
-  border-color: rgba(0,159,214,.65) !important;
-  box-shadow: 0 12px 28px rgba(20,65,95,.11) !important;
+  border-color: #75cce9 !important;
+  box-shadow: 0 12px 28px rgba(20,65,95,.10) !important;
   transform: translateY(-2px);
 }
 
-html.light .nf-home :is(.nf-generator-card-title,.nf-featured-card-title) {
+html.light .nf-generator-grid,
+html.light .nf-featured-grid,
+html.light .nf-benefits-grid,
+html.light .nf-family-results {
+  align-items: stretch;
+  gap: 1rem;
+}
+
+html.light .nf-generator-card-title,
+html.light .nf-featured-card-title {
   color: #000 !important;
 }
-html.light .nf-home :is(.nf-generator-card-description,.nf-featured-card-description) {
+
+html.light .nf-generator-card-description,
+html.light .nf-featured-card-description {
   color: #344454 !important;
 }
 
-/* Every enabled action is the requested cyan-blue with black, legible text. */
-html.light .nf-app-shell :is(
-  button:not(:disabled):not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  input[type="button"]:not(:disabled),
-  input[type="submit"]:not(:disabled),
-  input[type="reset"]:not(:disabled)
-):not([class*="bg-red-"]):not([class*="bg-rose-"]) {
+/* All enabled actions use the same medium cyan-blue and black label.
+   Destructive actions and disabled controls retain distinct safe states. */
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]),
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]),
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
   background: #00bfff !important;
   background-color: #00bfff !important;
   background-image: none !important;
   border: 1px solid #00a9e3 !important;
-  box-shadow: 0 2px 5px rgba(0,110,155,.12) !important;
+  box-shadow: 0 2px 6px rgba(0,110,155,.12) !important;
   font-weight: 700;
 }
-html.light .nf-app-shell :is(
-  button:not(:disabled):not([aria-disabled="true"]),
-  [role="button"]:not([aria-disabled="true"]),
-  input[type="button"]:not(:disabled),
-  input[type="submit"]:not(:disabled),
-  input[type="reset"]:not(:disabled)
-):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover {
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):hover,
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]):hover,
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]):hover {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
   background: #00a9e3 !important;
-  background-color: #00a9e3 !important;
   border-color: #008fca !important;
   box-shadow: 0 4px 11px rgba(0,110,155,.18) !important;
 }
-html.light .nf-app-shell :is(button,[role="button"]):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) * {
+
+html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-page [role="button"]:not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]) *,
+html.light .nf-app-shell .nf-site-header button:not(:disabled):not([aria-disabled="true"]) *,
+html.light .nf-app-shell .nf-site-footer button:not(:disabled):not([aria-disabled="true"]) * {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
 }
-html.light .nf-app-shell :is(button:disabled,button[aria-disabled="true"],[role="button"][aria-disabled="true"]) {
+
+html.light .nf-app-shell .nf-page button:disabled,
+html.light .nf-app-shell .nf-page button[aria-disabled="true"],
+html.light .nf-app-shell .nf-page [role="button"][aria-disabled="true"] {
   color: #647383 !important;
   -webkit-text-fill-color: #647383 !important;
   background: #e8edf2 !important;
@@ -1958,13 +1022,20 @@ html.light .nf-app-shell :is(button:disabled,button[aria-disabled="true"],[role=
   box-shadow: none !important;
   opacity: 1 !important;
 }
-html.light .nf-app-shell :is(button[class*="bg-red-"],button[class*="bg-rose-"],[role="button"][class*="bg-red-"],[role="button"][class*="bg-rose-"]) {
+
+html.light .nf-app-shell .nf-page button[class*="bg-red-"],
+html.light .nf-app-shell .nf-page button[class*="bg-rose-"],
+html.light .nf-app-shell .nf-page [role="button"][class*="bg-red-"],
+html.light .nf-app-shell .nf-page [role="button"][class*="bg-rose-"] {
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
   background: #bd3545 !important;
   border-color: #a92c3b !important;
 }
+
 html.light .nf-app-shell :is(input,select,textarea) {
+  box-sizing: border-box;
+  min-width: 0;
   min-height: 2.75rem;
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
@@ -1973,126 +1044,206 @@ html.light .nf-app-shell :is(input,select,textarea) {
   border-radius: .7rem !important;
   box-shadow: 0 1px 3px rgba(20,40,60,.04) !important;
 }
+
 html.light .nf-app-shell :is(input,select,textarea)::placeholder {
   color: #667585 !important;
   -webkit-text-fill-color: #667585 !important;
   opacity: 1 !important;
 }
+
 html.light .nf-app-shell :is(input,select,textarea):focus {
   border-color: #009fd6 !important;
   box-shadow: 0 0 0 3px rgba(0,191,255,.2) !important;
   outline: none !important;
 }
+
 html.light .nf-app-shell :is(a,button,input,select,textarea,[tabindex]):focus-visible {
   outline: 3px solid #008fca !important;
   outline-offset: 3px !important;
 }
 
-/* FAQ rebuilt as a compact, readable accordion grid rather than 18 empty-looking bars. */
+html.light .nf-site-header {
+  min-height: 4.25rem;
+  background: rgba(255,255,255,.97) !important;
+  border-bottom: 1px solid #d7e0e9 !important;
+  box-shadow: 0 3px 14px rgba(20,40,60,.06) !important;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+html.light .nf-site-header .nf-container {
+  min-height: 4.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+html.light .nf-site-footer {
+  margin-top: clamp(3rem,6vw,5rem) !important;
+  padding-block: clamp(2.5rem,5vw,4rem) !important;
+  color: #263442 !important;
+  background: #edf2f7 !important;
+  border-top: 1px solid #d7e0e9 !important;
+}
+
+html.light .nf-site-footer :is(p,li,a,small,span) {
+  color: #344454 !important;
+}
+
+html.light .nf-footer-grid {
+  gap: clamp(1.5rem,3vw,2.5rem) !important;
+}
+
+/* FAQ: two balanced columns on desktop, one readable column on mobile. */
 html.light .nf-faq-section {
-  max-width: 1160px !important;
   width: 100%;
+  max-width: 1160px !important;
 }
-html.light .nf-faq-section > div:first-child {
-  margin-bottom: 1.75rem !important;
-}
+
 html.light .nf-faq-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: .6rem !important;
 }
+
 html.light .nf-faq-list {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
   align-items: start;
   gap: .85rem;
 }
+
 html.light .nf-faq-item {
   min-width: 0;
   overflow: hidden;
   border-radius: .95rem !important;
   transition: border-color .18s ease,box-shadow .18s ease;
 }
-html.light .nf-faq-item:has(.nf-faq-answer) {
-  border-color: #9acfe2 !important;
-  box-shadow: 0 6px 18px rgba(0,120,165,.08) !important;
-}
+
 html.light .nf-faq-question {
-  width: 100%;
-  min-height: 4rem !important;
-  padding: 1rem 1.15rem !important;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  width: 100%;
+  min-height: 3.75rem !important;
+  padding: .95rem 1.1rem !important;
   text-align: start;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #00bfff !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: rgba(0,191,255,.60) !important;
-  color: #000 !important;
-  -webkit-text-fill-color: #000 !important;
   box-shadow: none !important;
 }
-html.light .nf-faq-question:hover {
-  background: rgba(0,191,255,.78) !important;
-}
-html.light .nf-faq-question span,
-html.light .nf-faq-question svg {
+
+html.light .nf-faq-question * {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
 }
+
 html.light .nf-faq-answer {
-  padding: 1rem 1.15rem 1.2rem !important;
+  padding: 1rem 1.1rem 1.2rem !important;
   color: #263442 !important;
   background: #fff !important;
   border-top: 1px solid #dce5ed !important;
-  line-height: 1.7 !important;
   font-size: .9rem !important;
+  line-height: 1.7 !important;
 }
-html.light .nf-faq-item > button:focus-visible {
-  outline-offset: -4px !important;
+
+html.light .nf-creative-studio > header {
+  background: linear-gradient(135deg,#fff 0%,#f0f7fb 100%) !important;
+  border-color: #d7e0e9 !important;
+  box-shadow: var(--nf-shadow) !important;
 }
-html.light .nf-home > .nf-container > div[class*="bg-gradient"],
-html.light .nf-home > .nf-reading-container > div[class*="bg-gradient"] {
-  border: 1px solid #d5dee8 !important;
-  border-radius: 1.25rem !important;
+
+html.light .nf-creative-studio :is(.nf-studio-tools,.nf-studio-settings,.nf-studio-preview,section:not(.nf-studio-preview)) {
+  color: #000 !important;
   background: #fff !important;
+  border-color: #d7e0e9 !important;
   box-shadow: var(--nf-shadow-soft) !important;
 }
-html.light .nf-home .nf-home-hero-actions .nf-home-action--secondary,
-html.light .nf-home .nf-home-hero-actions .nf-home-action--tertiary {
-  background: rgba(0,191,255,.6) !important;
+
+html.light .nf-creative-studio .nf-studio-preview-stage {
+  color: #000 !important;
+  background: #f5f8fb !important;
+  border-color: #e1e8ef !important;
+}
+
+html.light .nf-creative-studio :is(button[aria-pressed="true"],button[aria-selected="true"]) {
   color: #000 !important;
   -webkit-text-fill-color: #000 !important;
+  background: #00bfff !important;
   border-color: #00a9e3 !important;
 }
-html.light .nf-site-header {
-  min-height: 4.25rem;
-  background: rgba(255,255,255,.96) !important;
-  border-bottom: 1px solid #d5dee8 !important;
-  box-shadow: 0 3px 14px rgba(20,40,60,.06) !important;
-  backdrop-filter: blur(12px);
-}
-html.light .nf-site-footer {
-  background: #edf2f7 !important;
+
+html.light .nf-creative-studio :is(button[aria-pressed="true"],button[aria-selected="true"]) * {
   color: #000 !important;
-  border-top: 1px solid #d5dee8 !important;
+  -webkit-text-fill-color: #000 !important;
 }
-html.light .nf-site-footer :is(p,li,a,small,span) {
-  color: #263442 !important;
+
+@media (max-width: 900px) {
+  html.light .nf-generator-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
+  html.light .nf-footer-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+  }
 }
-html.light .nf-site-footer :is(h2,h3,h4) {
-  color: #000 !important;
-}
+
 @media (max-width: 767px) {
-  html.light .nf-faq-list { grid-template-columns: 1fr; gap: .7rem; }
-  html.light .nf-faq-question { min-height: 3.6rem !important; padding: .9rem !important; }
-  html.light .nf-home-hero--balanced { width: calc(100% - 1rem) !important; border-radius: 1.15rem; }
-  html.light .nf-home > .nf-container,
-  html.light .nf-home > .nf-reading-container { padding-inline: 1rem !important; }
+  html.light .nf-home.nf-page-layout {
+    gap: 2.75rem !important;
+  }
+  html.light .nf-home > .nf-home-hero--balanced {
+    width: calc(100% - 1rem) !important;
+    margin-top: .75rem !important;
+    padding: 2.5rem 1rem 2rem !important;
+    border-radius: 1.15rem !important;
+  }
+  html.light .nf-home-hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  html.light .nf-faq-list {
+    grid-template-columns: 1fr;
+    gap: .7rem;
+  }
+  html.light .nf-faq-question {
+    min-height: 3.5rem !important;
+    padding: .85rem !important;
+  }
+  html.light .nf-page :is(.nf-generator-grid,.nf-featured-grid,.nf-benefits-grid) {
+    grid-template-columns: 1fr;
+  }
+  html.light .nf-container,
+  html.light .nf-reading-container {
+    padding-inline: 1rem !important;
+  }
 }
+
+@media (max-width: 360px) {
+  html.light .nf-home > .nf-home-hero--balanced {
+    width: calc(100% - .5rem) !important;
+    padding-inline: .85rem !important;
+  }
+  html.light .nf-page button {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  html.light .nf-faq-question {
+    gap: .6rem;
+    font-size: .88rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.light .nf-app-shell *,
   html.light .nf-app-shell *::before,
   html.light .nf-app-shell *::after {
+    scroll-behavior: auto !important;
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
