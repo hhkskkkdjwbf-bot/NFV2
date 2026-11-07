@@ -153,6 +153,8 @@ try {
           title: document.title,
           bodyTextLength: (document.body?.innerText || '').trim().length,
           htmlClass: document.documentElement.className,
+          rootExists: Boolean(document.querySelector('#root')),
+          appShellExists: Boolean(document.querySelector('.nf-app-shell')),
           viewportWidth: window.innerWidth,
           documentWidth: document.documentElement.scrollWidth,
           mainCount: document.querySelectorAll('main').length,
@@ -209,10 +211,10 @@ try {
             failures.push(label + ': visible page heading is not black in light mode');
           }
           if (!state.palette.button || !isBlack(state.palette.button.color) || !state.palette.button.background.includes('0, 191, 255')) {
-            failures.push(label + ': visible action button does not use the blue background with black text');
+            failures.push(label + ': visible action button palette mismatch: ' + JSON.stringify({ htmlClass: state.htmlClass, palette: state.palette.button, rootExists: state.rootExists, appShellExists: state.appShellExists }));
           }
           if (!state.palette.field || !isBlack(state.palette.field.color) || state.palette.field.background !== 'rgb(255, 255, 255)') {
-            failures.push(label + ': visible form field is not white with black text in light mode');
+            failures.push(label + ': visible form field palette mismatch: ' + JSON.stringify({ htmlClass: state.htmlClass, palette: state.palette.field, rootExists: state.rootExists, appShellExists: state.appShellExists }));
           }
         }
         if (!state.reducedMotion) failures.push(label + ': reduced-motion preference was not applied in the browser context');
