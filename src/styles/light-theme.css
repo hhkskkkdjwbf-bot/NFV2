@@ -1577,13 +1577,13 @@ html.light .nf-home .nf-family-results button:hover {
   background: #f1faff !important;
   border-color: #00a6dc !important;
 }
-html.light .nf-home > section:nth-of-type(5) > div {
+html.light .nf-home > section:nth-of-type(6) > div {
   border: 1px solid #d4e3ec !important;
   border-radius: 1.5rem !important;
   background: linear-gradient(135deg, #fff 0%, #f0f9fd 100%) !important;
   box-shadow: var(--nf-shadow-soft);
 }
-html.light .nf-home > section:nth-of-type(5) > div :is(h2, p, span) {
+html.light .nf-home > section:nth-of-type(6) > div :is(h2, p, span) {
   color: var(--nf-ink) !important;
 }
 
