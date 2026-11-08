@@ -1396,3 +1396,336 @@ html.light .nf-creative-studio .nf-studio-settings select, html.light .nf-creati
 @media (max-width:767px) { html.light .nf-creative-studio { padding-top:1.25rem !important; padding-bottom:2rem !important; } html.light .nf-creative-studio .nf-page-header { align-items:flex-start; flex-direction:column; gap:1rem; padding:1.1rem; } html.light .nf-creative-studio .nf-page-header > div:last-child { display:flex; flex-wrap:wrap; width:100%; } html.light .nf-creative-studio .nf-page-header > div:last-child button { flex:1 1 auto; } html.light .nf-creative-studio .nf-studio-tools nav { grid-template-columns:repeat(2,minmax(0,1fr)); } html.light .nf-creative-studio .nf-studio-preview-stage { min-height:230px; } }
 
 @media (max-width:360px) { html.light .nf-creative-studio .nf-container { padding-inline:.75rem !important; } html.light .nf-creative-studio .nf-page-header { padding:.9rem; } html.light .nf-creative-studio .nf-page-header > div:last-child { gap:.4rem; } html.light .nf-creative-studio .nf-page-header > div:last-child button { padding-inline:.65rem; font-size:.75rem; } }
+
+
+/* Phase 2 — homepage and catalogue refinement.
+   Scoped to the light theme: the existing dark theme and application logic remain untouched. */
+html.light .nf-home > .nf-home-hero--balanced {
+  box-sizing: border-box;
+  width: min(100% - 2rem, 78rem);
+  margin: clamp(1rem, 2.5vw, 2rem) auto clamp(2rem, 4vw, 3.25rem);
+  padding: clamp(2.25rem, 6vw, 5rem) clamp(1rem, 4vw, 3.5rem) !important;
+  overflow: hidden;
+  border: 1px solid #d6e4ed;
+  border-radius: 2rem;
+  background:
+    radial-gradient(ellipse at 82% 5%, rgba(0, 191, 255, .13), transparent 42%),
+    linear-gradient(135deg, #ffffff 0%, #f5faff 58%, #edf8fc 100%);
+  box-shadow: 0 18px 48px rgba(20, 65, 92, .075);
+}
+html.light .nf-home-hero--balanced > .inline-flex {
+  color: #075b78 !important;
+  background: rgba(0, 191, 255, .10) !important;
+  border-color: rgba(0, 159, 214, .28) !important;
+  box-shadow: none !important;
+}
+html.light .nf-home-hero--balanced > .inline-flex svg {
+  color: #008dbd !important;
+}
+html.light .nf-home-hero--balanced .nf-hero-heading {
+  max-width: 15ch;
+  margin-inline: auto;
+  color: #000 !important;
+  font-size: clamp(2.35rem, 5.5vw, 4.6rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.055em;
+  text-wrap: balance;
+}
+html.light .nf-home-hero--balanced .nf-hero-heading > span {
+  color: #087eaa !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+html.light .nf-home-hero--balanced > p {
+  max-width: 46rem;
+  color: #34495a !important;
+  font-size: clamp(1rem, 1.5vw, 1.15rem) !important;
+  line-height: 1.75;
+}
+html.light .nf-home-hero-actions {
+  max-width: 52rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+html.light .nf-home-hero-actions .nf-home-action {
+  min-height: 3.15rem;
+  border: 1px solid #00a6dc !important;
+  border-radius: .9rem !important;
+  background: #00bfff !important;
+  color: #00364a !important;
+  box-shadow: 0 5px 14px rgba(0, 143, 190, .16) !important;
+  font-weight: 800;
+}
+html.light .nf-home-hero-actions .nf-home-action:hover {
+  background: #00a9e2 !important;
+  border-color: #008fbe !important;
+  color: #002f42 !important;
+  transform: translateY(-1px);
+}
+html.light .nf-home-hero-actions .nf-home-action svg {
+  color: currentColor !important;
+}
+html.light .nf-home-hero--balanced > div:last-child {
+  border-color: #dbe6ed !important;
+  color: #3e5364 !important;
+}
+html.light .nf-home-hero--balanced > div:last-child span {
+  color: #263b4b !important;
+}
+
+html.light .nf-home > section:nth-of-type(2) > div:first-child,
+html.light .nf-home > .nf-reading-container > div {
+  border: 1px solid var(--nf-border) !important;
+  border-radius: 1.5rem !important;
+  background: #fff !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+html.light .nf-home > section:nth-of-type(2) > div:first-child :is(h2, p, span),
+html.light .nf-home > .nf-reading-container > div :is(h2, h3, p, label) {
+  color: var(--nf-ink) !important;
+}
+html.light .nf-home > section:nth-of-type(2) > div:first-child :is(.bg-cyan-500\/10, .bg-purple-500\/10) {
+  background: rgba(0, 191, 255, .10) !important;
+  border-color: rgba(0, 159, 214, .28) !important;
+  color: #075b78 !important;
+}
+html.light .nf-home :is(input[type="text"], input[type="search"]) {
+  min-height: 2.9rem;
+  border: 1px solid #cbd9e4 !important;
+  border-radius: .85rem !important;
+  background: #f7fafc !important;
+  color: #000 !important;
+  box-shadow: inset 0 1px 2px rgba(16, 40, 58, .035) !important;
+}
+html.light .nf-home :is(input[type="text"], input[type="search"])::placeholder {
+  color: #647789 !important;
+}
+html.light .nf-home :is(input[type="text"], input[type="search"]):focus {
+  border-color: #00a9e2 !important;
+  box-shadow: 0 0 0 3px rgba(0, 191, 255, .16) !important;
+}
+html.light .nf-home > section:nth-of-type(2) button:not(.nf-name-action),
+html.light .nf-home > .nf-reading-container button {
+  border-color: #c8dce8 !important;
+}
+html.light .nf-home > section:nth-of-type(2) button:not(.nf-name-action):hover,
+html.light .nf-home > .nf-reading-container button:hover {
+  border-color: #00a6dc !important;
+}
+
+html.light .nf-home .nf-benefits-grid > div,
+html.light .nf-home .nf-featured-card,
+html.light .nf-home .nf-top-rated-card {
+  min-width: 0;
+  border: 1px solid var(--nf-border) !important;
+  border-radius: 1.2rem !important;
+  background: #fff !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+html.light .nf-home .nf-benefits-grid > div:hover,
+html.light .nf-home .nf-featured-card:hover {
+  border-color: rgba(0, 159, 214, .55) !important;
+  box-shadow: 0 12px 28px rgba(24, 78, 106, .09) !important;
+  transform: translateY(-2px);
+}
+html.light .nf-home .nf-benefits-grid > div :is(h3, p),
+html.light .nf-home .nf-featured-card :is(h3, p, span),
+html.light .nf-home .nf-top-rated-card :is(h3, p, span) {
+  color: var(--nf-ink) !important;
+}
+html.light .nf-home .nf-featured-card > div:first-child > div:first-child > div {
+  background: #f0f8fc !important;
+  border-color: #d9eaf2 !important;
+}
+html.light .nf-home .nf-featured-card button,
+html.light .nf-home .nf-family-results button,
+html.light .nf-catalog .nf-generator-card button {
+  border: 1px solid #00a6dc !important;
+  border-radius: .75rem !important;
+  background: #00bfff !important;
+  color: #00364a !important;
+  box-shadow: none !important;
+  font-weight: 800;
+}
+html.light .nf-home .nf-featured-card button:hover,
+html.light .nf-home .nf-family-results button:hover,
+html.light .nf-catalog .nf-generator-card button:hover {
+  background: #00a9e2 !important;
+  color: #002f42 !important;
+}
+html.light .nf-home .nf-family-filter button {
+  min-height: 2.65rem;
+  border: 1px solid #cbd9e4 !important;
+  border-radius: .8rem !important;
+  background: #fff !important;
+  color: #1c2d3b !important;
+}
+html.light .nf-home .nf-family-filter button[aria-pressed="true"] {
+  border-color: #009fd6 !important;
+  background: #00bfff !important;
+  color: #00364a !important;
+  box-shadow: 0 4px 12px rgba(0, 159, 214, .16) !important;
+}
+html.light .nf-home .nf-family-results button {
+  background: #fff !important;
+  border-color: var(--nf-border) !important;
+  text-align: start;
+}
+html.light .nf-home .nf-family-results button :is(span, svg) {
+  color: var(--nf-ink) !important;
+}
+html.light .nf-home .nf-family-results button:hover {
+  background: #f1faff !important;
+  border-color: #00a6dc !important;
+}
+html.light .nf-home > section:nth-of-type(5) > div {
+  border: 1px solid #d4e3ec !important;
+  border-radius: 1.5rem !important;
+  background: linear-gradient(135deg, #fff 0%, #f0f9fd 100%) !important;
+  box-shadow: var(--nf-shadow-soft);
+}
+html.light .nf-home > section:nth-of-type(5) > div :is(h2, p, span) {
+  color: var(--nf-ink) !important;
+}
+
+html.light .nf-catalog .nf-page-header {
+  max-width: 58rem;
+  margin-inline: auto;
+}
+html.light .nf-catalog .nf-page-header > div:first-child {
+  color: #075b78 !important;
+  background: rgba(0, 191, 255, .10) !important;
+  border-color: rgba(0, 159, 214, .28) !important;
+}
+html.light .nf-catalog .nf-page-header > div:first-child svg {
+  color: #008dbd !important;
+}
+html.light .nf-catalog .nf-page-header p {
+  max-width: 48rem;
+  color: #405466 !important;
+  line-height: 1.7;
+}
+html.light .nf-catalog .nf-catalog-filters {
+  padding: clamp(1rem, 2vw, 1.5rem) !important;
+  border: 1px solid var(--nf-border) !important;
+  border-radius: 1.25rem !important;
+  background: #fff !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+html.light .nf-catalog .nf-category-filter,
+html.light .nf-catalog .nf-category-random {
+  min-height: 2.45rem;
+  border: 1px solid #cbd9e4 !important;
+  border-radius: .75rem !important;
+  background: #f7fafc !important;
+  color: #1d3445 !important;
+  box-shadow: none !important;
+}
+html.light .nf-catalog .nf-category-filter[aria-pressed="true"] {
+  border-color: #009fd6 !important;
+  background: #00bfff !important;
+  color: #00364a !important;
+}
+html.light .nf-catalog .nf-category-random {
+  background: #eaf8fd !important;
+  color: #075b78 !important;
+  border-color: #b9e5f2 !important;
+}
+html.light .nf-catalog .nf-catalog-filter-options,
+html.light .nf-catalog .nf-catalog-filters label,
+html.light .nf-catalog .nf-catalog-filters span {
+  color: #34495a !important;
+}
+html.light .nf-catalog .nf-catalog-filters select {
+  min-height: 2.4rem;
+  border: 1px solid #cbd9e4 !important;
+  background: #f7fafc !important;
+  color: #102b3d !important;
+}
+html.light .nf-catalog .nf-generator-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16.5rem), 1fr));
+  align-items: stretch;
+  gap: clamp(.85rem, 1.5vw, 1.2rem) !important;
+}
+html.light .nf-catalog .nf-generator-card {
+  min-width: 0;
+  min-height: 15rem;
+  padding: 1.25rem !important;
+  border: 1px solid var(--nf-border) !important;
+  border-radius: 1.15rem !important;
+  background: #fff !important;
+  box-shadow: var(--nf-shadow-soft) !important;
+}
+html.light .nf-catalog .nf-generator-card:hover {
+  border-color: rgba(0, 159, 214, .55) !important;
+  box-shadow: 0 12px 28px rgba(24, 78, 106, .09) !important;
+  transform: translateY(-2px);
+}
+html.light .nf-catalog .nf-generator-card > div:first-child > div:first-child > span:last-child {
+  max-width: 65%;
+  border: 1px solid #cceaf4 !important;
+  background: #effaff !important;
+  color: #075b78 !important;
+}
+html.light .nf-catalog .nf-generator-card :is(h2, p) {
+  color: var(--nf-ink) !important;
+}
+html.light .nf-catalog .nf-generator-card p {
+  color: #46596a !important;
+  line-height: 1.6;
+}
+html.light .nf-catalog .nf-generator-card-footer {
+  border-color: #e1e9ef !important;
+}
+html.light .nf-catalog .nf-catalog-empty {
+  border-color: #cbd9e4 !important;
+  background: #fff !important;
+  color: #34495a !important;
+}
+@media (max-width: 767px) {
+  html.light .nf-home > .nf-home-hero--balanced {
+    width: calc(100% - 1.25rem);
+    margin-block: .75rem 1.5rem;
+    padding: 2rem 1rem !important;
+    border-radius: 1.25rem;
+  }
+  html.light .nf-home-hero--balanced .nf-hero-heading {
+    font-size: clamp(2.1rem, 10vw, 3.25rem) !important;
+  }
+  html.light .nf-home-hero-actions {
+    width: 100%;
+    gap: .65rem;
+  }
+  html.light .nf-home-hero-actions .nf-home-action {
+    width: 100%;
+  }
+  html.light .nf-home > section:nth-of-type(2) > div:first-child,
+  html.light .nf-home > .nf-reading-container > div {
+    padding: 1.1rem !important;
+    border-radius: 1.1rem !important;
+  }
+  html.light .nf-catalog .nf-catalog-filter-top > div:last-child {
+    justify-content: flex-start;
+  }
+  html.light .nf-catalog .nf-category-filter,
+  html.light .nf-catalog .nf-category-random {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  html.light .nf-catalog .nf-generator-card {
+    min-height: 0;
+  }
+}
+@media (max-width: 360px) {
+  html.light .nf-home > .nf-home-hero--balanced {
+    width: calc(100% - 1rem);
+    padding-inline: .8rem !important;
+  }
+  html.light .nf-home-hero-actions .nf-home-action {
+    padding-inline: .8rem;
+    font-size: .78rem;
+  }
+  html.light .nf-catalog .nf-catalog-filters {
+    padding: .8rem !important;
+  }
+}
