@@ -1818,3 +1818,136 @@ html.light .nf-catalog :is(button, input, select):focus-visible {
   }
 }
 
+/* Phase 2 — unified Creative Studio workspace, light theme only. */
+html.light .nf-creative-studio .nf-studio-header {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.25rem, 2.5vw, 2rem) !important;
+  border: 1px solid #cfe6f1 !important;
+  border-radius: 1.5rem !important;
+  background:
+    radial-gradient(ellipse at 92% 8%, rgba(0, 191, 255, .18), transparent 38%),
+    linear-gradient(120deg, #fff 0%, #f2faff 58%, #eaf8fd 100%) !important;
+  box-shadow: 0 14px 36px rgba(24, 78, 106, .08) !important;
+}
+html.light .nf-creative-studio .nf-studio-title-block h1 {
+  color: #101820 !important;
+  letter-spacing: -.035em;
+}
+html.light .nf-creative-studio .nf-studio-title-block > p:first-child {
+  color: #08749a !important;
+}
+html.light .nf-creative-studio .nf-studio-title-block > p:last-child {
+  color: #526678 !important;
+  line-height: 1.65;
+}
+html.light .nf-creative-studio .nf-studio-header-actions {
+  flex-wrap: wrap;
+  align-items: center;
+}
+html.light .nf-creative-studio .nf-studio-input-card,
+html.light .nf-creative-studio .nf-studio-tools,
+html.light .nf-creative-studio .nf-studio-settings,
+html.light .nf-creative-studio .nf-studio-preview,
+html.light .nf-creative-studio .nf-studio-workspace > aside,
+html.light .nf-creative-studio .nf-studio-workspace > main > section {
+  border-color: #d7e4ec !important;
+  box-shadow: 0 8px 24px rgba(24, 78, 106, .055) !important;
+}
+html.light .nf-creative-studio .nf-studio-input-card {
+  background: #fff !important;
+}
+html.light .nf-creative-studio .nf-studio-input-card label {
+  color: #08749a !important;
+}
+html.light .nf-creative-studio .nf-studio-input-card input,
+html.light .nf-creative-studio .nf-studio-settings input,
+html.light .nf-creative-studio .nf-studio-settings select,
+html.light .nf-creative-studio .nf-studio-settings textarea,
+html.light .nf-creative-studio .nf-studio-workspace textarea,
+html.light .nf-creative-studio .nf-studio-workspace select {
+  border-color: #cbd9e4 !important;
+  background-color: #f8fbfd !important;
+  color: #111827 !important;
+}
+html.light .nf-creative-studio .nf-studio-preview-stage {
+  min-height: 420px !important;
+  padding: clamp(1.5rem, 4vw, 3.5rem) !important;
+  color: #101820;
+}
+html.light .nf-creative-studio .nf-studio-preview-stage > span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+html.light .nf-creative-studio .nf-studio-tools nav button[aria-pressed="true"],
+html.light .nf-creative-studio button[class*="bg-purple-600"] {
+  border-color: #009fd6 !important;
+  background: #00bfff !important;
+  color: #00364a !important;
+  box-shadow: 0 4px 12px rgba(0, 159, 214, .14) !important;
+}
+html.light .nf-creative-studio button[class*="bg-purple-600"]:hover {
+  background: #00a9e2 !important;
+  color: #002f42 !important;
+}
+html.light .nf-creative-studio .nf-studio-tools button[aria-pressed="false"] {
+  border: 1px solid transparent;
+  color: #34495a !important;
+}
+html.light .nf-creative-studio .nf-studio-tools button[aria-pressed="false"]:hover {
+  border-color: #d4e6ef;
+  background: #f0f9fd !important;
+}
+html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
+  border-color: #009fd6 !important;
+  background: #eaf8fd !important;
+  color: #075b78 !important;
+}
+html.light .nf-creative-studio .nf-studio-workspace :is(h2, h3) {
+  color: #101820 !important;
+}
+html.light .nf-creative-studio .nf-studio-workspace :is(label, p) {
+  color: #526678;
+}
+html.light .nf-creative-studio .nf-studio-settings button,
+html.light .nf-creative-studio .nf-studio-tools button,
+html.light .nf-creative-studio .nf-studio-header-actions button,
+html.light .nf-creative-studio .nf-studio-input-card button {
+  transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+html.light .nf-creative-studio :is(button, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(0, 159, 214, .28) !important;
+  outline-offset: 2px;
+}
+@media (min-width: 1280px) {
+  html.light .nf-creative-studio .nf-studio-tools,
+  html.light .nf-creative-studio .nf-studio-settings {
+    align-self: start;
+  }
+}
+@media (max-width: 1023px) {
+  html.light .nf-creative-studio .nf-studio-preview-stage {
+    min-height: 340px !important;
+  }
+}
+@media (max-width: 639px) {
+  html.light .nf-creative-studio .nf-studio-header {
+    align-items: flex-start;
+    padding: 1.1rem !important;
+    border-radius: 1.15rem !important;
+  }
+  html.light .nf-creative-studio .nf-studio-header-actions {
+    width: 100%;
+  }
+  html.light .nf-creative-studio .nf-studio-header-actions button {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  html.light .nf-creative-studio .nf-studio-preview-stage {
+    min-height: 260px !important;
+    padding: 1.25rem !important;
+    font-size: clamp(1.5rem, 7vw, 2.5rem) !important;
+  }
+}
+
