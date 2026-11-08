@@ -1488,7 +1488,7 @@ html.light {
 
 .nf-site-footer .nf-footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) repeat(3, minmax(0, .8fr));
+  grid-template-columns: repeat(2, minmax(0, 1.35fr)) repeat(3, minmax(0, .8fr));
   align-items: start;
   column-gap: clamp(1.25rem, 3vw, 2.75rem);
   row-gap: 2.25rem;
@@ -1569,9 +1569,9 @@ html.light {
   align-items: center;
 }
 
-@media (min-width: 1280px) and (max-width: 1535px) {
+@media (min-width: 1024px) and (max-width: 1535px) {
   .nf-site-footer .nf-footer-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .nf-site-footer .nf-footer-grid > div:first-child {
