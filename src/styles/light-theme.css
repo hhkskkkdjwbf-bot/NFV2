@@ -1833,7 +1833,7 @@ html.light .nf-creative-studio .nf-studio-header {
   box-shadow: 0 14px 36px rgba(24, 78, 106, .08) !important;
 }
 html.light .nf-creative-studio .nf-studio-title-block h1 {
-  color: #101820 !important;
+  color: #000000 !important;
   letter-spacing: -.035em;
 }
 html.light .nf-creative-studio .nf-studio-title-block > p:first-child {
@@ -1870,12 +1870,12 @@ html.light .nf-creative-studio .nf-studio-workspace textarea,
 html.light .nf-creative-studio .nf-studio-workspace select {
   border-color: #cbd9e4 !important;
   background-color: #ffffff !important;
-  color: #111827 !important;
+  color: #000000 !important;
 }
 html.light .nf-creative-studio .nf-studio-preview-stage {
   min-height: 420px !important;
   padding: clamp(1.5rem, 4vw, 3.5rem) !important;
-  color: #101820;
+  color: #000000;
 }
 html.light .nf-creative-studio .nf-studio-preview-stage > span {
   max-width: 100%;
@@ -1887,7 +1887,7 @@ html.light .nf-creative-studio .nf-studio-header-actions button,
 html.light .nf-creative-studio button[class*="bg-purple-600"] {
   border-color: #009fd6 !important;
   background: #00bfff !important;
-  color: #00364a !important;
+  color: #000000 !important;
   box-shadow: 0 4px 12px rgba(0, 159, 214, .14) !important;
 }
 html.light .nf-creative-studio button[class*="bg-purple-600"]:hover {
@@ -1908,7 +1908,7 @@ html.light .nf-creative-studio .nf-studio-settings button[aria-pressed="true"] {
   color: #075b78 !important;
 }
 html.light .nf-creative-studio .nf-studio-workspace :is(h2, h3) {
-  color: #101820 !important;
+  color: #000000 !important;
 }
 html.light .nf-creative-studio .nf-studio-workspace :is(label, p) {
   color: #526678;
