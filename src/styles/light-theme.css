@@ -1954,3 +1954,33 @@ html.light .nf-creative-studio :is(button, input, select, textarea):focus-visibl
   }
 }
 
+/* Final palette contract for the four-page responsive visual QA. */
+html.light .nf-home :is(h1, .nf-hero-heading),
+html.light .nf-catalog .nf-page-header h1,
+html.light .nf-creative-studio .nf-page-header h1 {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+html.light .nf-home :is(input[type="text"], input[type="search"]),
+html.light .nf-catalog .nf-catalog-filters input[type="text"],
+html.light .nf-catalog .nf-catalog-filters select,
+html.light .nf-creative-studio :is(input:not([type="checkbox"]), select, textarea) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+html.light .nf-home .nf-home-action,
+html.light .nf-catalog .nf-category-random,
+html.light .nf-catalog .nf-category-filter[aria-pressed="true"],
+html.light .nf-creative-studio .nf-studio-header-actions button {
+  border-color: #009fd6 !important;
+  background: #00bfff !important;
+  color: #000000 !important;
+}
+html.light .nf-home .nf-home-action:hover,
+html.light .nf-catalog .nf-category-random:hover,
+html.light .nf-catalog .nf-category-filter[aria-pressed="true"]:hover,
+html.light .nf-creative-studio .nf-studio-header-actions button:hover {
+  background: #00a9e2 !important;
+  color: #000000 !important;
+}
+
