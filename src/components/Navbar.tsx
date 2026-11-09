@@ -326,7 +326,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Menu Drawer */}
         {mobileMenuOpen && (
-          <nav id="nameforge-mobile-menu" aria-label={getShellLabels(settings.language).mainNavigation} className="nf-mobile-navigation xl:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
+          <nav id="nameforge-mobile-menu" aria-label={getShellLabels(settings.language).mainNavigation} className="nf-mobile-navigation 2xl:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
             <button
               onClick={() => {
                 onNavigate('home');
