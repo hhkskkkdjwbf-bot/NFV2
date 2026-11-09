@@ -129,7 +129,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Desktop Nav */}
-          <nav aria-label={getShellLabels(settings.language).mainNavigation} className="nf-desktop-navigation hidden 2xl:flex items-center gap-5">
+          <nav aria-label={getShellLabels(settings.language).mainNavigation} className="nf-desktop-navigation hidden xl:flex items-center gap-5">
             <button
               onClick={() => onNavigate('home')}
               aria-current={currentView === 'home' ? 'page' : undefined}
@@ -277,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Header Tools (Settings & Quick Language) */}
-          <div className="nf-header-tools hidden 2xl:flex items-center gap-3">
+          <div className="nf-header-tools hidden xl:flex items-center gap-3">
             {/* Quick Language Trigger */}
             <button
               onClick={() => setShowLangModal(true)}
@@ -303,7 +303,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="nf-navigation-actions flex 2xl:hidden items-center gap-2">
+          <div className="nf-navigation-actions flex xl:hidden items-center gap-2">
             <button
               onClick={() => setShowSettingsModal(true)}
               className="w-9 h-9 rounded-xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-slate-300"
@@ -326,7 +326,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Mobile Menu Drawer */}
         {mobileMenuOpen && (
-          <nav id="nameforge-mobile-menu" aria-label={getShellLabels(settings.language).mainNavigation} className="nf-mobile-navigation 2xl:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
+          <nav id="nameforge-mobile-menu" aria-label={getShellLabels(settings.language).mainNavigation} className="nf-mobile-navigation xl:hidden border-b border-slate-800 bg-[#090d1c] px-4 pt-3 pb-6 space-y-3">
             <button
               onClick={() => {
                 onNavigate('home');
