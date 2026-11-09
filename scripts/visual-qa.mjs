@@ -71,6 +71,28 @@ try {
         const response = await page.goto(baseUrl + view.hash, { waitUntil: 'networkidle', timeout: 45000 });
         await page.waitForTimeout(500);
 
+        // The full page navigation must be visible on standard desktop widths;
+        // smaller screens must expose the mobile drawer and its settings entry.
+        if (view.name === 'home') {
+          const desktopNavigation = page.locator('.nf-desktop-navigation');
+          const mobileMenuButton = page.getByRole('button', { name: 'Menu', exact: true });
+          if (viewport.width >= 1280) {
+            if (!(await desktopNavigation.isVisible())) failures.push(label + ': desktop page navigation is hidden at ' + viewport.width + 'px');
+            if (await mobileMenuButton.isVisible()) failures.push(label + ': mobile menu button is shown alongside desktop navigation');
+          } else {
+            if (await desktopNavigation.isVisible()) failures.push(label + ': desktop navigation should be collapsed at ' + viewport.width + 'px');
+            if (!(await mobileMenuButton.isVisible())) failures.push(label + ': mobile menu button is missing at ' + viewport.width + 'px');
+            else {
+              await mobileMenuButton.click();
+              const mobileNavigation = page.locator('#nameforge-mobile-menu');
+              if (!(await mobileNavigation.isVisible())) failures.push(label + ': mobile navigation drawer did not open');
+              if (!(await mobileNavigation.getByRole('button', { name: 'Settings' }).count())) failures.push(label + ': settings entry is missing from the mobile navigation drawer');
+              if (!(await mobileNavigation.getByRole('button', { name: 'Home' }).count())) failures.push(label + ': home page link is missing from the mobile navigation drawer');
+              await mobileMenuButton.click();
+            }
+          }
+        }
+
         const state = await page.evaluate(() => {
           const rootStyle = getComputedStyle(document.documentElement);
           const color = (value) => {
