@@ -277,7 +277,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Header Tools (Settings & Quick Language) */}
-          <div className="hidden 2xl:flex items-center gap-3">
+          <div className="nf-header-tools hidden 2xl:flex items-center gap-3">
             {/* Quick Language Trigger */}
             <button
               onClick={() => setShowLangModal(true)}
