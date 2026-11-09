@@ -2078,20 +2078,20 @@ html.light .nf-site-header .nf-navigation-actions button {
   justify-content: center;
   border: 1px solid #009fd6 !important;
   border-radius: .8rem !important;
-  color: #071b26 !important;
+  color: #000000 !important;
   background: #00bfff !important;
   box-shadow: 0 3px 9px rgba(0,143,190,.14) !important;
 }
 
 html.light .nf-site-header .nf-header-tools button:hover,
 html.light .nf-site-header .nf-navigation-actions button:hover {
-  color: #071b26 !important;
+  color: #000000 !important;
   background: #00a9e2 !important;
 }
 
 html.light .nf-site-header .nf-header-tools button *,
 html.light .nf-site-header .nf-navigation-actions button * {
-  color: #071b26 !important;
+  color: #000000 !important;
 }
 
 html.light .nf-site-header .nf-mobile-navigation {
@@ -2367,20 +2367,20 @@ html.light .nf-app-shell .nf-page :is(input,select,textarea):focus {
 }
 
 html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):not(.nf-nav-link):not(.nf-mobile-nav-link) {
-  color: #071b26 !important;
+  color: #000000 !important;
   background-color: #00bfff !important;
   border-color: #009fd6 !important;
   box-shadow: 0 2px 7px rgba(0,143,190,.12) !important;
 }
 
 html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):not(.nf-nav-link):not(.nf-mobile-nav-link):hover {
-  color: #071b26 !important;
+  color: #000000 !important;
   background-color: #00a9e2 !important;
   border-color: #008fbe !important;
 }
 
 html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):not(.nf-nav-link):not(.nf-mobile-nav-link) * {
-  color: #071b26 !important;
+  color: #000000 !important;
 }
 
 @media (min-width: 1024px) and (max-width: 1535px) {
