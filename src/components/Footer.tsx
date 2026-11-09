@@ -59,9 +59,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
   return (
     <footer lang={settings.language} dir={currentLangMeta.dir} className="nf-site-footer border-t border-white/5 bg-[#05070e] py-14 mt-20 text-slate-400">
       <div className="nf-container">
-        <div className="nf-footer-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+        <div className="nf-footer-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand Col */}
-          <div className="sm:col-span-2 lg:col-span-2 space-y-4">
+          <div className="sm:col-span-2 lg:col-span-1 space-y-4">
             <button
               onClick={() => onNavigate('home')}
               className="cursor-pointer text-start focus:outline-none"
