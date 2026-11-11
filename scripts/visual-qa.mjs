@@ -374,6 +374,44 @@ try {
               }
             }
           }
+
+          // Exercise the on-demand Name Insight dialog at every configured viewport
+          // and theme. This catches regressions that type-checking cannot detect.
+          const generateButton = page.locator('.nf-generator-controls button').last();
+          if (!(await generateButton.count())) {
+            failures.push(label + ': generator action button is missing');
+          } else {
+            await generateButton.click();
+            const firstResult = page.locator('article.nf-name-result-card').first();
+            try {
+              await firstResult.waitFor({ state: 'visible', timeout: 15000 });
+              const insightTrigger = page.getByRole('button', { name: /^Linguistic analysis:/ }).first();
+              if (!(await insightTrigger.count())) {
+                failures.push(label + ': Name Insight action is missing from generated results');
+              } else {
+                await insightTrigger.click();
+                const insightDialog = page.locator('[role="dialog"][aria-modal="true"]');
+                try {
+                  await insightDialog.waitFor({ state: 'visible', timeout: 5000 });
+                  const dialogText = await insightDialog.innerText();
+                  for (const expected of ['Why does this name fit this world?', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
+                    if (!dialogText.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
+                  }
+                  const dialogFits = await insightDialog.evaluate((element) => element.scrollWidth <= element.clientWidth + 2);
+                  if (!dialogFits) failures.push(label + ': Name Insight dialog overflows horizontally');
+                  if (viewport.width <= 390) {
+                    await insightDialog.screenshot({ path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png', animations: 'disabled' });
+                  }
+                  await insightDialog.locator('button[aria-label="Close"]').click();
+                  if (await insightDialog.isVisible()) failures.push(label + ': Name Insight dialog did not close');
+                } catch (error) {
+                  failures.push(label + ': Name Insight dialog failed to open or render: ' + error.message);
+                }
+              }
+            } catch (error) {
+              failures.push(label + ': generator did not produce a visible result for Name Insight QA: ' + error.message);
+            }
+          }
         }
         if (pageErrors.length) failures.push(label + ': JavaScript page errors: ' + pageErrors.join(' | '));
         const brokenImages = state.images.filter((img) => !img.loaded && !img.src.startsWith('data:'));
