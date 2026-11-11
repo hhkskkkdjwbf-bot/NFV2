@@ -39,11 +39,43 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     }
   };
 
+  const structureLabels: Record<string, { heading: string; vowelShare: string; vowelNote: string }> = {
+    en: { heading: 'Name structure', vowelShare: 'Latin vowel share', vowelNote: 'This ratio is shown only when every letter in the name uses the Latin alphabet.' },
+    fr: { heading: 'Structure du nom', vowelShare: 'Part de voyelles latines', vowelNote: 'Ce ratio est affiché uniquement si toutes les lettres du nom utilisent l’alphabet latin.' },
+    es: { heading: 'Estructura del nombre', vowelShare: 'Proporción de vocales latinas', vowelNote: 'Este índice solo se muestra si todas las letras del nombre usan el alfabeto latino.' },
+    de: { heading: 'Namensstruktur', vowelShare: 'Anteil lateinischer Vokale', vowelNote: 'Dieser Anteil wird nur angezeigt, wenn alle Buchstaben des Namens zum lateinischen Alphabet gehören.' },
+    it: { heading: 'Struttura del nome', vowelShare: 'Quota di vocali latine', vowelNote: 'Questo rapporto viene mostrato solo se tutte le lettere del nome appartengono all’alfabeto latino.' },
+    pt: { heading: 'Estrutura do nome', vowelShare: 'Proporção de vogais latinas', vowelNote: 'Esta proporção só é exibida quando todas as letras do nome usam o alfabeto latino.' },
+    ar: { heading: 'بنية الاسم', vowelShare: 'نسبة حروف العلة اللاتينية', vowelNote: 'تُعرض هذه النسبة فقط عندما تكون جميع حروف الاسم مكتوبة بالأبجدية اللاتينية.' },
+    tr: { heading: 'İsim yapısı', vowelShare: 'Latin sesli harf oranı', vowelNote: 'Bu oran yalnızca addaki tüm harfler Latin alfabesiyle yazıldığında gösterilir.' },
+    ja: { heading: '名前の構造', vowelShare: 'ラテン文字の母音比率', vowelNote: 'この比率は、名前のすべての文字がラテン文字の場合にのみ表示されます。' },
+    ko: { heading: '이름 구조', vowelShare: '라틴 모음 비율', vowelNote: '이 비율은 이름의 모든 글자가 라틴 문자일 때만 표시됩니다.' },
+    zh: { heading: '名称结构', vowelShare: '拉丁字母元音占比', vowelNote: '仅当名称中的所有字母均为拉丁字母时，才会显示此比例。' },
+    ru: { heading: 'Структура имени', vowelShare: 'Доля латинских гласных', vowelNote: 'Этот показатель отображается, только если все буквы имени написаны латиницей.' },
+    hi: { heading: 'नाम की संरचना', vowelShare: 'लैटिन स्वरों का अनुपात', vowelNote: 'यह अनुपात तभी दिखाया जाता है जब नाम के सभी अक्षर लैटिन लिपि में हों।' },
+    nl: { heading: 'Naamstructuur', vowelShare: 'Aandeel Latijnse klinkers', vowelNote: 'Deze verhouding wordt alleen getoond als alle letters van de naam uit het Latijnse alfabet komen.' },
+    pl: { heading: 'Struktura nazwy', vowelShare: 'Udział samogłosek łacińskich', vowelNote: 'Ten wskaźnik jest widoczny tylko wtedy, gdy wszystkie litery nazwy należą do alfabetu łacińskiego.' },
+    sv: { heading: 'Namnstruktur', vowelShare: 'Andel latinska vokaler', vowelNote: 'Andelen visas bara när alla bokstäver i namnet tillhör det latinska alfabetet.' },
+    vi: { heading: 'Cấu trúc tên', vowelShare: 'Tỷ lệ nguyên âm Latin', vowelNote: 'Tỷ lệ này chỉ hiển thị khi tất cả chữ cái trong tên đều thuộc bảng chữ cái Latin.' },
+    id: { heading: 'Struktur nama', vowelShare: 'Proporsi vokal Latin', vowelNote: 'Rasio ini hanya ditampilkan jika semua huruf dalam nama menggunakan alfabet Latin.' },
+    th: { heading: 'โครงสร้างชื่อ', vowelShare: 'สัดส่วนสระละติน', vowelNote: 'จะแสดงสัดส่วนนี้เมื่ออักษรทุกตัวในชื่อใช้ตัวอักษรละตินเท่านั้น' },
+    el: { heading: 'Δομή ονόματος', vowelShare: 'Ποσοστό λατινικών φωνηέντων', vowelNote: 'Το ποσοστό εμφανίζεται μόνο όταν όλα τα γράμματα του ονόματος ανήκουν στο λατινικό αλφάβητο.' },
+    he: { heading: 'מבנה השם', vowelShare: 'שיעור התנועות הלטיניות', vowelNote: 'היחס מוצג רק כאשר כל האותיות בשם כתובות באלפבית הלטיני.' },
+    cs: { heading: 'Struktura názvu', vowelShare: 'Podíl latinských samohlásek', vowelNote: 'Tento podíl se zobrazí pouze tehdy, když jsou všechna písmena názvu zapsána latinkou.' },
+    ro: { heading: 'Structura numelui', vowelShare: 'Proporția vocalelor latine', vowelNote: 'Acest raport este afișat numai dacă toate literele numelui folosesc alfabetul latin.' },
+    da: { heading: 'Navnestruktur', vowelShare: 'Andel latinske vokaler', vowelNote: 'Denne andel vises kun, når alle bogstaver i navnet bruger det latinske alfabet.' },
+    fi: { heading: 'Nimen rakenne', vowelShare: 'Latinalaisten vokaalien osuus', vowelNote: 'Tämä osuus näytetään vain, kun kaikki nimen kirjaimet kuuluvat latinalaiseen aakkostoon.' },
+    uk: { heading: 'Структура назви', vowelShare: 'Частка латинських голосних', vowelNote: 'Цей показник відображається лише тоді, коли всі літери назви записані латиницею.' },
+    bn: { heading: 'নামের গঠন', vowelShare: 'ল্যাটিন স্বরবর্ণের অনুপাত', vowelNote: 'নামের সব অক্ষর ল্যাটিন বর্ণমালায় লেখা থাকলেই এই অনুপাত দেখানো হয়।' },
+    nb: { heading: 'Navnestruktur', vowelShare: 'Andel latinske vokaler', vowelNote: 'Denne andelen vises bare når alle bokstavene i navnet bruker det latinske alfabetet.' }
+  };
+  const structureCopy = structureLabels[language] ?? structureLabels.en;
+
   const dir = language === 'ar' || language === 'he' ? 'rtl' : 'ltr';
   const sloganHeading: Record<string, string> = { en: 'Slogan', fr: 'Slogan', es: 'Eslogan', de: 'Slogan', it: 'Slogan', pt: 'Slogan', ar: 'عبارة تعريفية', tr: 'Slogan', ja: 'キャッチコピー', ko: '슬로건', zh: '宣传语', ru: 'Слоган', hi: 'नारा', nl: 'Slogan', pl: 'Hasło', sv: 'Slogan', vi: 'Khẩu hiệu', id: 'Slogan', th: 'สโลแกน', el: 'Σλόγκαν', he: 'סיסמה', cs: 'Slogan', ro: 'Slogan', da: 'Slogan', fi: 'Iskulause', uk: 'Слоган', bn: 'স্লোগান', nb: 'Slagord' };
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
-    { label: labels.phonetics, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` }
+    { label: structureCopy.vowelShare, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` }
   ];
 
   return (
@@ -87,7 +119,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
 
           <details open className="group rounded-2xl border border-slate-200 p-4">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold">
-              <span>{labels.phonetics} · {labels.archetype}</span>
+              <span>{structureCopy.heading}</span>
               <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
             </summary>
             <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -98,6 +130,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
                 </div>
               ))}
             </div>
+            <p className="mt-2 text-xs leading-5 text-slate-500">{structureCopy.vowelNote}</p>
           </details>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
