@@ -50,7 +50,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-sky-700">
               <Sparkles className="h-4 w-4" />
-              <span>Name Insight · {meta.shortTitle}</span>
+              <span>{labels.header.replace(/[•·]\s*$/, '').trim()} · {meta.shortTitle}</span>
             </div>
             <h2 id="name-insight-title" className="break-words text-2xl font-black">{item.name}</h2>
             <p className="mt-1 text-sm text-slate-600">{meta.shortTitle} · {item.style}</p>
