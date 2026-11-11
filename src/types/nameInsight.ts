@@ -16,6 +16,7 @@ export interface NameInsightInput {
   generatorId: GeneratorId;
   style: string;
   description: string;
+  generatorLabel?: string;
   language?: LanguageCode;
   strengths?: string[];
   watchouts?: string[];
@@ -32,6 +33,7 @@ export interface NameInsightResult {
   category: NameInsightCategory;
   categoryLabel: string;
   creativeReading: string;
+  contextDescription: string;
   slogan: string;
   strengths: string[];
   watchouts: string[];
