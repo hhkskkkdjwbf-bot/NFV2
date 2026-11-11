@@ -50,7 +50,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm" onMouseDown={(event) => {
       if (event.target === event.currentTarget) onClose();
     }}>
-      <section role="dialog" aria-modal="true" aria-labelledby="name-insight-title" dir={dir}
+      <section data-testid="name-insight-dialog" role="dialog" aria-modal="true" aria-labelledby="name-insight-title" dir={dir}
         className="w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl border border-sky-300/30 bg-white text-slate-900 shadow-2xl">
         <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 p-5 backdrop-blur">
           <div className="min-w-0">
