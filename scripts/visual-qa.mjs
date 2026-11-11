@@ -423,8 +423,13 @@ try {
                   if (viewport.width <= 390) {
                     await insightDialog.screenshot({ path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png', animations: 'disabled' });
                   }
-                  const closeButton = insightDialog.locator('header button').first();
-                  await closeButton.evaluate((element) => element.click());
+                  const closeButton = insightDialog.getByTestId('name-insight-close');
+                  await closeButton.waitFor({ state: 'visible', timeout: 5000 });
+                  if (await closeButton.count() !== 1) failures.push(label + ': Name Insight close control is missing or duplicated');
+                  // Use Playwright's normal user-facing click path rather than
+                  // locator.evaluate(), which can wait indefinitely for a detached
+                  // nested header locator in mobile layout transitions.
+                  await closeButton.click({ timeout: 5000 });
                   await insightDialog.waitFor({ state: 'detached', timeout: 5000 });
                   if (await insightDialog.count()) failures.push(label + ': Name Insight dialog did not close');
                 } catch (error) {
