@@ -55,7 +55,7 @@ function analyzeStructure(name: string): NameInsightMetrics {
   const characters = codePoints.filter((character) => /\p{L}/u.test(character));
   const latinLetters = characters.filter((character) => /[a-z]/i.test(character));
   const vowels = latinLetters.filter((character) => /[aeiouy]/i.test(character)).length;
-  const writingSystems = new Set(characters.map(getWritingSystem));
+  const writingSystems = Array.from(new Set(characters.map(getWritingSystem)));
   return {
     characterCount: characters.length,
     wordCount: normalized ? normalized.split(' ').filter(Boolean).length : 0,
@@ -67,7 +67,8 @@ function analyzeStructure(name: string): NameInsightMetrics {
     digitCount: codePoints.filter((character) => /\p{N}/u.test(character)).length,
     symbolCount: codePoints.filter((character) => !/[\p{L}\p{N}\s]/u.test(character)).length,
     uppercaseCount: characters.filter((character) => /\p{Lu}/u.test(character)).length,
-    hasMixedScripts: writingSystems.size > 1
+    hasMixedScripts: writingSystems.length > 1,
+    writingSystems
   };
 }
 
