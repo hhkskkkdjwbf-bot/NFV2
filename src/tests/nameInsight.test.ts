@@ -20,6 +20,13 @@ assert.equal(first?.isCreativeOnly, true);
 assert.equal(first?.category, 'brand');
 assert.equal(first?.palette.length, 3);
 assert.equal(first?.alternatives.length, 3);
+const localized = createNameInsight({
+  ...base,
+  strengths: ['Localized strength'],
+  watchouts: ['Localized caution']
+});
+assert.deepEqual(localized?.strengths, ['Localized strength']);
+assert.deepEqual(localized?.watchouts, ['Localized caution']);
 
 assert.equal(createNameInsight({ ...base, name: '   ' }), null);
 assert.equal(isNameInsightSupported('weapon' as never), false);
