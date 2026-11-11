@@ -46,6 +46,19 @@ function getWritingSystem(character: string): string {
   if (/\p{Script=Hangul}/u.test(character)) return 'hangul';
   if (/\p{Script=Thai}/u.test(character)) return 'thai';
   if (/\p{Script=Bengali}/u.test(character)) return 'bengali';
+  if (/\p{Script=Armenian}/u.test(character)) return 'armenian';
+  if (/\p{Script=Georgian}/u.test(character)) return 'georgian';
+  if (/\p{Script=Ethiopic}/u.test(character)) return 'ethiopic';
+  if (/\p{Script=Tamil}/u.test(character)) return 'tamil';
+  if (/\p{Script=Telugu}/u.test(character)) return 'telugu';
+  if (/\p{Script=Gurmukhi}/u.test(character)) return 'gurmukhi';
+  if (/\p{Script=Gujarati}/u.test(character)) return 'gujarati';
+  if (/\p{Script=Kannada}/u.test(character)) return 'kannada';
+  if (/\p{Script=Malayalam}/u.test(character)) return 'malayalam';
+  if (/\p{Script=Sinhala}/u.test(character)) return 'sinhala';
+  if (/\p{Script=Lao}/u.test(character)) return 'lao';
+  if (/\p{Script=Myanmar}/u.test(character)) return 'myanmar';
+  if (/\p{Script=Khmer}/u.test(character)) return 'khmer';
   return 'other';
 }
 
