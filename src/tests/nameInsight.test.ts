@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createNameInsight, isNameInsightSupported } from '../services/nameInsightService';
+import { resolveNameInsightCategory } from '../data/nameInsightData';
 import { ALL_GENERATORS_LIST } from '../data/generators';
 import { FULL_TRANSLATION_LANGUAGES } from '../i18n';
 import { getNameDetailsLabels } from '../i18n/nameDetails';
@@ -42,6 +43,7 @@ for (const generator of ALL_GENERATORS_LIST) {
   });
   if (isNameInsightSupported(generator.id)) {
     assert.ok(result, `Insight should be available for ${generator.id}`);
+    assert.notEqual(resolveNameInsightCategory(generator.id), 'general', `Generator needs a specialized category: ${generator.id}`);
   } else {
     assert.equal(result, null, `Excluded generator should not expose insight: ${generator.id}`);
   }
