@@ -412,8 +412,11 @@ try {
                       sloganText: dialog.querySelector('.bg-violet-50')?.innerText || '',
                     };
                   });
-                  for (const expected of ['Why does this name fit this world?', 'Slogan', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
+                  for (const expected of ['Why does this name fit this world?', 'Slogan', 'NameForge transparency note']) {
                     if (!dialogState.text.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
+                  }
+                  if (dialogState.text.includes('Memorable sound') || dialogState.text.includes('Repeated adjacent letters may affect pronunciation')) {
+                    failures.push(label + ': Name Insight contains an unsupported subjective or pronunciation claim');
                   }
                   if (!dialogState.sloganText.includes('A new world begins with')) {
                     failures.push(label + ': category-aware localized slogan is missing or incorrect');
