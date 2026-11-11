@@ -19,8 +19,10 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     name: item.name,
     generatorId: item.generatorId,
     style: item.style,
-    description: getLocalizedGeneratorDescription(meta, language)
-  }), [item.name, item.generatorId, item.style, meta, language]);
+    description: item.description || getLocalizedGeneratorDescription(meta, language),
+    strengths: item.strengths?.length ? item.strengths : [labels.fallbackStrength],
+    watchouts: item.watchouts?.length ? item.watchouts : [labels.fallbackWatchout]
+  }), [item.name, item.generatorId, item.style, item.description, item.strengths, item.watchouts, meta, language, labels]);
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!insight) return null;
@@ -82,8 +84,8 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
 
           <section className="rounded-2xl border border-slate-200 p-4">
             <div className="flex items-center justify-between gap-3">
-              <h3 className="font-bold">{labels.tone} {labels.fallbackStrength}</h3>
-              <span className="text-xs text-slate-500">{labels.tone}</span>
+              <h3 className="font-bold">{labels.tone}</h3>
+              <span className="text-xs text-slate-500">{labels.variants}</span>
             </div>
             <div className="mt-3 flex gap-2">
               {insight.palette.map((color) => (
