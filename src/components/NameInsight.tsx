@@ -38,6 +38,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
   };
 
   const dir = language === 'ar' || language === 'he' ? 'rtl' : 'ltr';
+  const sloganHeading: Record<string, string> = { en: 'Slogan', fr: 'Slogan', es: 'Eslogan', de: 'Slogan', it: 'Slogan', pt: 'Slogan', ar: 'عبارة تعريفية', tr: 'Slogan', ja: 'キャッチコピー', ko: '슬로건', zh: '宣传语', ru: 'Слоган', hi: 'नारा', nl: 'Slogan', pl: 'Hasło', sv: 'Slogan', vi: 'Khẩu hiệu', id: 'Slogan', th: 'สโลแกน', el: 'Σλόγκαν', he: 'סיסמה', cs: 'Slogan', ro: 'Slogan', da: 'Slogan', fi: 'Iskulause', uk: 'Слоган', bn: 'স্লোগান', nb: 'Slagord' };
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
     { label: labels.phonetics, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` }
@@ -69,6 +70,16 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             <h3 className="font-bold text-slate-900">{labels.whyFits}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-700">{insight.creativeReading}</p>
             <p className="mt-3 text-xs leading-5 text-slate-500">{labels.adviceText}</p>
+          </section>
+
+          <section className="rounded-2xl border border-violet-200 bg-violet-50 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-bold text-violet-950">{sloganHeading[language] || sloganHeading.en}</h3>
+              <button type="button" onClick={() => copyText(insight.slogan)} className="rounded-lg p-2 text-violet-800 hover:bg-violet-100" aria-label={labels.copy}>
+                {copied === insight.slogan ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              </button>
+            </div>
+            <p className="mt-2 text-sm font-semibold leading-6 text-violet-950">{insight.slogan}</p>
           </section>
 
           <details open className="group rounded-2xl border border-slate-200 p-4">
