@@ -20,6 +20,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     generatorId: item.generatorId,
     style: item.style,
     description: getLocalizedGeneratorDescription(meta, language),
+    language,
     strengths: [labels.fallbackStrength],
     watchouts: [labels.fallbackWatchout]
   }), [item.name, item.generatorId, item.style, meta, language]);
