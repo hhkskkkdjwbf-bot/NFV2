@@ -26,7 +26,7 @@ assert.ok(first?.creativeReading.includes('Asterion'));
 assert.ok(first?.creativeReading.includes('8 letters'));
 assert.equal(first?.metrics.characterCount, 8);
 assert.equal(first?.metrics.wordCount, 1);
-assert.equal(first?.metrics.latinVowelShare, 38);
+assert.equal(first?.metrics.latinVowelShare, 50, 'Asterion has four Latin vowels across eight letters');
 assert.equal(first?.metrics.repeatedCharacterCount, 0);
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
 assert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);
