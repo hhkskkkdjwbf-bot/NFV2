@@ -1,0 +1,98 @@
+/* Name Insight — scoped visual system. This component stays light in either site theme. */
+.name-insight-overlay {
+  padding: max(.5rem, env(safe-area-inset-top)) max(.5rem, env(safe-area-inset-right)) max(.5rem, env(safe-area-inset-bottom)) max(.5rem, env(safe-area-inset-left));
+  background: rgba(8, 17, 31, .72);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  backdrop-filter: blur(10px) saturate(115%);
+}
+.name-insight-dialog {
+  width: min(100%, 48rem);
+  max-height: min(92vh, 900px);
+  max-height: min(92dvh, 900px);
+  border: 1px solid #d9e7f2;
+  border-radius: 1.6rem;
+  background: #fff;
+  color: #111827;
+  box-shadow: 0 28px 90px rgba(2, 12, 27, .32), 0 3px 12px rgba(2, 12, 27, .08);
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b7d8e9 transparent;
+  animation: name-insight-enter 220ms cubic-bezier(.2,.75,.25,1) both;
+}
+.name-insight-header {
+  padding: clamp(1rem, 3vw, 1.55rem);
+  border-color: #e5edf4;
+  background: radial-gradient(ellipse at 92% 0%, rgba(0,191,255,.13), transparent 42%), linear-gradient(135deg, #fff 0%, #f3faff 100%);
+}
+.name-insight-eyebrow { color: #087da7; letter-spacing: .015em; }
+.name-insight-title { color: #101827; font-size: clamp(1.55rem, 4vw, 2rem); line-height: 1.12; letter-spacing: -.035em; }
+.name-insight-header p { overflow-wrap: anywhere; }
+.name-insight-close {
+  display: inline-grid; width: 2.75rem; height: 2.75rem; min-width: 2.75rem; min-height: 2.75rem; place-items: center;
+  border: 1px solid #dbe6ee; background: rgba(255,255,255,.88);
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.name-insight-close:hover { border-color: #80dfff; background: #e9f9ff; color: #075d7d; transform: translateY(-1px); }
+.name-insight-content { display: grid; gap: 1rem; padding: clamp(1rem, 3vw, 1.5rem); }
+.name-insight-content > section, .name-insight-content > details, .name-insight-content > .name-insight-transparency {
+  border-radius: 1.1rem; box-shadow: 0 3px 12px rgba(15, 35, 55, .035);
+}
+.name-insight-card { border-color: #dfe8ef; background: linear-gradient(145deg, #f8fbfd, #f3f7fa); }
+.name-insight-content h3, .name-insight-content summary { color: #111827; font-size: .98rem; letter-spacing: -.01em; }
+.name-insight-content p, .name-insight-content li { overflow-wrap: anywhere; }
+.name-insight-content :is(.text-slate-700, .text-slate-600) { color: #344256; }
+.name-insight-content .text-slate-500 { color: #58677a; }
+.name-insight-slogan { border-color: #d9cafa; background: linear-gradient(130deg, #f8f5ff, #f1edff); }
+.name-insight-slogan h3, .name-insight-slogan p { color: #35205f; }
+.name-insight-slogan button, .name-insight-variants button, .name-insight-palette button {
+  display: inline-grid; min-width: 2.6rem; min-height: 2.6rem; place-items: center; border: 1px solid transparent; border-radius: .75rem;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+.name-insight-slogan button:hover, .name-insight-variants button:hover, .name-insight-palette button:hover {
+  border-color: #a9dff2; background: #e7f8ff; transform: translateY(-1px);
+}
+.name-insight-details { border-color: #dfe8ef; background: #fff; }
+.name-insight-details summary { min-height: 2.4rem; cursor: pointer; border-radius: .65rem; }
+.name-insight-details summary::marker { content: ""; }
+.name-insight-details summary::-webkit-details-marker { display: none; }
+.name-insight-metric { min-width: 0; border: 1px solid #e4edf3; background: #f6f9fc; }
+.name-insight-metric p:first-child { min-height: 2rem; color: #58677a; overflow-wrap: anywhere; }
+.name-insight-metric p:last-child { color: #111827; font-size: 1.35rem; }
+.name-insight-strengths { border-color: #b8e7d1; background: linear-gradient(145deg, #f0fbf5, #e9f8f0); }
+.name-insight-watchouts { border-color: #f3dfae; background: linear-gradient(145deg, #fffaf0, #fff5df); }
+.name-insight-strengths h3 { color: #075d3c; }
+.name-insight-watchouts h3 { color: #80510b; }
+.name-insight-strengths li { color: #174b36; }
+.name-insight-watchouts li { color: #684713; }
+.name-insight-palette button { padding: .3rem; }
+.name-insight-palette button span:first-child { min-height: 3rem; border-radius: .75rem; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .12); }
+.name-insight-variants li { min-width: 0; border: 1px solid #e6edf3; background: #f7fafc; border-radius: .8rem; }
+.name-insight-variants li > span { overflow-wrap: anywhere; }
+.name-insight-transparency { border-color: #b9e6f5; background: #effaff; color: #16465c; }
+.name-insight-primary-action {
+  min-height: 3.1rem; border: 1px solid #009acb; border-radius: .9rem; background: #00bfff; color: #062334;
+  box-shadow: 0 7px 18px rgba(0, 158, 207, .2);
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+.name-insight-primary-action:hover { background: #18c5ff; box-shadow: 0 10px 22px rgba(0, 158, 207, .26); transform: translateY(-1px); }
+.name-insight-content :is(button, summary):focus-visible, .name-insight-close:focus-visible { outline: 3px solid #087fa8; outline-offset: 3px; }
+@keyframes name-insight-enter { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 640px) {
+  .name-insight-dialog { width: 100%; max-height: min(94vh, 900px); max-height: min(94dvh, 900px); border-radius: 1.2rem; }
+  .name-insight-header { gap: .65rem; }
+  .name-insight-content { gap: .85rem; }
+  .name-insight-content > div.grid { gap: .65rem; }
+  .name-insight-metric { padding: .7rem; }
+  .name-insight-palette { gap: .4rem; }
+  .name-insight-palette button span:first-child { min-height: 2.6rem; }
+}
+@media (max-width: 360px) {
+  .name-insight-header { padding: .9rem; }
+  .name-insight-content { padding: .85rem; }
+  .name-insight-title { font-size: 1.45rem; }
+  .name-insight-dialog { border-radius: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .name-insight-dialog { animation: none; }
+  .name-insight-close, .name-insight-content button { transition: none; }
+}
