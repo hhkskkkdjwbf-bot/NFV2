@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Check, Copy, Sparkles, X } from 'lucide-react';
+import { Check, Copy, Sparkles, X, ChevronDown } from 'lucide-react';
 import { GeneratedName, GeneratorMeta } from '../types';
 import { getAppSettings } from '../services/settings';
 import { getNameDetailsLabels } from '../i18n/nameDetails';
@@ -20,9 +20,9 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     generatorId: item.generatorId,
     style: item.style,
     description: getLocalizedGeneratorDescription(meta, language),
-    strengths: [labels.fallbackStrength],
-    watchouts: [labels.fallbackWatchout]
-  }), [item.name, item.generatorId, item.style, meta, language, labels]);
+    strengths: [],
+    watchouts: []
+  }), [item.name, item.generatorId, item.style, meta, language]);
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!insight) return null;
@@ -37,8 +37,13 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     }
   };
 
-  const sectionTitle = labels.whyFits;
   const dir = language === 'ar' || language === 'he' ? 'rtl' : 'ltr';
+  const metricItems = [
+    { label: labels.length, value: insight.metrics.characterCount },
+    { label: labels.letters, value: insight.metrics.wordCount },
+    { label: labels.phonetics, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` },
+    { label: labels.watchouts, value: insight.metrics.repeatedCharacterCount }
+  ];
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/75 p-3 backdrop-blur-sm" onMouseDown={(event) => {
@@ -54,7 +59,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             </div>
             <h2 id="name-insight-title" className="break-words text-2xl font-black">{item.name}</h2>
             <p className="mt-1 text-sm text-slate-600">{meta.shortTitle} · {item.style}</p>
-            <p className="mt-2 text-xs font-medium text-slate-500">{labels.length}: {Array.from(item.name).length} {labels.letters}</p>
+            <p className="mt-2 text-xs font-medium text-slate-500">{labels.length}: {insight.metrics.characterCount} {labels.letters}</p>
           </div>
           <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label={labels.close}>
             <X className="h-5 w-5" />
@@ -62,11 +67,26 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
         </header>
 
         <div className="space-y-4 p-5">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <h3 className="font-bold text-slate-900">{sectionTitle}</h3>
+          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="font-bold text-slate-900">{labels.whyFits}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-700">{insight.creativeReading}</p>
             <p className="mt-3 text-xs leading-5 text-slate-500">{labels.adviceText}</p>
-          </div>
+          </section>
+
+          <details open className="group rounded-2xl border border-slate-200 p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold">
+              <span>{labels.phonetics} · {labels.archetype}</span>
+              <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
+            </summary>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {metricItems.map((metric, index) => (
+                <div key={index} className="rounded-xl bg-slate-50 p-3">
+                  <p className="text-[11px] leading-4 text-slate-500">{metric.label}</p>
+                  <p className="mt-1 text-lg font-bold tabular-nums text-slate-900">{metric.value}</p>
+                </div>
+              ))}
+            </div>
+          </details>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
@@ -83,24 +103,27 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             </section>
           </div>
 
-          <section className="rounded-2xl border border-slate-200 p-4">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="font-bold">{labels.tone}</h3>
-              <span className="text-xs text-slate-500">{labels.variants}</span>
-            </div>
+          <details open className="group rounded-2xl border border-slate-200 p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold">
+              <span>{labels.tone}</span>
+              <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
+            </summary>
             <div className="mt-3 flex gap-2">
               {insight.palette.map((color) => (
-                <div key={color} className="min-w-0 flex-1">
-                  <div className="h-12 rounded-xl border border-black/10" style={{ backgroundColor: color }} />
-                  <p className="mt-1 text-center font-mono text-[11px] text-slate-600">{color}</p>
-                </div>
+                <button key={color} type="button" onClick={() => copyText(color)} className="min-w-0 flex-1 text-start" aria-label={`${labels.copy} ${color}`}>
+                  <span className="block h-12 rounded-xl border border-black/10" style={{ backgroundColor: color }} />
+                  <span className="mt-1 block text-center font-mono text-[11px] text-slate-600">{color}</span>
+                </button>
               ))}
             </div>
-          </section>
+          </details>
 
-          <section className="rounded-2xl border border-slate-200 p-4">
-            <h3 className="font-bold">{labels.variants}</h3>
-            <ul className="mt-2 space-y-2">
+          <details open className="group rounded-2xl border border-slate-200 p-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold">
+              <span>{labels.variants}</span>
+              <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
+            </summary>
+            <ul className="mt-3 space-y-2">
               {insight.alternatives.map((alternative) => (
                 <li key={alternative} className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2">
                   <span className="min-w-0 break-words text-sm font-medium">{alternative}</span>
@@ -110,7 +133,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
                 </li>
               ))}
             </ul>
-          </section>
+          </details>
 
           <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-xs leading-5 text-sky-950">
             <p>{labels.transparency}</p>
