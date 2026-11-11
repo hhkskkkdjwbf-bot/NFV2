@@ -94,7 +94,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             <p className="mt-1 text-sm text-slate-600">{meta.shortTitle} · {item.style}</p>
             <p className="mt-2 text-xs font-medium text-slate-500">{labels.length}: {insight.metrics.characterCount} {labels.letters}</p>
           </div>
-          <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label={labels.close}>
+          <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label={labels.close} data-testid="name-insight-close">
             <X className="h-5 w-5" />
           </button>
         </header>
