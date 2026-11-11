@@ -71,13 +71,13 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
               <h3 className="font-bold text-emerald-900">{labels.strengths}</h3>
               <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-emerald-950">
-                <li>{labels.fallbackStrength}</li>
+                {insight.strengths.map((strength) => <li key={strength}>{strength}</li>)}
               </ul>
             </section>
             <section className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
               <h3 className="font-bold text-amber-900">{labels.watchouts}</h3>
               <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-amber-950">
-                {labels.fallbackWatchout.split(';').map((watchout) => <li key={watchout.trim()}>{watchout.trim()}</li>)}
+                {insight.watchouts.map((watchout) => <li key={watchout}>{watchout}</li>)}
               </ul>
             </section>
           </div>
