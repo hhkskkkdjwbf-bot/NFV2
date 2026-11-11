@@ -730,33 +730,70 @@ try {
 
 
 
-  // Exercise the Name Insight panel in French and Arabic, including RTL layout.
+  // Exercise Name Insight in French and Arabic across the full target viewport matrix.
+  const nameInsightViewports = [
+    { name: 'mobile-320', width: 320, height: 740 },
+    { name: 'mobile-390', width: 390, height: 844 },
+    { name: 'tablet-1024', width: 1024, height: 900 },
+    { name: 'desktop-1440', width: 1440, height: 1000 },
+  ];
+  const nameInsightHeadings = {
+    fr: 'Structure du nom',
+    ar: 'بنية الاسم',
+  };
   for (const language of ['fr', 'ar']) {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-    const pageErrors = [];
-    page.on('pageerror', (error) => pageErrors.push(error.message));
-    await page.addInitScript((selectedLanguage) => {
-      localStorage.setItem('nameforge_settings', JSON.stringify({
-        language: selectedLanguage, theme: 'light', defaultGenLanguage: 'auto', textSize: 'normal',
-      }));
-    }, language);
-    await page.goto(baseUrl + '#/generator/fantasy', { waitUntil: 'networkidle', timeout: 45000 });
-    await page.locator('.nf-generator-controls button').last().click();
-    const firstResult = page.locator('article.nf-name-result-card').first();
-    await firstResult.waitFor({ state: 'visible', timeout: 15000 });
-    await firstResult.getByTestId('name-insight-trigger').click();
-    const dialog = page.getByTestId('name-insight-dialog');
-    await dialog.waitFor({ state: 'visible', timeout: 5000 });
-    const direction = await dialog.getAttribute('dir');
-    if (direction !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push('name-insight-' + language + ': incorrect text direction');
-    const slogan = await dialog.locator('.bg-violet-50').innerText();
-    const expectedSlogan = language === 'ar' ? 'يبدأ عالم جديد مع' : 'Un nouvel univers commence avec';
-    if (!slogan.includes(expectedSlogan)) failures.push('name-insight-' + language + ': slogan was not localized');
-    const dimensions = await dialog.evaluate((element) => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
-    if (dimensions.scrollWidth > dimensions.width + 2) failures.push('name-insight-' + language + ': horizontal overflow');
-    if (pageErrors.length) failures.push('name-insight-' + language + ': JavaScript errors: ' + pageErrors.join(' | '));
-    await dialog.locator('header button').click();
-    await page.close();
+    for (const viewport of nameInsightViewports) {
+      const page = await browser.newPage({
+        viewport: { width: viewport.width, height: viewport.height },
+        reducedMotion: 'reduce',
+      });
+      const pageErrors = [];
+      page.on('pageerror', (error) => pageErrors.push(error.message));
+      await page.addInitScript((selectedLanguage) => {
+        localStorage.setItem('nameforge_settings', JSON.stringify({
+          language: selectedLanguage, theme: 'light', defaultGenLanguage: 'auto', textSize: 'normal',
+        }));
+      }, language);
+      const response = await page.goto(baseUrl + '#/generator/fantasy', { waitUntil: 'networkidle', timeout: 45000 });
+      await page.locator('.nf-generator-controls button').last().click();
+      const firstResult = page.locator('article.nf-name-result-card').first();
+      await firstResult.waitFor({ state: 'visible', timeout: 15000 });
+      await firstResult.getByTestId('name-insight-trigger').click();
+      const dialog = page.getByTestId('name-insight-dialog');
+      await dialog.waitFor({ state: 'visible', timeout: 5000 });
+      const direction = await dialog.getAttribute('dir');
+      if (direction !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push('name-insight-' + language + '-' + viewport.name + ': incorrect text direction');
+      const slogan = await dialog.locator('.bg-violet-50').innerText();
+      const expectedSlogan = language === 'ar' ? 'يبدأ عالم جديد مع' : 'Un nouvel univers commence avec';
+      if (!slogan.includes(expectedSlogan)) failures.push('name-insight-' + language + '-' + viewport.name + ': slogan was not localized');
+      const structureSummary = dialog.locator('summary').filter({ hasText: nameInsightHeadings[language] });
+      if (!(await structureSummary.count())) failures.push('name-insight-' + language + '-' + viewport.name + ': corrected name-structure heading is missing');
+      const structurePanel = structureSummary.locator('..');
+      const structureText = (await structurePanel.innerText()).toLowerCase();
+      if (structureText.includes('phonetics') || structureText.includes('phonétique')) failures.push('name-insight-' + language + '-' + viewport.name + ': misleading phonetics label remains');
+      const dimensions = await dialog.evaluate((element) => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
+      if (dimensions.scrollWidth > dimensions.width + 2) failures.push('name-insight-' + language + '-' + viewport.name + ': horizontal overflow');
+      const documentDimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+      if (documentDimensions.width > documentDimensions.viewport + 2) failures.push('name-insight-' + language + '-' + viewport.name + ': page horizontal overflow');
+      if (!response || response.status() >= 400) failures.push('name-insight-' + language + '-' + viewport.name + ': page failed to load');
+      if (pageErrors.length) failures.push('name-insight-' + language + '-' + viewport.name + ': JavaScript errors: ' + pageErrors.join(' | '));
+      const screenshot = outputDir + '/name-insight-' + language + '-' + viewport.name + '.png';
+      await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' });
+      results.push({
+        view: 'name-insight',
+        language,
+        viewport: viewport.name,
+        status: response?.status() ?? null,
+        htmlDir: direction,
+        dialogWidth: dimensions.width,
+        dialogScrollWidth: dimensions.scrollWidth,
+        pageWidth: documentDimensions.width,
+        viewportWidth: documentDimensions.viewport,
+        pageErrors,
+        screenshot,
+      });
+      await page.close();
+    }
   }
 
   // Validate normal motion separately from the reduced-motion matrix.
