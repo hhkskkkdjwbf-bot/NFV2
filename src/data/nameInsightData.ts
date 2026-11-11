@@ -57,7 +57,7 @@ const PROJECT_IDS = new Set<GeneratorId>([
   'band_name','album_title','song_title','webradio_station','hackathon_team','creative_workshop',
   'online_course','study_group','personal_portfolio','local_association','eco_initiative',
   'open_source_framework','literary_magazine','experimental_cinema','indie_music_label',
-  'ted_talk_theme','educational_escape_game'
+  'ted_talk_theme','educational_escape_game','book','calendar_era','community','creative_coworking','festival_event','os_system','sprint_ritual'
 ]);
 
 const PLACE_IDS = new Set<GeneratorId>([
