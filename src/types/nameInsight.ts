@@ -27,6 +27,10 @@ export interface NameInsightMetrics {
   wordCount: number;
   repeatedCharacterCount: number;
   latinVowelShare: number | null;
+  digitCount: number;
+  symbolCount: number;
+  uppercaseCount: number;
+  hasMixedScripts: boolean;
 }
 
 export interface NameInsightResult {
