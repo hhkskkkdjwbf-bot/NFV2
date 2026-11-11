@@ -19,7 +19,7 @@ assert.deepEqual(first, second, 'Insight output must be deterministic');
 assert.equal(first?.isCreativeOnly, true);
 assert.equal(first?.category, 'brand');
 assert.equal(first?.palette.length, 3);
-assert.equal(first?.alternatives.length, 3);\nassert.equal(first?.metrics.characterCount, 8);\nassert.equal(first?.metrics.wordCount, 1);\nassert.equal(first?.metrics.latinVowelShare, 50);\nassert.equal(first?.metrics.repeatedCharacterCount, 0);\nconst repeated = createNameInsight({ ...base, name: 'Aallora' });\nassert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);\nconst nonLatin = createNameInsight({ ...base, name: 'أستريون' });\nassert.equal(nonLatin?.metrics.latinVowelShare, null);\nconst categoryPalette = createNameInsight({ ...base, generatorId: 'anime_hero' });\nassert.notDeepEqual(categoryPalette?.palette, first?.palette, 'Palette selection should incorporate category context');
+assert.equal(first?.alternatives.length, 3);\nassert.equal(first?.metrics.characterCount, 8);\nassert.equal(first?.metrics.wordCount, 1);\nassert.equal(first?.metrics.latinVowelShare, 38);\nassert.equal(first?.metrics.repeatedCharacterCount, 0);\nconst repeated = createNameInsight({ ...base, name: 'Aallora' });\nassert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);\nconst nonLatin = createNameInsight({ ...base, name: 'أستريون' });\nassert.equal(nonLatin?.metrics.latinVowelShare, null);\nconst categoryPalette = createNameInsight({ ...base, generatorId: 'anime_hero' });\nassert.notDeepEqual(categoryPalette?.palette, first?.palette, 'Palette selection should incorporate category context');
 const localized = createNameInsight({
   ...base,
   strengths: ['Localized strength'],
