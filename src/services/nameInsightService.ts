@@ -18,10 +18,14 @@ function stableHash(value: string): number {
   return hash >>> 0;
 }
 
-function countRepeatedCharacters(characters: string[]): number {
+function countRepeatedCharacters(name: string): number {
+  const characters = Array.from(name);
   let repeated = 0;
   for (let index = 1; index < characters.length; index += 1) {
-    if (characters[index].toLocaleLowerCase() === characters[index - 1].toLocaleLowerCase()) {
+    const current = characters[index];
+    const previous = characters[index - 1];
+    if (/\\p{L}/u.test(current) && /\\p{L}/u.test(previous)
+      && current.toLocaleLowerCase() === previous.toLocaleLowerCase()) {
       repeated += 1;
     }
   }
@@ -36,7 +40,7 @@ function analyzeStructure(name: string): NameInsightMetrics {
   return {
     characterCount: characters.length,
     wordCount: normalized ? normalized.split(' ').filter(Boolean).length : 0,
-    repeatedCharacterCount: countRepeatedCharacters(characters),
+    repeatedCharacterCount: countRepeatedCharacters(normalized),
     // A vowel ratio is only meaningful for names written entirely with Latin letters.
     latinVowelShare: characters.length > 0 && latinLetters.length === characters.length
       ? Math.round((vowels / characters.length) * 100)
