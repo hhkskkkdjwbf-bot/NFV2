@@ -22,9 +22,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     style: item.style,
     description: getLocalizedGeneratorDescription(meta, language),
     generatorLabel: meta.shortTitle,
-    language,
-    strengths: [labels.fallbackStrength],
-    watchouts: [labels.fallbackWatchout]
+    language
   }), [item.name, item.generatorId, item.style, meta, language]);
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -234,18 +232,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           </details>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <section className="name-insight-strengths rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
-              <h3 className="font-bold text-emerald-900">{labels.strengths}</h3>
-              <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-emerald-950">
-                {insight.strengths.map((strength) => <li key={strength}>{strength}</li>)}
-              </ul>
-            </section>
-            <section className="name-insight-watchouts rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
-              <h3 className="font-bold text-amber-900">{labels.watchouts}</h3>
-              <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-amber-950">
-                {insight.watchouts.map((watchout) => <li key={watchout}>{watchout}</li>)}
-              </ul>
-            </section>
+
           </div>
 
           <details open className="name-insight-details group rounded-2xl border border-slate-200 p-4">
