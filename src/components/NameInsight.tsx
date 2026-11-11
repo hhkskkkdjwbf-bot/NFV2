@@ -231,10 +231,6 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             )}
           </details>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-          </div>
-
           <details open className="name-insight-details group rounded-2xl border border-slate-200 p-4">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold">
               <span>{labels.tone}</span>
