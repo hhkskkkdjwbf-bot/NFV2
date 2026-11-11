@@ -20,8 +20,8 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     generatorId: item.generatorId,
     style: item.style,
     description: getLocalizedGeneratorDescription(meta, language),
-    strengths: [],
-    watchouts: []
+    strengths: [labels.fallbackStrength],
+    watchouts: [labels.fallbackWatchout]
   }), [item.name, item.generatorId, item.style, meta, language]);
   const [copied, setCopied] = useState<string | null>(null);
 
@@ -40,9 +40,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
   const dir = language === 'ar' || language === 'he' ? 'rtl' : 'ltr';
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
-    { label: labels.letters, value: insight.metrics.wordCount },
-    { label: labels.phonetics, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` },
-    { label: labels.watchouts, value: insight.metrics.repeatedCharacterCount }
+    { label: labels.phonetics, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` }
   ];
 
   return (
