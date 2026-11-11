@@ -419,7 +419,7 @@ try {
                     failures.push(label + ': category-aware localized slogan is missing or incorrect');
                   }
                   if (dialogState.expandableCount < 3) failures.push(label + ': Name Insight expandable sections are missing');
-                  if (dialogState.metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
+                  if (dialogState.metricCount < 8) failures.push(label + ': Name Insight should expose all eight structural metrics');
                   if (dialogState.width + 2 < dialogState.scrollWidth) failures.push(label + ': Name Insight dialog overflows horizontally');
                   if (dialogState.closeCount !== 1 || !dialogState.closeVisible) {
                     failures.push(label + ': Name Insight close control is missing, duplicated, or not visible');
