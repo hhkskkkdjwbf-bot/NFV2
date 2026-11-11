@@ -23,7 +23,7 @@ assert.equal(first?.palette.length, 3);
 assert.equal(first?.alternatives.length, 3);
 assert.equal(first?.slogan, 'Make your mark with Asterion.');
 assert.ok(first?.creativeReading.includes('Asterion'));
-assert.ok(first?.creativeReading.includes('8 letters'));
+assert.ok(first?.creativeReading.includes('8-letter form'), 'Category reading should explain the name structure');
 assert.equal(first?.metrics.characterCount, 8);
 assert.equal(first?.metrics.wordCount, 1);
 assert.equal(first?.metrics.latinVowelShare, 50, 'Asterion has four Latin vowels across eight letters');
