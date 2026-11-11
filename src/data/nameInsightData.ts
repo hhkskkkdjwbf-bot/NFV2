@@ -3,8 +3,8 @@ import { NameInsightCategory } from '../types/nameInsight';
 
 const BRAND_IDS = new Set<GeneratorId>([
   'brand','business','product','startup','shop','domain','app','feature','service','slogan',
-  'clothing_brand','jewelry_brand','cosmetics_brand','restaurant','coffee_shop','bakery',
-  'food_truck','fitness_studio','travel_agency','hotel_name','real_estate','architecture_studio',
+  'clothing_brand','jewelry_brand','cosmetics_brand','coffee_shop','bakery',
+  'food_truck','fitness_studio','travel_agency','real_estate','architecture_studio',
   'interior_decor','photo_studio','wedding_planner','marketing_agency','ecommerce_store',
   'specialty_coffee','artisanal_bakery','luxury_perfume','architect_firm','eco_fashion',
   'cocktail_lounge','green_energy_corp','microbrewery_craft','fintech_app','wellness_spa',
