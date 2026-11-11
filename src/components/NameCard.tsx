@@ -196,6 +196,7 @@ export const NameCard: React.FC<NameCardProps> = ({
               </button>
               {isNameInsightSupported(item.generatorId) && (
                 <button
+                  data-testid="name-insight-trigger"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowInsight(true);
