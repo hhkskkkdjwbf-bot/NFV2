@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useState } from 'react';
-import { Bookmark, Heart, FileText, Copy, Check, Star, Info, Volume2, Wand2 } from 'lucide-react';
+import { Bookmark, Heart, FileText, Copy, Check, Star, Info, Volume2, Wand2, Sparkles } from 'lucide-react';
 import { GeneratedName, GeneratorId } from '../types';
 import {
   findSavedEntry,
@@ -11,6 +11,10 @@ import {
 const NameDetailsModal = lazy(() =>
   import('./NameDetailsModal').then((module) => ({ default: module.NameDetailsModal }))
 );
+const NameInsightModal = lazy(() =>
+  import('./NameInsight').then((module) => ({ default: module.NameInsight }))
+);
+import { isNameInsightSupported } from '../services/nameInsightService';
 import { getAppSettings } from '../services/settings';
 import { getTranslations } from '../i18n';
 import { GENERATORS_METADATA } from '../data/generators';
@@ -32,6 +36,7 @@ export const NameCard: React.FC<NameCardProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showInsight, setShowInsight] = useState(false);
   const existing = findSavedEntry(item.name, item.generatorId);
   const [isSaved, setIsSaved] = useState(existing?.saved || false);
   const [isLiked, setIsLiked] = useState(existing?.liked || false);
@@ -123,6 +128,16 @@ export const NameCard: React.FC<NameCardProps> = ({
 
   return (
     <>
+      {showInsight && isNameInsightSupported(item.generatorId) && (
+        <Suspense fallback={null}>
+          <NameInsightModal
+            item={item}
+            meta={GENERATORS_METADATA[item.generatorId]}
+            onClose={() => setShowInsight(false)}
+          />
+        </Suspense>
+      )}
+
       {showDetails && (
         <Suspense fallback={null}>
           <NameDetailsModal
@@ -179,6 +194,21 @@ export const NameCard: React.FC<NameCardProps> = ({
                 <Info className="w-3.5 h-3.5 text-cyan-400" />
                 <span>{t.details}</span>
               </button>
+              {isNameInsightSupported(item.generatorId) && (
+                <button
+                  data-testid="name-insight-trigger"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowInsight(true);
+                  }}
+                  className="text-xs font-semibold text-sky-700 hover:text-sky-900 transition flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 cursor-pointer border border-sky-200"
+                  title={detailLabels.header.replace(/[•·]\s*$/, '').trim()}
+                  aria-label={`${detailLabels.header.replace(/[•·]\s*$/, '').trim()}: ${item.name}`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{detailLabels.header.replace(/[•·]\s*$/, '').trim()}</span>
+                </button>
+              )}
             </div>
           </div>
 

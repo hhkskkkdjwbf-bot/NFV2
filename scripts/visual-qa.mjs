@@ -374,6 +374,83 @@ try {
               }
             }
           }
+
+          // Exercise the on-demand Name Insight dialog at every configured viewport
+          // and theme. This catches regressions that type-checking cannot detect.
+          const generateButton = page.locator('.nf-generator-controls button').last();
+          if (!(await generateButton.count())) {
+            failures.push(label + ': generator action button is missing');
+          } else {
+            await generateButton.click();
+            const firstResult = page.locator('article.nf-name-result-card').first();
+            try {
+              await firstResult.waitFor({ state: 'visible', timeout: 15000 });
+              const insightTrigger = page.getByRole('button', { name: /^Linguistic analysis/ }).first();
+              if (!(await insightTrigger.count())) {
+                failures.push(label + ': Name Insight action is missing from generated results');
+              } else {
+                await insightTrigger.click();
+                const insightDialog = page.getByTestId('name-insight-dialog');
+                try {
+                  await insightDialog.waitFor({ state: 'visible', timeout: 10000 });
+                  // Read the rendered dialog in one browser-side snapshot. Avoid a chain
+                  // of locator actions across React commits: the dialog is conditionally
+                  // mounted and can be replaced while responsive layout settles.
+                  const dialogState = await insightDialog.evaluate((dialog) => {
+                    const close = dialog.querySelector('[data-testid="name-insight-close"]');
+                    const rect = close?.getBoundingClientRect();
+                    const style = close ? getComputedStyle(close) : null;
+                    return {
+                      text: dialog.innerText,
+                      width: dialog.clientWidth,
+                      scrollWidth: dialog.scrollWidth,
+                      closeCount: dialog.querySelectorAll('[data-testid="name-insight-close"]').length,
+                      closeVisible: Boolean(close && rect && rect.width > 0 && rect.height > 0 &&
+                        style.visibility !== 'hidden' && style.display !== 'none'),
+                      metricCount: dialog.querySelectorAll('details:first-of-type div.grid > div').length,
+                      expandableCount: dialog.querySelectorAll('details').length,
+                      sloganText: dialog.querySelector('.bg-violet-50')?.innerText || '',
+                    };
+                  });
+                  for (const expected of ['Why does this name fit this world?', 'Slogan', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
+                    if (!dialogState.text.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
+                  }
+                  if (!dialogState.sloganText.includes('A new world begins with')) {
+                    failures.push(label + ': category-aware localized slogan is missing or incorrect');
+                  }
+                  if (dialogState.expandableCount < 3) failures.push(label + ': Name Insight expandable sections are missing');
+                  if (dialogState.metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
+                  if (dialogState.width + 2 < dialogState.scrollWidth) failures.push(label + ': Name Insight dialog overflows horizontally');
+                  if (dialogState.closeCount !== 1 || !dialogState.closeVisible) {
+                    failures.push(label + ': Name Insight close control is missing, duplicated, or not visible');
+                  }
+                  if (viewport.width <= 390) {
+                    // Capture the page, not a locator-backed element that may be
+                    // detached by React while Playwright prepares its screenshot.
+                    await page.screenshot({
+                      path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png',
+                      fullPage: false,
+                      animations: 'disabled',
+                    });
+                  }
+                  // Dispatch the close action against the live DOM node. The dialog
+                  // unmount is expected; do not ask Playwright to re-resolve a child
+                  // locator after React has removed its parent.
+                  await insightDialog.evaluate((dialog) => {
+                    const close = dialog.querySelector('[data-testid="name-insight-close"]');
+                    if (!close) throw new Error('Name Insight close control is absent');
+                    close.click();
+                  });
+                  await insightDialog.waitFor({ state: 'detached', timeout: 10000 });
+                  if (await insightDialog.count()) failures.push(label + ': Name Insight dialog did not close');
+                } catch (error) {
+                  failures.push(label + ': Name Insight dialog failed to open or render: ' + error.message);
+                }
+              }
+            } catch (error) {
+              failures.push(label + ': generator did not produce a visible result for Name Insight QA: ' + error.message);
+            }
+          }
         }
         if (pageErrors.length) failures.push(label + ': JavaScript page errors: ' + pageErrors.join(' | '));
         const brokenImages = state.images.filter((img) => !img.loaded && !img.src.startsWith('data:'));
@@ -667,6 +744,73 @@ try {
     }
   }
 
+
+
+  // Exercise Name Insight in French and Arabic across the full target viewport matrix.
+  const nameInsightViewports = [
+    { name: 'mobile-320', width: 320, height: 740 },
+    { name: 'mobile-390', width: 390, height: 844 },
+    { name: 'tablet-1024', width: 1024, height: 900 },
+    { name: 'desktop-1440', width: 1440, height: 1000 },
+  ];
+  const nameInsightHeadings = {
+    fr: 'Structure du nom',
+    ar: 'بنية الاسم',
+  };
+  for (const language of ['fr', 'ar']) {
+    for (const viewport of nameInsightViewports) {
+      const page = await browser.newPage({
+        viewport: { width: viewport.width, height: viewport.height },
+        reducedMotion: 'reduce',
+      });
+      const pageErrors = [];
+      page.on('pageerror', (error) => pageErrors.push(error.message));
+      await page.addInitScript((selectedLanguage) => {
+        localStorage.setItem('nameforge_settings', JSON.stringify({
+          language: selectedLanguage, theme: 'light', defaultGenLanguage: 'auto', textSize: 'normal',
+        }));
+      }, language);
+      const response = await page.goto(baseUrl + '#/generator/fantasy', { waitUntil: 'networkidle', timeout: 45000 });
+      await page.locator('.nf-generator-controls button').last().click();
+      const firstResult = page.locator('article.nf-name-result-card').first();
+      await firstResult.waitFor({ state: 'visible', timeout: 15000 });
+      await firstResult.getByTestId('name-insight-trigger').click();
+      const dialog = page.getByTestId('name-insight-dialog');
+      await dialog.waitFor({ state: 'visible', timeout: 5000 });
+      const direction = await dialog.getAttribute('dir');
+      if (direction !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push('name-insight-' + language + '-' + viewport.name + ': incorrect text direction');
+      const slogan = await dialog.locator('.bg-violet-50').innerText();
+      const expectedSlogan = language === 'ar' ? 'يبدأ عالم جديد مع' : 'Un nouvel univers commence avec';
+      if (!slogan.includes(expectedSlogan)) failures.push('name-insight-' + language + '-' + viewport.name + ': slogan was not localized');
+      const structureSummary = dialog.locator('summary').filter({ hasText: nameInsightHeadings[language] });
+      if (!(await structureSummary.count())) failures.push('name-insight-' + language + '-' + viewport.name + ': corrected name-structure heading is missing');
+      const structurePanel = structureSummary.locator('..');
+      const structureText = (await structurePanel.innerText()).toLowerCase();
+      if (structureText.includes('phonetics') || structureText.includes('phonétique')) failures.push('name-insight-' + language + '-' + viewport.name + ': misleading phonetics label remains');
+      const dimensions = await dialog.evaluate((element) => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
+      if (dimensions.scrollWidth > dimensions.width + 2) failures.push('name-insight-' + language + '-' + viewport.name + ': horizontal overflow');
+      const documentDimensions = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }));
+      if (documentDimensions.width > documentDimensions.viewport + 2) failures.push('name-insight-' + language + '-' + viewport.name + ': page horizontal overflow');
+      if (!response || response.status() >= 400) failures.push('name-insight-' + language + '-' + viewport.name + ': page failed to load');
+      if (pageErrors.length) failures.push('name-insight-' + language + '-' + viewport.name + ': JavaScript errors: ' + pageErrors.join(' | '));
+      const screenshot = outputDir + '/name-insight-' + language + '-' + viewport.name + '.png';
+      await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' });
+      results.push({
+        view: 'name-insight',
+        language,
+        viewport: viewport.name,
+        status: response?.status() ?? null,
+        htmlDir: direction,
+        dialogWidth: dimensions.width,
+        dialogScrollWidth: dimensions.scrollWidth,
+        pageWidth: documentDimensions.width,
+        viewportWidth: documentDimensions.viewport,
+        pageErrors,
+        screenshot,
+      });
+      await page.close();
+    }
+  }
 
   // Validate normal motion separately from the reduced-motion matrix.
   for (const theme of ['light', 'dark']) {
