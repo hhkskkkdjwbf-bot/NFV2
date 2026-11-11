@@ -39,8 +39,10 @@ assert.equal(separatedLetters?.metrics.repeatedCharacterCount, 0, 'Spaces must b
 const nonLatin = createNameInsight({ ...base, name: 'أستريون' });
 assert.equal(nonLatin?.metrics.latinVowelShare, null);
 assert.equal(nonLatin?.metrics.hasMixedScripts, false, 'Arabic-only names must be treated as one writing system');
+assert.deepEqual(nonLatin?.metrics.writingSystems, ['arabic'], 'Arabic names should expose their detected writing system');
 const mixedScripts = createNameInsight({ ...base, name: 'طارقNova' });
 assert.equal(mixedScripts?.metrics.hasMixedScripts, true, 'Mixed Arabic and Latin scripts must be detected');
+assert.deepEqual(mixedScripts?.metrics.writingSystems, ['arabic', 'latin'], 'Mixed names should expose each detected writing system');
 assert.ok(mixedScripts?.watchouts.some((note) => note.includes('Mixed writing systems')));
 const decorated = createNameInsight({ ...base, name: 'Nova-7!' });
 assert.equal(decorated?.metrics.digitCount, 1);
