@@ -74,8 +74,45 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
 
   const dir = language === 'ar' || language === 'he' ? 'rtl' : 'ltr';
   const sloganHeading: Record<string, string> = { en: 'Slogan', fr: 'Slogan', es: 'Eslogan', de: 'Slogan', it: 'Slogan', pt: 'Slogan', ar: 'عبارة تعريفية', tr: 'Slogan', ja: 'キャッチコピー', ko: '슬로건', zh: '宣传语', ru: 'Слоган', hi: 'नारा', nl: 'Slogan', pl: 'Hasło', sv: 'Slogan', vi: 'Khẩu hiệu', id: 'Slogan', th: 'สโลแกน', el: 'Σλόγκαν', he: 'סיסמה', cs: 'Slogan', ro: 'Slogan', da: 'Slogan', fi: 'Iskulause', uk: 'Слоган', bn: 'স্লোগান', nb: 'Slagord' };
+  const metricLabels: Record<string, { words: string; digits: string; symbols: string; uppercase: string; mixed: string; repeated: string }> = {
+    en: { words: 'Words', digits: 'Digits', symbols: 'Symbols', uppercase: 'Uppercase', mixed: 'Mixed scripts', repeated: 'Repeated letters' },
+    fr: { words: 'Mots', digits: 'Chiffres', symbols: 'Symboles', uppercase: 'Majuscules', mixed: 'Écritures mixtes', repeated: 'Lettres répétées' },
+    es: { words: 'Palabras', digits: 'Dígitos', symbols: 'Símbolos', uppercase: 'Mayúsculas', mixed: 'Escrituras mixtas', repeated: 'Letras repetidas' },
+    de: { words: 'Wörter', digits: 'Ziffern', symbols: 'Symbole', uppercase: 'Großbuchstaben', mixed: 'Gemischte Schriften', repeated: 'Wiederholte Buchstaben' },
+    it: { words: 'Parole', digits: 'Cifre', symbols: 'Simboli', uppercase: 'Maiuscole', mixed: 'Scritture miste', repeated: 'Lettere ripetute' },
+    pt: { words: 'Palavras', digits: 'Dígitos', symbols: 'Símbolos', uppercase: 'Maiúsculas', mixed: 'Escritas mistas', repeated: 'Letras repetidas' },
+    ar: { words: 'الكلمات', digits: 'الأرقام', symbols: 'الرموز', uppercase: 'الأحرف الكبيرة', mixed: 'أنظمة كتابة مختلطة', repeated: 'الأحرف المتكررة' },
+    tr: { words: 'Kelimeler', digits: 'Rakamlar', symbols: 'Semboller', uppercase: 'Büyük harfler', mixed: 'Karışık alfabeler', repeated: 'Tekrarlanan harfler' },
+    ja: { words: '単語', digits: '数字', symbols: '記号', uppercase: '大文字', mixed: '複数の文字体系', repeated: '繰り返し文字' },
+    ko: { words: '단어', digits: '숫자', symbols: '기호', uppercase: '대문자', mixed: '혼합 문자 체계', repeated: '반복 문자' },
+    zh: { words: '词数', digits: '数字', symbols: '符号', uppercase: '大写字母', mixed: '混合文字系统', repeated: '重复字符' },
+    ru: { words: 'Слова', digits: 'Цифры', symbols: 'Символы', uppercase: 'Заглавные', mixed: 'Смешанные письменности', repeated: 'Повторы букв' },
+    hi: { words: 'शब्द', digits: 'अंक', symbols: 'प्रतीक', uppercase: 'बड़े अक्षर', mixed: 'मिश्रित लिपियाँ', repeated: 'दोहराए अक्षर' },
+    nl: { words: 'Woorden', digits: 'Cijfers', symbols: 'Symbolen', uppercase: 'Hoofdletters', mixed: 'Gemengde schriften', repeated: 'Herhaalde letters' },
+    pl: { words: 'Słowa', digits: 'Cyfry', symbols: 'Symbole', uppercase: 'Wielkie litery', mixed: 'Mieszane pisma', repeated: 'Powtórzone litery' },
+    sv: { words: 'Ord', digits: 'Siffror', symbols: 'Symboler', uppercase: 'Versaler', mixed: 'Blandade skriftsystem', repeated: 'Upprepade bokstäver' },
+    vi: { words: 'Từ', digits: 'Chữ số', symbols: 'Ký hiệu', uppercase: 'Chữ hoa', mixed: 'Hệ chữ hỗn hợp', repeated: 'Ký tự lặp lại' },
+    id: { words: 'Kata', digits: 'Angka', symbols: 'Simbol', uppercase: 'Huruf kapital', mixed: 'Aksara campuran', repeated: 'Huruf berulang' },
+    th: { words: 'คำ', digits: 'ตัวเลข', symbols: 'สัญลักษณ์', uppercase: 'ตัวพิมพ์ใหญ่', mixed: 'ระบบอักษรผสม', repeated: 'อักษรซ้ำ' },
+    el: { words: 'Λέξεις', digits: 'Ψηφία', symbols: 'Σύμβολα', uppercase: 'Κεφαλαία', mixed: 'Μικτά συστήματα γραφής', repeated: 'Επαναλαμβανόμενα γράμματα' },
+    he: { words: 'מילים', digits: 'ספרות', symbols: 'סמלים', uppercase: 'אותיות גדולות', mixed: 'מערכות כתב מעורבות', repeated: 'אותיות חוזרות' },
+    cs: { words: 'Slova', digits: 'Číslice', symbols: 'Symboly', uppercase: 'Velká písmena', mixed: 'Smíšená písma', repeated: 'Opakovaná písmena' },
+    ro: { words: 'Cuvinte', digits: 'Cifre', symbols: 'Simboluri', uppercase: 'Majuscule', mixed: 'Scrieri mixte', repeated: 'Litere repetate' },
+    da: { words: 'Ord', digits: 'Tal', symbols: 'Symboler', uppercase: 'Store bogstaver', mixed: 'Blandede skriftsystemer', repeated: 'Gentagne bogstaver' },
+    fi: { words: 'Sanat', digits: 'Numerot', symbols: 'Symbolit', uppercase: 'Isot kirjaimet', mixed: 'Sekalaiset kirjoitusjärjestelmät', repeated: 'Toistuvat kirjaimet' },
+    uk: { words: 'Слова', digits: 'Цифри', symbols: 'Символи', uppercase: 'Великі літери', mixed: 'Змішані писемності', repeated: 'Повторені літери' },
+    bn: { words: 'শব্দ', digits: 'অঙ্ক', symbols: 'প্রতীক', uppercase: 'বড় হাতের অক্ষর', mixed: 'মিশ্র লিপি', repeated: 'পুনরাবৃত্ত অক্ষর' },
+    nb: { words: 'Ord', digits: 'Tall', symbols: 'Symboler', uppercase: 'Store bokstaver', mixed: 'Blandede skriftsystemer', repeated: 'Gjentatte bokstaver' }
+  };
+  const metricCopy = metricLabels[language] ?? metricLabels.en;
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
+    { label: metricCopy.words, value: insight.metrics.wordCount },
+    { label: metricCopy.digits, value: insight.metrics.digitCount },
+    { label: metricCopy.symbols, value: insight.metrics.symbolCount },
+    { label: metricCopy.uppercase, value: insight.metrics.uppercaseCount },
+    { label: metricCopy.repeated, value: insight.metrics.repeatedCharacterCount },
+    { label: metricCopy.mixed, value: insight.metrics.hasMixedScripts ? '✓' : '—' },
     { label: structureCopy.vowelShare, value: insight.metrics.latinVowelShare === null ? '—' : `${insight.metrics.latinVowelShare}%` }
   ];
 
@@ -123,7 +160,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
               <span>{structureCopy.heading}</span>
               <ChevronDown className="h-4 w-4 transition group-open:rotate-180" />
             </summary>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-4">
               {metricItems.map((metric, index) => (
                 <div key={index} className="name-insight-metric rounded-xl bg-slate-50 p-3">
                   <p className="text-[11px] leading-4 text-slate-500">{metric.label}</p>
