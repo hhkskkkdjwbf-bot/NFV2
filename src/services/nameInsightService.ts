@@ -5,6 +5,7 @@ import {
   NAME_INSIGHT_CATEGORY_LABELS,
   NAME_INSIGHT_PALETTES,
   NAME_INSIGHT_SLOGAN_TEMPLATES,
+  NAME_INSIGHT_READING_TEMPLATES,
   resolveNameInsightCategory
 } from '../data/nameInsightData';
 
@@ -74,6 +75,12 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   const sloganTone = category === 'brand' ? 'identity' : ['character', 'rpg', 'place'].includes(category) ? 'world' : 'innovation';
   const languageTemplates = NAME_INSIGHT_SLOGAN_TEMPLATES[input.language ?? 'en'] ?? NAME_INSIGHT_SLOGAN_TEMPLATES.en;
   const slogan = languageTemplates[sloganTone].replace('{name}', normalizedName);
+  const readingTemplates = NAME_INSIGHT_READING_TEMPLATES[input.language ?? 'en'] ?? NAME_INSIGHT_READING_TEMPLATES.en;
+  const readingBand = metrics.characterCount <= 8 ? 'compact' : metrics.characterCount <= 15 ? 'balanced' : 'extended';
+  const creativeReading = readingTemplates[readingBand]
+    .replace('{context}', input.generatorLabel ?? NAME_INSIGHT_CATEGORY_LABELS[category])
+    .replace('{name}', normalizedName)
+    .replace('{count}', String(metrics.characterCount));
 
   const providedStrengths = input.strengths?.filter(Boolean) ?? [];
   const providedWatchouts = input.watchouts?.filter(Boolean) ?? [];
@@ -94,7 +101,8 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   return {
     category,
     categoryLabel: NAME_INSIGHT_CATEGORY_LABELS[category],
-    creativeReading: input.description,
+    creativeReading,
+    contextDescription: input.description,
     slogan,
     strengths,
     watchouts,
