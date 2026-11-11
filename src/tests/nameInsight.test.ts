@@ -22,6 +22,8 @@ assert.equal(first?.category, 'brand');
 assert.equal(first?.palette.length, 3);
 assert.equal(first?.alternatives.length, 3);
 assert.equal(first?.slogan, 'Make your mark with Asterion.');
+assert.ok(first?.creativeReading.includes('Asterion'));
+assert.ok(first?.creativeReading.includes('8 letters'));
 assert.equal(first?.metrics.characterCount, 8);
 assert.equal(first?.metrics.wordCount, 1);
 assert.equal(first?.metrics.latinVowelShare, 38);
@@ -77,6 +79,7 @@ for (const language of completeLanguages) {
   const labels = getNameDetailsLabels(language);
   const translatedInsight = createNameInsight({ ...base, language, name: 'TestNova' });
   assert.ok(translatedInsight?.slogan && !translatedInsight.slogan.includes('{name}'), `Missing slogan template: ${language}`);
+  assert.ok(translatedInsight?.creativeReading && translatedInsight.creativeReading.includes('TestNova'), `Missing reading template: ${language}`);
   assert.ok(labels.whyFits && labels.strengths && labels.watchouts && labels.transparency, `Missing Name Insight labels: ${language}`);
 }
 
