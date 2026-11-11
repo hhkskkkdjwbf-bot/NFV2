@@ -404,11 +404,17 @@ try {
                   const expandableSections = insightDialog.locator('details');
                   if (await expandableSections.count() < 3) failures.push(label + ': Name Insight expandable sections are missing');
                   else {
-                    const firstSummary = expandableSections.first().locator('summary');
-                    await firstSummary.click();
-                    if (await expandableSections.first().evaluate((element) => element.open)) failures.push(label + ': Name Insight section did not collapse');
-                    await firstSummary.click();
-                    if (!(await expandableSections.first().evaluate((element) => element.open))) failures.push(label + ': Name Insight section did not expand');
+                    const firstDetails = expandableSections.first();
+                    const firstSummary = firstDetails.locator('summary');
+                    // Native <details> toggles are synchronous. Trigger the real DOM
+                    // click directly so CSS/layout settling in the surrounding modal
+                    // does not make Playwright's stability heuristic detach the node.
+                    await firstSummary.evaluate((element) => element.click());
+                    await page.waitForFunction((node) => !node.open, await firstDetails.elementHandle());
+                    if (await firstDetails.evaluate((element) => element.open)) failures.push(label + ': Name Insight section did not collapse');
+                    await firstSummary.evaluate((element) => element.click());
+                    await page.waitForFunction((node) => node.open, await firstDetails.elementHandle());
+                    if (!(await firstDetails.evaluate((element) => element.open))) failures.push(label + ': Name Insight section did not expand');
                   }
                   const metricCount = await insightDialog.locator('details').first().locator('div.grid > div').count();
                   if (metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
@@ -417,8 +423,10 @@ try {
                   if (viewport.width <= 390) {
                     await insightDialog.screenshot({ path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png', animations: 'disabled' });
                   }
-                  await insightDialog.locator('button[aria-label="Close"]').click();
-                  if (await insightDialog.isVisible()) failures.push(label + ': Name Insight dialog did not close');
+                  const closeButton = insightDialog.locator('header button').first();
+                  await closeButton.evaluate((element) => element.click());
+                  await insightDialog.waitFor({ state: 'detached', timeout: 5000 });
+                  if (await insightDialog.count()) failures.push(label + ': Name Insight dialog did not close');
                 } catch (error) {
                   failures.push(label + ': Name Insight dialog failed to open or render: ' + error.message);
                 }
