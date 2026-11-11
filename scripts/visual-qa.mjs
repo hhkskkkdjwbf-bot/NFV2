@@ -402,9 +402,6 @@ try {
                   else {
                     const firstSummary = expandableSections.first().locator('summary');
                     await firstSummary.click();
-                    if (await expandableSections.first().locator('div').last().isVisible()) {
-                      // The browser's native details state is checked below; child layout can remain visible in the DOM.
-                    }
                     if (await expandableSections.first().evaluate((element) => element.open)) failures.push(label + ': Name Insight section did not collapse');
                     await firstSummary.click();
                     if (!(await expandableSections.first().evaluate((element) => element.open))) failures.push(label + ': Name Insight section did not expand');
