@@ -117,7 +117,20 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     katakana: 'Kana',
     hangul: 'Hang',
     thai: 'Thai',
-    bengali: 'Beng'
+    bengali: 'Beng',
+    armenian: 'Armn',
+    georgian: 'Geor',
+    ethiopic: 'Ethi',
+    tamil: 'Taml',
+    telugu: 'Telu',
+    gurmukhi: 'Guru',
+    gujarati: 'Gujr',
+    kannada: 'Knda',
+    malayalam: 'Mlym',
+    sinhala: 'Sinh',
+    lao: 'Laoo',
+    myanmar: 'Mymr',
+    khmer: 'Khmr'
   };
   const writingSystemNames = insight.metrics.writingSystems.map((system) => {
     const code = writingSystemCodes[system];
