@@ -9,7 +9,8 @@ const base = {
   name: 'Asterion',
   generatorId: 'brand' as const,
   style: 'modern',
-  description: 'A concise creative description.'
+  description: 'A concise creative description.',
+  language: 'en'
 };
 
 const first = createNameInsight(base);
@@ -19,7 +20,8 @@ assert.deepEqual(first, second, 'Insight output must be deterministic');
 assert.equal(first?.isCreativeOnly, true);
 assert.equal(first?.category, 'brand');
 assert.equal(first?.palette.length, 3);
-assert.equal(first?.alternatives.length, 3);\nassert.equal(first?.slogan, 'Make your mark with Asterion.');
+assert.equal(first?.alternatives.length, 3);
+assert.equal(first?.slogan, 'Make your mark with Asterion.');
 assert.equal(first?.metrics.characterCount, 8);
 assert.equal(first?.metrics.wordCount, 1);
 assert.equal(first?.metrics.latinVowelShare, 38);
@@ -72,7 +74,9 @@ const completeLanguages = [
 ] as const;
 for (const language of completeLanguages) {
   assert.ok(FULL_TRANSLATION_LANGUAGES.includes(language), `Missing complete translation pack: ${language}`);
-  const labels = getNameDetailsLabels(language);\n  const translatedInsight = createNameInsight({ ...base, language, name: 'TestNova' });\n  assert.ok(translatedInsight?.slogan && !translatedInsight.slogan.includes('{name}'), `Missing slogan template: ${language}`);
+  const labels = getNameDetailsLabels(language);
+  const translatedInsight = createNameInsight({ ...base, language, name: 'TestNova' });
+  assert.ok(translatedInsight?.slogan && !translatedInsight.slogan.includes('{name}'), `Missing slogan template: ${language}`);
   assert.ok(labels.whyFits && labels.strengths && labels.watchouts && labels.transparency, `Missing Name Insight labels: ${language}`);
 }
 
