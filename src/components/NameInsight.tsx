@@ -113,7 +113,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           </section>
 
           <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-xs leading-5 text-sky-950">
-            <p>{labels.invented}. {labels.transparency}</p>
+            <p>{labels.transparency}</p>
           </div>
 
           <button type="button" onClick={() => copyText(item.name)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 font-bold text-white transition hover:bg-sky-700">
