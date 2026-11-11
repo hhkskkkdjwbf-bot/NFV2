@@ -385,7 +385,7 @@ try {
             const firstResult = page.locator('article.nf-name-result-card').first();
             try {
               await firstResult.waitFor({ state: 'visible', timeout: 15000 });
-              const insightTrigger = page.getByRole('button', { name: /^Linguistic analysis:/ }).first();
+              const insightTrigger = page.getByRole('button', { name: /^Linguistic analysis/ }).first();
               if (!(await insightTrigger.count())) {
                 failures.push(label + ': Name Insight action is missing from generated results');
               } else {
@@ -397,6 +397,20 @@ try {
                   for (const expected of ['Why does this name fit this world?', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
                     if (!dialogText.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
                   }
+                  const expandableSections = insightDialog.locator('details');
+                  if (await expandableSections.count() < 3) failures.push(label + ': Name Insight expandable sections are missing');
+                  else {
+                    const firstSummary = expandableSections.first().locator('summary');
+                    await firstSummary.click();
+                    if (await expandableSections.first().locator('div').last().isVisible()) {
+                      // The browser's native details state is checked below; child layout can remain visible in the DOM.
+                    }
+                    if (await expandableSections.first().evaluate((element) => element.open)) failures.push(label + ': Name Insight section did not collapse');
+                    await firstSummary.click();
+                    if (!(await expandableSections.first().evaluate((element) => element.open))) failures.push(label + ': Name Insight section did not expand');
+                  }
+                  const metricCount = await insightDialog.locator('details').first().locator('div.grid > div').count();
+                  if (metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
                   const dialogFits = await insightDialog.evaluate((element) => element.scrollWidth <= element.clientWidth + 2);
                   if (!dialogFits) failures.push(label + ': Name Insight dialog overflows horizontally');
                   if (viewport.width <= 390) {
