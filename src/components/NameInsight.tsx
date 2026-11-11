@@ -19,10 +19,10 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     name: item.name,
     generatorId: item.generatorId,
     style: item.style,
-    description: item.description || getLocalizedGeneratorDescription(meta, language),
-    strengths: item.strengths?.length ? item.strengths : [labels.fallbackStrength],
-    watchouts: item.watchouts?.length ? item.watchouts : [labels.fallbackWatchout]
-  }), [item.name, item.generatorId, item.style, item.description, item.strengths, item.watchouts, meta, language, labels]);
+    description: getLocalizedGeneratorDescription(meta, language),
+    strengths: [labels.fallbackStrength],
+    watchouts: [labels.fallbackWatchout]
+  }), [item.name, item.generatorId, item.style, meta, language, labels]);
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!insight) return null;
@@ -54,6 +54,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             </div>
             <h2 id="name-insight-title" className="break-words text-2xl font-black">{item.name}</h2>
             <p className="mt-1 text-sm text-slate-600">{meta.shortTitle} · {item.style}</p>
+            <p className="mt-2 text-xs font-medium text-slate-500">{labels.length}: {Array.from(item.name).length} {labels.letters}</p>
           </div>
           <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-600 hover:bg-slate-100" aria-label={labels.close}>
             <X className="h-5 w-5" />
