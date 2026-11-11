@@ -30,6 +30,8 @@ assert.equal(first?.metrics.latinVowelShare, 38);
 assert.equal(first?.metrics.repeatedCharacterCount, 0);
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
 assert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);
+const separatedLetters = createNameInsight({ ...base, name: 'A A' });
+assert.equal(separatedLetters?.metrics.repeatedCharacterCount, 0, 'Spaces must break adjacent-letter runs');
 const nonLatin = createNameInsight({ ...base, name: 'أستريون' });
 assert.equal(nonLatin?.metrics.latinVowelShare, null);
 const categoryPalette = createNameInsight({ ...base, generatorId: 'anime_hero' });
