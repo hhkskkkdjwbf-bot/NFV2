@@ -192,3 +192,44 @@ export const NAME_INSIGHT_READING_TEMPLATES: Record<string, Record<NameInsightRe
   bn: { compact: '{context}-এর জন্য {name}-এ {count}টি অক্ষর রয়েছে; নামটি সংক্ষিপ্ত এবং সহজে চোখে পড়ে।', balanced: '{context}-এর জন্য {name}-এ {count}টি অক্ষর রয়েছে; দৈর্ঘ্যটি ভারসাম্যপূর্ণ এবং আলাদা করে চেনা যায়।', extended: '{context}-এর জন্য {name}-এ {count}টি অক্ষর রয়েছে; ছোট জায়গায় সংক্ষিপ্ত রূপটি বেশি কার্যকর হতে পারে।' },
   nb: { compact: 'For {context} har {name} en kompakt form på {count} bokstaver som er lett å få oversikt over.', balanced: 'For {context} har {name} en balansert lengde på {count} bokstaver og kan likevel skille seg ut.', extended: 'For {context} er {name} ganske langt med {count} bokstaver; en kortere visningsform kan fungere bedre på små flater.' }
 };
+
+/**
+ * Category-specific creative readings. These describe intended naming use,
+ * not linguistic origin or guaranteed audience response. Other locales retain
+ * their fully localized structural reading until category copy is reviewed.
+ */
+export const NAME_INSIGHT_CATEGORY_READING_TEMPLATES: Partial<Record<string, Record<NameInsightCategory, string>>> = {
+  en: {
+    brand: 'For {context}, {name} can act as a recognizable brand identity: its {count}-letter form is the starting point for testing recall, clarity, and fit with the offer.',
+    character: 'For {context}, {name} can help establish a character identity. Its {count}-letter form can be tested against the character’s role, personality, and place in the story.',
+    rpg: 'For {context}, {name} can become part of a fantasy setting’s lore. Its {count}-letter form can be judged alongside the character, faction, quest, or item it represents.',
+    game: 'For {context}, {name} can function as a player-facing game identity. Its {count}-letter form should remain recognizable in menus, profiles, and compact game interfaces.',
+    'science-fiction': 'For {context}, {name} can suggest a piece of a speculative universe. Its {count}-letter form can be assessed for fit with the technology, setting, or future concept.',
+    science: 'For {context}, {name} can label a scientific idea or discovery concept. Its {count}-letter form should be clear enough to distinguish the model, object, or research theme.',
+    project: 'For {context}, {name} can give a project a distinct working identity. Its {count}-letter form can be evaluated for clarity, purpose, and ease of reference.',
+    place: 'For {context}, {name} can help evoke a location within a setting. Its {count}-letter form can be tested against the place’s atmosphere, geography, and role in the world.',
+    general: 'For {context}, {name} is an open-ended creative identity. Its {count}-letter form can be evaluated against the tone, audience, and purpose you choose.'
+  },
+  fr: {
+    brand: 'Pour {context}, {name} peut servir d’identité de marque reconnaissable : sa forme de {count} lettres est un point de départ pour évaluer la mémorisation, la clarté et l’adéquation à l’offre.',
+    character: 'Pour {context}, {name} peut contribuer à définir l’identité d’un personnage. Sa forme de {count} lettres est à confronter à son rôle, sa personnalité et sa place dans le récit.',
+    rpg: 'Pour {context}, {name} peut s’intégrer à l’histoire d’un univers fantastique. Sa forme de {count} lettres est à évaluer selon le personnage, la faction, la quête ou l’objet qu’il désigne.',
+    game: 'Pour {context}, {name} peut devenir une identité visible par les joueurs. Sa forme de {count} lettres doit rester reconnaissable dans les menus, les profils et les interfaces compactes.',
+    'science-fiction': 'Pour {context}, {name} peut évoquer un élément d’un univers spéculatif. Sa forme de {count} lettres est à évaluer selon la technologie, le décor ou le concept futuriste associé.',
+    science: 'Pour {context}, {name} peut désigner une idée ou un concept de découverte scientifique. Sa forme de {count} lettres doit aider à distinguer clairement le modèle, l’objet ou le thème de recherche.',
+    project: 'Pour {context}, {name} peut donner une identité de travail distincte à un projet. Sa forme de {count} lettres est à évaluer selon la clarté, l’objectif et la facilité de référence.',
+    place: 'Pour {context}, {name} peut contribuer à faire imaginer un lieu dans un univers. Sa forme de {count} lettres est à confronter à l’atmosphère, à la géographie et au rôle du lieu.',
+    general: 'Pour {context}, {name} constitue une identité créative ouverte. Sa forme de {count} lettres peut être évaluée selon le ton, le public et l’objectif que vous choisissez.'
+  },
+  ar: {
+    brand: 'في مجال {context}، يمكن أن يشكّل {name} هويةً مميزة لعلامة تجارية؛ ويُعدّ شكله المؤلف من {count} أحرف نقطة بداية لتقييم سهولة تذكّره ووضوحه وملاءمته للمنتج.',
+    character: 'في مجال {context}، يمكن أن يساعد {name} في بناء هوية شخصية خيالية؛ ويُقيَّم شكله المؤلف من {count} أحرف وفق دور الشخصية وطباعها ومكانتها في القصة.',
+    rpg: 'في مجال {context}، يمكن أن يصبح {name} جزءًا من تاريخ عالم فانتازي؛ ويُقيَّم شكله المؤلف من {count} أحرف بحسب الشخصية أو الفصيل أو المهمة أو العنصر الذي يمثله.',
+    game: 'في مجال {context}، يمكن أن يعمل {name} كهوية تظهر للاعبين؛ وينبغي أن يبقى شكله المؤلف من {count} أحرف واضحًا في القوائم والملفات الشخصية والواجهات الصغيرة.',
+    'science-fiction': 'في مجال {context}، يمكن أن يوحي {name} بعنصر من عالم تخيلي مستقبلي؛ ويُقيَّم شكله المؤلف من {count} أحرف وفق التقنية أو البيئة أو الفكرة المستقبلية المرتبطة به.',
+    science: 'في مجال {context}، يمكن أن يعبّر {name} عن فكرة علمية أو مفهوم اكتشاف؛ وينبغي أن يساعد شكله المؤلف من {count} أحرف على تمييز النموذج أو العنصر أو موضوع البحث.',
+    project: 'في مجال {context}، يمكن أن يمنح {name} المشروع هوية عملية واضحة؛ ويُقيَّم شكله المؤلف من {count} أحرف وفق الوضوح والهدف وسهولة الإشارة إليه.',
+    place: 'في مجال {context}، يمكن أن يساعد {name} على تخيّل موقع داخل عالم قصصي؛ ويُقيَّم شكله المؤلف من {count} أحرف وفق أجواء المكان وجغرافيته ودوره في العالم.',
+    general: 'في مجال {context}، يمثّل {name} هوية إبداعية مفتوحة؛ ويمكن تقييم شكله المؤلف من {count} أحرف وفق النبرة والجمهور والهدف الذي تختاره.'
+  }
+};
