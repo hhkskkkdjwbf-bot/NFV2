@@ -69,13 +69,13 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
               <h3 className="font-bold text-emerald-900">{labels.strengths}</h3>
               <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-emerald-950">
-                {insight.strengths.map((strength) => <li key={strength}>{strength}</li>)}
+                <li>{labels.fallbackStrength}</li>
               </ul>
             </section>
             <section className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
               <h3 className="font-bold text-amber-900">{labels.watchouts}</h3>
               <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-amber-950">
-                {insight.watchouts.map((watchout) => <li key={watchout}>{watchout}</li>)}
+                {labels.fallbackWatchout.split(';').map((watchout) => <li key={watchout.trim()}>{watchout.trim()}</li>)}
               </ul>
             </section>
           </div>
@@ -83,7 +83,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           <section className="rounded-2xl border border-slate-200 p-4">
             <div className="flex items-center justify-between gap-3">
               <h3 className="font-bold">{labels.tone} {labels.fallbackStrength}</h3>
-              <span className="text-xs text-slate-500">{labels.variants}</span>
+              <span className="text-xs text-slate-500">{labels.tone}</span>
             </div>
             <div className="mt-3 flex gap-2">
               {insight.palette.map((color) => (
@@ -110,7 +110,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           </section>
 
           <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-xs leading-5 text-sky-950">
-            <p>{labels.transparency}</p>
+            <p>{labels.invented}. {labels.transparency}</p>
           </div>
 
           <button type="button" onClick={() => copyText(item.name)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 font-bold text-white transition hover:bg-sky-700">
