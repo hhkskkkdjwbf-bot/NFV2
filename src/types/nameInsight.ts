@@ -16,6 +16,8 @@ export interface NameInsightInput {
   generatorId: GeneratorId;
   style: string;
   description: string;
+  strengths?: string[];
+  watchouts?: string[];
 }
 
 export interface NameInsightResult {
