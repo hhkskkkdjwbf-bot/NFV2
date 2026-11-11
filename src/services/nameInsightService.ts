@@ -24,7 +24,7 @@ function countRepeatedCharacters(name: string): number {
   for (let index = 1; index < characters.length; index += 1) {
     const current = characters[index];
     const previous = characters[index - 1];
-    if (/\\p{L}/u.test(current) && /\\p{L}/u.test(previous)
+    if (/\p{L}/u.test(current) && /\p{L}/u.test(previous)
       && current.toLocaleLowerCase() === previous.toLocaleLowerCase()) {
       repeated += 1;
     }
