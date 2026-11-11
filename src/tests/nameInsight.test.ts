@@ -50,6 +50,27 @@ assert.equal(isNameInsightSupported('plasma_weapon' as never), false);
 assert.equal(isNameInsightSupported('tactical_operation' as never), false);
 assert.equal(isNameInsightSupported('special_attack' as never), false);
 
+const categoryCases = [
+  ['brand', 'brand'],
+  ['character', 'anime_hero'],
+  ['rpg', 'rpg'],
+  ['game', 'gaming'],
+  ['science-fiction', 'sci-fi'],
+  ['science', 'quantum_particle'],
+  ['project', 'project'],
+  ['place', 'placename'],
+  ['general', 'unmapped-test-generator' as never]
+] as const;
+for (const language of ['en', 'fr', 'ar'] as const) {
+  const readings = categoryCases.map(([category, generatorId]) => {
+    const result = createNameInsight({ ...base, generatorId, language, name: 'Asterion' });
+    assert.equal(result?.category, category);
+    assert.ok(result?.creativeReading.includes('Asterion'));
+    return result?.creativeReading;
+  });
+  assert.equal(new Set(readings).size, categoryCases.length, `Category readings must be distinct in ${language}`);
+}
+
 const character = createNameInsight({ ...base, generatorId: 'anime_hero', description: 'A fictional hero concept.' });
 assert.equal(character?.category, 'character');
 const science = createNameInsight({ ...base, generatorId: 'quantum_particle', description: 'A science concept.' });
