@@ -20,6 +20,13 @@ export interface NameInsightInput {
   watchouts?: string[];
 }
 
+export interface NameInsightMetrics {
+  characterCount: number;
+  wordCount: number;
+  repeatedCharacterCount: number;
+  latinVowelShare: number | null;
+}
+
 export interface NameInsightResult {
   category: NameInsightCategory;
   categoryLabel: string;
@@ -28,5 +35,6 @@ export interface NameInsightResult {
   watchouts: string[];
   palette: [string, string, string];
   alternatives: string[];
+  metrics: NameInsightMetrics;
   isCreativeOnly: true;
 }
