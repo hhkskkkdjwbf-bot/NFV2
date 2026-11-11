@@ -18,8 +18,6 @@ export interface NameInsightInput {
   description: string;
   generatorLabel?: string;
   language?: LanguageCode;
-  strengths?: string[];
-  watchouts?: string[];
 }
 
 export interface NameInsightMetrics {
@@ -40,8 +38,6 @@ export interface NameInsightResult {
   creativeReading: string;
   contextDescription: string;
   slogan: string;
-  strengths: string[];
-  watchouts: string[];
   palette: [string, string, string];
   alternatives: string[];
   metrics: NameInsightMetrics;
