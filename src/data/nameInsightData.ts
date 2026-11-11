@@ -8,11 +8,11 @@ const BRAND_IDS = new Set<GeneratorId>([
   'interior_decor','photo_studio','wedding_planner','marketing_agency','ecommerce_store',
   'specialty_coffee','artisanal_bakery','luxury_perfume','architect_firm','eco_fashion',
   'cocktail_lounge','green_energy_corp','microbrewery_craft','fintech_app','wellness_spa',
-  'ai_megacorp','crypto_token'
+  'ai_megacorp','crypto_token','handle'
 ]);
 
 const CHARACTER_IDS = new Set<GeneratorId>([
-  'character','anime','anime_hero','anime_rival','fictional_mentor','magical_girl','mecha_pilot',
+  'character','anime','anime_hero','anime_rival','fictional_mentor','magical_girl','mecha_pilot','anime_school','bio_chimera','anime_faction',
   'baby_name','pet_name','detective_noir','steampunk_inventor','space_pirate','alchemist_healer',
   'court_diplomat','gladiator_champion','wandering_bard','cyber_medic','smuggler_pilot',
   'mystic_oracle','cyber_hacker','cyborg_bounty_hunter','bounty_hunter_guild','nordic_valkyrie',
@@ -26,7 +26,7 @@ const RPG_IDS = new Set<GeneratorId>([
   'magic_relic','spirit_guardian','griffin_rider','abyssal_leviathan','phoenix_flame',
   'enchanted_forest','sacred_artifact','shadow_assassin_guild','elemental_golem','royal_knight_order',
   'dwarven_citadel','elven_sanctuary','magical_academy','epic_quest_name','magic_potion',
-  'raid_dungeon_boss','legendary_armor','tcg_card_spell'
+  'raid_dungeon_boss','legendary_armor','tcg_card_spell','elemental_power'
 ]);
 
 const GAME_IDS = new Set<GeneratorId>([
@@ -46,7 +46,7 @@ const SCIENCE_IDS = new Set<GeneratorId>([
   'math_app','math_puzzle','fictional_theorem','geometric_object','fractal_pattern','number_system',
   'scientific_model','science_popularization','deep_learning_model','quantum_particle',
   'cryptographic_protocol','astronomy_constellation','research_project','scientific_expedition',
-  'crystal_mineral','luminescent_fungi'
+  'crystal_mineral','luminescent_fungi','math_olympiad_team'
 ]);
 
 const PROJECT_IDS = new Set<GeneratorId>([
@@ -65,7 +65,7 @@ const PLACE_IDS = new Set<GeneratorId>([
   'coral_reef','wild_sanctuary','volcanic_geyser','desert_oasis','ancient_tree','deep_sea_species',
   'arctic_creature','tropical_rainforest','floating_skyland','dwarven_citadel','elven_sanctuary',
   'sunken_atlantis','desert_empire','frozen_fjord','pirate_haven','merchant_crossroad',
-  'haunted_manor','forbidden_wasteland','ancient_pyramid_tomb'
+  'haunted_manor','forbidden_wasteland','ancient_pyramid_tomb','culinary','carnivorous_plant'
 ]);
 
 // Deliberately omit generators whose subject is weapons, attacks, or tactical operations.
