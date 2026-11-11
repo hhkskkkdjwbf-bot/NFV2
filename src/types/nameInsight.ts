@@ -1,4 +1,4 @@
-import { GeneratorId } from './index';
+import { GeneratorId, LanguageCode } from './index';
 
 export type NameInsightCategory =
   | 'brand'
@@ -16,6 +16,7 @@ export interface NameInsightInput {
   generatorId: GeneratorId;
   style: string;
   description: string;
+  language?: LanguageCode;
   strengths?: string[];
   watchouts?: string[];
 }
@@ -31,6 +32,7 @@ export interface NameInsightResult {
   category: NameInsightCategory;
   categoryLabel: string;
   creativeReading: string;
+  slogan: string;
   strengths: string[];
   watchouts: string[];
   palette: [string, string, string];
