@@ -201,11 +201,11 @@ export const NameCard: React.FC<NameCardProps> = ({
                     setShowInsight(true);
                   }}
                   className="text-xs font-semibold text-sky-700 hover:text-sky-900 transition flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-50 hover:bg-sky-100 cursor-pointer border border-sky-200"
-                  title="Name Insight"
-                  aria-label={`Name Insight: ${item.name}`}
+                  title={detailLabels.header.replace(/[•·]\s*$/, '').trim()}
+                  aria-label={`${detailLabels.header.replace(/[•·]\s*$/, '').trim()}: ${item.name}`}
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Name Insight</span>
+                  <span>{detailLabels.header.replace(/[•·]\s*$/, '').trim()}</span>
                 </button>
               )}
             </div>
