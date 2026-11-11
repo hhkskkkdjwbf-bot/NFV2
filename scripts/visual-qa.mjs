@@ -390,50 +390,58 @@ try {
                 failures.push(label + ': Name Insight action is missing from generated results');
               } else {
                 await insightTrigger.click();
-                const insightDialog = page.locator('[role="dialog"][aria-modal="true"]');
+                const insightDialog = page.getByTestId('name-insight-dialog');
                 try {
-                  await insightDialog.waitFor({ state: 'visible', timeout: 5000 });
-                  const dialogText = await insightDialog.innerText();
+                  await insightDialog.waitFor({ state: 'visible', timeout: 10000 });
+                  // Read the rendered dialog in one browser-side snapshot. Avoid a chain
+                  // of locator actions across React commits: the dialog is conditionally
+                  // mounted and can be replaced while responsive layout settles.
+                  const dialogState = await insightDialog.evaluate((dialog) => {
+                    const close = dialog.querySelector('[data-testid="name-insight-close"]');
+                    const rect = close?.getBoundingClientRect();
+                    const style = close ? getComputedStyle(close) : null;
+                    return {
+                      text: dialog.innerText,
+                      width: dialog.clientWidth,
+                      scrollWidth: dialog.scrollWidth,
+                      closeCount: dialog.querySelectorAll('[data-testid="name-insight-close"]').length,
+                      closeVisible: Boolean(close && rect && rect.width > 0 && rect.height > 0 &&
+                        style.visibility !== 'hidden' && style.display !== 'none'),
+                      metricCount: dialog.querySelectorAll('details:first-of-type div.grid > div').length,
+                      expandableCount: dialog.querySelectorAll('details').length,
+                      sloganText: dialog.querySelector('.bg-violet-50')?.innerText || '',
+                    };
+                  });
                   for (const expected of ['Why does this name fit this world?', 'Slogan', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
-                    if (!dialogText.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
+                    if (!dialogState.text.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
                   }
-                  const sloganSection = insightDialog.locator('.bg-violet-50').first();
-                  if (!(await sloganSection.isVisible()) || !(await sloganSection.innerText()).includes('A new world begins with')) {
+                  if (!dialogState.sloganText.includes('A new world begins with')) {
                     failures.push(label + ': category-aware localized slogan is missing or incorrect');
                   }
-                  const expandableSections = insightDialog.locator('details');
-                  if (await expandableSections.count() < 3) failures.push(label + ': Name Insight expandable sections are missing');
-                  else {
-                    const firstDetails = expandableSections.first();
-                    const firstSummary = firstDetails.locator('summary');
-                    // Native <details> toggles are synchronous. Trigger the real DOM
-                    // click directly so CSS/layout settling in the surrounding modal
-                    // does not make Playwright's stability heuristic detach the node.
-                    await firstSummary.evaluate((element) => element.click());
-                    await page.waitForFunction((node) => !node.open, await firstDetails.elementHandle());
-                    if (await firstDetails.evaluate((element) => element.open)) failures.push(label + ': Name Insight section did not collapse');
-                    await firstSummary.evaluate((element) => element.click());
-                    await page.waitForFunction((node) => node.open, await firstDetails.elementHandle());
-                    if (!(await firstDetails.evaluate((element) => element.open))) failures.push(label + ': Name Insight section did not expand');
+                  if (dialogState.expandableCount < 3) failures.push(label + ': Name Insight expandable sections are missing');
+                  if (dialogState.metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
+                  if (dialogState.width + 2 < dialogState.scrollWidth) failures.push(label + ': Name Insight dialog overflows horizontally');
+                  if (dialogState.closeCount !== 1 || !dialogState.closeVisible) {
+                    failures.push(label + ': Name Insight close control is missing, duplicated, or not visible');
                   }
-                  const metricCount = await insightDialog.locator('details').first().locator('div.grid > div').count();
-                  if (metricCount !== 2) failures.push(label + ': Name Insight structural metrics are incomplete');
-                  const dialogFits = await insightDialog.evaluate((element) => element.scrollWidth <= element.clientWidth + 2);
-                  if (!dialogFits) failures.push(label + ': Name Insight dialog overflows horizontally');
                   if (viewport.width <= 390) {
-                    await insightDialog.screenshot({ path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png', animations: 'disabled' });
+                    // Capture the page, not a locator-backed element that may be
+                    // detached by React while Playwright prepares its screenshot.
+                    await page.screenshot({
+                      path: outputDir + '/name-insight-' + viewport.name + '-' + theme + '.png',
+                      fullPage: false,
+                      animations: 'disabled',
+                    });
                   }
-                  const closeButton = insightDialog.getByTestId('name-insight-close');
-                  await closeButton.waitFor({ state: 'visible', timeout: 5000 });
-                  if (await closeButton.count() !== 1) failures.push(label + ': Name Insight close control is missing or duplicated');
-                  // Capture the concrete button before triggering React's unmount.
-                  // A locator.click() may retry after the click succeeds because the
-                  // dialog is removed during the same event; an element handle avoids
-                  // re-resolving a selector against the intentionally detached dialog.
-                  const closeHandle = await closeButton.elementHandle();
-                  if (!closeHandle) throw new Error('Name Insight close control did not resolve to a DOM element');
-                  await closeHandle.evaluate((element) => element.click());
-                  await insightDialog.waitFor({ state: 'detached', timeout: 5000 });
+                  // Dispatch the close action against the live DOM node. The dialog
+                  // unmount is expected; do not ask Playwright to re-resolve a child
+                  // locator after React has removed its parent.
+                  await insightDialog.evaluate((dialog) => {
+                    const close = dialog.querySelector('[data-testid="name-insight-close"]');
+                    if (!close) throw new Error('Name Insight close control is absent');
+                    close.click();
+                  });
+                  await insightDialog.waitFor({ state: 'detached', timeout: 10000 });
                   if (await insightDialog.count()) failures.push(label + ': Name Insight dialog did not close');
                 } catch (error) {
                   failures.push(label + ': Name Insight dialog failed to open or render: ' + error.message);
