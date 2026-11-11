@@ -105,6 +105,45 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     nb: { words: 'Ord', digits: 'Tall', symbols: 'Symboler', uppercase: 'Store bokstaver', mixed: 'Blandede skriftsystemer', repeated: 'Gjentatte bokstaver' }
   };
   const metricCopy = metricLabels[language] ?? metricLabels.en;
+  const writingSystemCodes: Record<string, string> = {
+    latin: 'Latn',
+    arabic: 'Arab',
+    cyrillic: 'Cyrl',
+    greek: 'Grek',
+    hebrew: 'Hebr',
+    devanagari: 'Deva',
+    han: 'Hani',
+    hiragana: 'Hira',
+    katakana: 'Kana',
+    hangul: 'Hang',
+    thai: 'Thai',
+    bengali: 'Beng'
+  };
+  const writingSystemNames = insight.metrics.writingSystems.map((system) => {
+    const code = writingSystemCodes[system];
+    if (!code) return system;
+    try {
+      return new Intl.DisplayNames([language], { type: 'script' }).of(code) ?? system;
+    } catch {
+      return system;
+    }
+  });
+  const writingSystemsHeading: Record<string, string> = {
+    en: 'Writing systems detected', fr: 'Systèmes d’écriture détectés',
+    es: 'Sistemas de escritura detectados', de: 'Erkannte Schriftsysteme',
+    it: 'Sistemi di scrittura rilevati', pt: 'Sistemas de escrita detetados',
+    ar: 'أنظمة الكتابة المكتشفة', tr: 'Tespit edilen yazı sistemleri',
+    ja: '検出された文字体系', ko: '감지된 문자 체계', zh: '检测到的文字系统',
+    ru: 'Обнаруженные системы письма', hi: 'पहचानी गई लिपियाँ',
+    nl: 'Gedetecteerde schriftsystemen', pl: 'Wykryte systemy pisma',
+    sv: 'Identifierade skriftsystem', vi: 'Hệ chữ được phát hiện',
+    id: 'Sistem tulisan yang terdeteksi', th: 'ระบบอักษรที่ตรวจพบ',
+    el: 'Συστήματα γραφής που εντοπίστηκαν', he: 'מערכות הכתב שזוהו',
+    cs: 'Zjištěné systémy písma', ro: 'Sisteme de scriere detectate',
+    da: 'Registrerede skriftsystemer', fi: 'Havaitut kirjoitusjärjestelmät',
+    uk: 'Виявлені системи письма', bn: 'শনাক্ত করা লিপি',
+    nb: 'Oppdagede skriftsystemer'
+  };
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
     { label: metricCopy.words, value: insight.metrics.wordCount },
@@ -169,6 +208,16 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
               ))}
             </div>
             <p className="mt-2 text-xs leading-5 text-slate-500">{structureCopy.vowelNote}</p>
+            {insight.metrics.writingSystems.length > 0 && (
+              <div className="mt-3 border-t border-slate-200 pt-3" data-testid="name-insight-writing-systems">
+                <p className="text-xs font-semibold text-slate-600">{writingSystemsHeading[language] ?? writingSystemsHeading.en}</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {writingSystemNames.map((system) => (
+                    <li key={system} className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700">{system}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </details>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
