@@ -394,8 +394,12 @@ try {
                 try {
                   await insightDialog.waitFor({ state: 'visible', timeout: 5000 });
                   const dialogText = await insightDialog.innerText();
-                  for (const expected of ['Why does this name fit this world?', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
+                  for (const expected of ['Why does this name fit this world?', 'Slogan', 'Strengths & benefits', 'Considerations & limitations', 'NameForge transparency note']) {
                     if (!dialogText.includes(expected)) failures.push(label + ': Name Insight dialog is missing section: ' + expected);
+                  }
+                  const sloganSection = insightDialog.locator('.bg-violet-50').first();
+                  if (!(await sloganSection.isVisible()) || !(await sloganSection.innerText()).includes('A new world begins with')) {
+                    failures.push(label + ': category-aware localized slogan is missing or incorrect');
                   }
                   const expandableSections = insightDialog.locator('details');
                   if (await expandableSections.count() < 3) failures.push(label + ': Name Insight expandable sections are missing');
