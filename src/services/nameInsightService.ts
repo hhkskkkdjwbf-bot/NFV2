@@ -33,11 +33,29 @@ function countRepeatedCharacters(name: string): number {
   return repeated;
 }
 
+function getWritingSystem(character: string): string {
+  if (/\p{Script=Latin}/u.test(character)) return 'latin';
+  if (/\p{Script=Arabic}/u.test(character)) return 'arabic';
+  if (/\p{Script=Cyrillic}/u.test(character)) return 'cyrillic';
+  if (/\p{Script=Greek}/u.test(character)) return 'greek';
+  if (/\p{Script=Hebrew}/u.test(character)) return 'hebrew';
+  if (/\p{Script=Devanagari}/u.test(character)) return 'devanagari';
+  if (/\p{Script=Han}/u.test(character)) return 'han';
+  if (/\p{Script=Hiragana}/u.test(character)) return 'hiragana';
+  if (/\p{Script=Katakana}/u.test(character)) return 'katakana';
+  if (/\p{Script=Hangul}/u.test(character)) return 'hangul';
+  if (/\p{Script=Thai}/u.test(character)) return 'thai';
+  if (/\p{Script=Bengali}/u.test(character)) return 'bengali';
+  return 'other';
+}
+
 function analyzeStructure(name: string): NameInsightMetrics {
   const normalized = name.trim().replace(/\s+/g, ' ');
-  const characters = Array.from(normalized).filter((character) => /\p{L}/u.test(character));
+  const codePoints = Array.from(normalized);
+  const characters = codePoints.filter((character) => /\p{L}/u.test(character));
   const latinLetters = characters.filter((character) => /[a-z]/i.test(character));
   const vowels = latinLetters.filter((character) => /[aeiouy]/i.test(character)).length;
+  const writingSystems = new Set(characters.map(getWritingSystem));
   return {
     characterCount: characters.length,
     wordCount: normalized ? normalized.split(' ').filter(Boolean).length : 0,
@@ -45,7 +63,11 @@ function analyzeStructure(name: string): NameInsightMetrics {
     // A vowel ratio is only meaningful for names written entirely with Latin letters.
     latinVowelShare: characters.length > 0 && latinLetters.length === characters.length
       ? Math.round((vowels / characters.length) * 100)
-      : null
+      : null,
+    digitCount: codePoints.filter((character) => /\p{N}/u.test(character)).length,
+    symbolCount: codePoints.filter((character) => !/[\p{L}\p{N}\s]/u.test(character)).length,
+    uppercaseCount: characters.filter((character) => /\p{Lu}/u.test(character)).length,
+    hasMixedScripts: writingSystems.size > 1
   };
 }
 
@@ -103,7 +125,8 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
       metrics.characterCount > 18
         ? 'Long names may need a shortened display form'
         : 'Check legibility at small sizes',
-      ...(metrics.repeatedCharacterCount > 0 ? ['Repeated adjacent letters may affect pronunciation'] : [])
+      ...(metrics.repeatedCharacterCount > 0 ? ['Repeated adjacent letters may affect pronunciation'] : []),
+      ...(metrics.hasMixedScripts ? ['Mixed writing systems may reduce visual consistency'] : [])
     ];
 
   return {
