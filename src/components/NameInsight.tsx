@@ -3,6 +3,7 @@ import { Check, Copy, Sparkles, X } from 'lucide-react';
 import { GeneratedName, GeneratorMeta } from '../types';
 import { getAppSettings } from '../services/settings';
 import { getNameDetailsLabels } from '../i18n/nameDetails';
+import { getLocalizedGeneratorDescription } from '../i18n/generatorContent';
 import { createNameInsight } from '../services/nameInsightService';
 
 interface NameInsightProps {
@@ -18,8 +19,8 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     name: item.name,
     generatorId: item.generatorId,
     style: item.style,
-    description: meta.description
-  }), [item.name, item.generatorId, item.style, meta.description]);
+    description: getLocalizedGeneratorDescription(meta, language)
+  }), [item.name, item.generatorId, item.style, meta, language]);
   const [copied, setCopied] = useState<string | null>(null);
 
   if (!insight) return null;
@@ -47,7 +48,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-sky-700">
               <Sparkles className="h-4 w-4" />
-              <span>Name Insight · {insight.categoryLabel}</span>
+              <span>Name Insight · {meta.shortTitle}</span>
             </div>
             <h2 id="name-insight-title" className="break-words text-2xl font-black">{item.name}</h2>
             <p className="mt-1 text-sm text-slate-600">{meta.shortTitle} · {item.style}</p>
@@ -109,8 +110,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           </section>
 
           <div className="rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-xs leading-5 text-sky-950">
-            <strong>{labels.transparency}</strong>
-            <p className="mt-1">This is a deterministic creative interpretation based on the selected generator context. It is not a verified historical meaning, etymology, trademark check, or linguistic certification.</p>
+            <p>{labels.transparency}</p>
           </div>
 
           <button type="button" onClick={() => copyText(item.name)} className="flex w-full items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 font-bold text-white transition hover:bg-sky-700">
