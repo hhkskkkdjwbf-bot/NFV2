@@ -126,31 +126,12 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
     .replace('{name}', normalizedName)
     .replace('{count}', String(metrics.characterCount));
 
-  const providedStrengths = input.strengths?.filter(Boolean) ?? [];
-  const providedWatchouts = input.watchouts?.filter(Boolean) ?? [];
-  const strengths = providedStrengths.length
-    ? providedStrengths
-    : [metrics.wordCount === 1
-      ? 'Single-word structure is easy to scan'
-      : 'Multi-word structure can communicate a more specific identity'];
-  const watchouts = providedWatchouts.length
-    ? providedWatchouts
-    : [
-      metrics.characterCount > 18
-        ? 'Long names may need a shortened display form'
-        : 'Check legibility at small sizes',
-      ...(metrics.repeatedCharacterCount > 0 ? ['Repeated adjacent letters may affect pronunciation'] : []),
-      ...(metrics.hasMixedScripts ? ['Mixed writing systems may reduce visual consistency'] : [])
-    ];
-
   return {
     category,
     categoryLabel: NAME_INSIGHT_CATEGORY_LABELS[category],
     creativeReading,
     contextDescription: input.description,
     slogan,
-    strengths,
-    watchouts,
     palette,
     alternatives: uniqueAlternatives(normalizedName, category),
     metrics,
