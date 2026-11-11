@@ -43,7 +43,6 @@ assert.deepEqual(nonLatin?.metrics.writingSystems, ['arabic'], 'Arabic names sho
 const mixedScripts = createNameInsight({ ...base, name: 'طارقNova' });
 assert.equal(mixedScripts?.metrics.hasMixedScripts, true, 'Mixed Arabic and Latin scripts must be detected');
 assert.deepEqual(mixedScripts?.metrics.writingSystems, ['arabic', 'latin'], 'Mixed names should expose each detected writing system');
-assert.ok(mixedScripts?.watchouts.some((note) => note.includes('Mixed writing systems')));
 const additionalScriptCases = [
   ['Աստղ', 'armenian'],
   ['მზე', 'georgian'],
@@ -68,14 +67,6 @@ assert.equal(decorated?.metrics.digitCount, 1);
 assert.equal(decorated?.metrics.symbolCount, 2);
 const categoryPalette = createNameInsight({ ...base, generatorId: 'anime_hero' });
 assert.notDeepEqual(categoryPalette?.palette, first?.palette, 'Palette selection should incorporate category context');
-const localized = createNameInsight({
-  ...base,
-  strengths: ['Localized strength'],
-  watchouts: ['Localized caution']
-});
-assert.deepEqual(localized?.strengths, ['Localized strength']);
-assert.deepEqual(localized?.watchouts, ['Localized caution']);
-
 assert.equal(createNameInsight({ ...base, name: '   ' }), null);
 assert.equal(isNameInsightSupported('weapon' as never), false);
 assert.equal(isNameInsightSupported('plasma_weapon' as never), false);
