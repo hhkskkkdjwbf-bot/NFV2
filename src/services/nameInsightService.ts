@@ -34,14 +34,12 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   const hash = stableHash(`${input.generatorId}| ${input.name}| ${input.style}`);
   const palette = NAME_INSIGHT_PALETTES[hash % NAME_INSIGHT_PALETTES.length];
   const length = input.name.trim().length;
-  const strengths = [
-    length <= 7 ? 'Compact visual footprint' : length <= 14 ? 'Balanced name length' : 'Distinctive, expressive length',
-    input.name.trim().split(/\s+/).length > 1 ? 'Clear multi-word structure' : 'Easy to scan as a single name'
-  ];
-  const watchouts = [
-    length > 18 ? 'Check readability at small sizes' : 'Check readability in the final layout',
-    'Test pronunciation and audience associations before choosing'
-  ];
+  const strengths = input.strengths?.filter(Boolean).length
+    ? input.strengths.filter(Boolean)
+    : [length <= 7 ? 'Compact visual footprint' : length <= 14 ? 'Balanced name length' : 'Distinctive, expressive length'];
+  const watchouts = input.watchouts?.filter(Boolean).length
+    ? input.watchouts.filter(Boolean)
+    : [length > 18 ? 'Check readability at small sizes' : 'Check readability in the final layout'];
 
   return {
     category,
