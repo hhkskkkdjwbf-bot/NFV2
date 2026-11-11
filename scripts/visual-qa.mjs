@@ -721,6 +721,36 @@ try {
   }
 
 
+
+  // Exercise the Name Insight panel in French and Arabic, including RTL layout.
+  for (const language of ['fr', 'ar']) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    const pageErrors = [];
+    page.on('pageerror', (error) => pageErrors.push(error.message));
+    await page.addInitScript((selectedLanguage) => {
+      localStorage.setItem('nameforge_settings', JSON.stringify({
+        language: selectedLanguage, theme: 'light', defaultGenLanguage: 'auto', textSize: 'normal',
+      }));
+    }, language);
+    await page.goto(baseUrl + '#/generator/fantasy', { waitUntil: 'networkidle', timeout: 45000 });
+    await page.locator('.nf-generator-controls button').last().click();
+    const firstResult = page.locator('article.nf-name-result-card').first();
+    await firstResult.waitFor({ state: 'visible', timeout: 15000 });
+    await firstResult.getByTestId('name-insight-trigger').click();
+    const dialog = page.getByTestId('name-insight-dialog');
+    await dialog.waitFor({ state: 'visible', timeout: 5000 });
+    const direction = await dialog.getAttribute('dir');
+    if (direction !== (language === 'ar' ? 'rtl' : 'ltr')) failures.push('name-insight-' + language + ': incorrect text direction');
+    const slogan = await dialog.locator('.bg-violet-50').innerText();
+    const expectedSlogan = language === 'ar' ? 'يبدأ عالم جديد مع' : 'Un nouvel univers commence avec';
+    if (!slogan.includes(expectedSlogan)) failures.push('name-insight-' + language + ': slogan was not localized');
+    const dimensions = await dialog.evaluate((element) => ({ width: element.clientWidth, scrollWidth: element.scrollWidth }));
+    if (dimensions.scrollWidth > dimensions.width + 2) failures.push('name-insight-' + language + ': horizontal overflow');
+    if (pageErrors.length) failures.push('name-insight-' + language + ': JavaScript errors: ' + pageErrors.join(' | '));
+    await dialog.locator('header button').click();
+    await page.close();
+  }
+
   // Validate normal motion separately from the reduced-motion matrix.
   for (const theme of ['light', 'dark']) {
     const page = await browser.newPage({
