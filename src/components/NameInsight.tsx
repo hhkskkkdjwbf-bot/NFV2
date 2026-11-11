@@ -20,6 +20,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
     generatorId: item.generatorId,
     style: item.style,
     description: getLocalizedGeneratorDescription(meta, language),
+    generatorLabel: meta.shortTitle,
     language,
     strengths: [labels.fallbackStrength],
     watchouts: [labels.fallbackWatchout]
@@ -70,6 +71,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
           <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <h3 className="font-bold text-slate-900">{labels.whyFits}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-700">{insight.creativeReading}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">{insight.contextDescription}</p>
             <p className="mt-3 text-xs leading-5 text-slate-500">{labels.adviceText}</p>
           </section>
 
