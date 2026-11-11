@@ -31,6 +31,7 @@ export interface NameInsightMetrics {
   symbolCount: number;
   uppercaseCount: number;
   hasMixedScripts: boolean;
+  writingSystems: string[];
 }
 
 export interface NameInsightResult {
