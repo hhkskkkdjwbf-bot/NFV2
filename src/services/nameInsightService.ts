@@ -4,6 +4,7 @@ import {
   NAME_INSIGHT_ALTERNATIVE_SUFFIXES,
   NAME_INSIGHT_CATEGORY_LABELS,
   NAME_INSIGHT_PALETTES,
+  NAME_INSIGHT_SLOGAN_TEMPLATES,
   resolveNameInsightCategory
 } from '../data/nameInsightData';
 
@@ -70,6 +71,9 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   const hash = stableHash(`${input.generatorId}|${normalizedName}|${input.style}`);
   const metrics = analyzeStructure(normalizedName);
   const palette = choosePalette(hash, category);
+  const sloganTone = category === 'brand' ? 'identity' : ['character', 'rpg', 'place'].includes(category) ? 'world' : 'innovation';
+  const languageTemplates = NAME_INSIGHT_SLOGAN_TEMPLATES[input.language ?? 'en'] ?? NAME_INSIGHT_SLOGAN_TEMPLATES.en;
+  const slogan = languageTemplates[sloganTone].replace('{name}', normalizedName);
 
   const providedStrengths = input.strengths?.filter(Boolean) ?? [];
   const providedWatchouts = input.watchouts?.filter(Boolean) ?? [];
@@ -91,6 +95,7 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
     category,
     categoryLabel: NAME_INSIGHT_CATEGORY_LABELS[category],
     creativeReading: input.description,
+    slogan,
     strengths,
     watchouts,
     palette,
