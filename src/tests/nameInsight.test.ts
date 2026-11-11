@@ -44,6 +44,25 @@ const mixedScripts = createNameInsight({ ...base, name: 'طارقNova' });
 assert.equal(mixedScripts?.metrics.hasMixedScripts, true, 'Mixed Arabic and Latin scripts must be detected');
 assert.deepEqual(mixedScripts?.metrics.writingSystems, ['arabic', 'latin'], 'Mixed names should expose each detected writing system');
 assert.ok(mixedScripts?.watchouts.some((note) => note.includes('Mixed writing systems')));
+const additionalScriptCases = [
+  ['Աստղ', 'armenian'],
+  ['მზე', 'georgian'],
+  ['ሰላም', 'ethiopic'],
+  ['தமிழ்', 'tamil'],
+  ['తెలుగు', 'telugu'],
+  ['ਪੰਜਾਬੀ', 'gurmukhi'],
+  ['ગુજરાતી', 'gujarati'],
+  ['ಕನ್ನಡ', 'kannada'],
+  ['മലയാളം', 'malayalam'],
+  ['සිංහල', 'sinhala'],
+  ['ລາວ', 'lao'],
+  ['မြန်မာ', 'myanmar'],
+  ['ខ្មែរ', 'khmer']
+] as const;
+for (const [name, script] of additionalScriptCases) {
+  const result = createNameInsight({ ...base, name });
+  assert.deepEqual(result?.metrics.writingSystems, [script], `Expected ${script} writing system for ${name}`);
+}
 const decorated = createNameInsight({ ...base, name: 'Nova-7!' });
 assert.equal(decorated?.metrics.digitCount, 1);
 assert.equal(decorated?.metrics.symbolCount, 2);
