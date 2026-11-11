@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Install Chromium for Playwright and Lighthouse
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Audit npm dependency vulnerabilities
         run: |
           mkdir -p artifacts
@@ -161,7 +161,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Install Chromium for Lighthouse
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Smoke-test the published GitHub Pages site
         run: npm run audit:pages
         env:
