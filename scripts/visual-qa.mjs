@@ -426,10 +426,13 @@ try {
                   const closeButton = insightDialog.getByTestId('name-insight-close');
                   await closeButton.waitFor({ state: 'visible', timeout: 5000 });
                   if (await closeButton.count() !== 1) failures.push(label + ': Name Insight close control is missing or duplicated');
-                  // Use Playwright's normal user-facing click path rather than
-                  // locator.evaluate(), which can wait indefinitely for a detached
-                  // nested header locator in mobile layout transitions.
-                  await closeButton.click({ timeout: 5000 });
+                  // Capture the concrete button before triggering React's unmount.
+                  // A locator.click() may retry after the click succeeds because the
+                  // dialog is removed during the same event; an element handle avoids
+                  // re-resolving a selector against the intentionally detached dialog.
+                  const closeHandle = await closeButton.elementHandle();
+                  if (!closeHandle) throw new Error('Name Insight close control did not resolve to a DOM element');
+                  await closeHandle.evaluate((element) => element.click());
                   await insightDialog.waitFor({ state: 'detached', timeout: 5000 });
                   if (await insightDialog.count()) failures.push(label + ': Name Insight dialog did not close');
                 } catch (error) {
