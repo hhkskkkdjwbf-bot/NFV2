@@ -30,6 +30,22 @@ function getGraphemeClusters(value: string): string[] {
   return Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment);
 }
 
+function countWords(value: string, language: string): number {
+  if (!value) return 0;
+
+  type WordSegmenterConstructor = new (
+    locales?: string | string[],
+    options?: { granularity: 'word' }
+  ) => { segment(input: string): Iterable<{ segment: string; isWordLike?: boolean }> };
+
+  const Segmenter = (Intl as unknown as { Segmenter?: WordSegmenterConstructor }).Segmenter;
+  if (!Segmenter) return value.split(' ').filter(Boolean).length;
+
+  return Array.from(
+    new Segmenter(language, { granularity: 'word' }).segment(value)
+  ).filter((part) => part.isWordLike).length;
+}
+
 function countRepeatedCharacters(name: string): number {
   const characters = getGraphemeClusters(name);
   let repeated = 0;
@@ -73,7 +89,7 @@ function getWritingSystem(character: string): string {
   return 'other';
 }
 
-function analyzeStructure(name: string): NameInsightMetrics {
+function analyzeStructure(name: string, language: string): NameInsightMetrics {
   const normalized = name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const codePoints = Array.from(normalized);
   // Count user-perceived letter clusters, not individual code points. This keeps
@@ -87,7 +103,7 @@ function analyzeStructure(name: string): NameInsightMetrics {
   const writingSystems = Array.from(new Set(characters.map(getWritingSystem)));
   return {
     characterCount: characters.length,
-    wordCount: normalized ? normalized.split(' ').filter(Boolean).length : 0,
+    wordCount: countWords(normalized, language),
     repeatedCharacterCount: countRepeatedCharacters(normalized),
     // A vowel ratio is only meaningful for names written entirely with Latin letters.
     latinVowelShare: characters.length > 0 && latinLetters.length === characters.length
@@ -127,7 +143,7 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   const category = resolveNameInsightCategory(input.generatorId);
   const normalizedName = input.name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const hash = stableHash(`${input.generatorId}|${normalizedName}|${input.style}`);
-  const metrics = analyzeStructure(normalizedName);
+  const metrics = analyzeStructure(normalizedName, input.language ?? 'en');
   const palette = choosePalette(hash, category);
   const sloganTone = category === 'brand' ? 'identity' : ['character', 'rpg', 'place'].includes(category) ? 'world' : 'innovation';
   const languageTemplates = NAME_INSIGHT_SLOGAN_TEMPLATES[input.language ?? 'en'] ?? NAME_INSIGHT_SLOGAN_TEMPLATES.en;
