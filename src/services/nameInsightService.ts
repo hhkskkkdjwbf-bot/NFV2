@@ -63,7 +63,7 @@ function getWritingSystem(character: string): string {
 }
 
 function analyzeStructure(name: string): NameInsightMetrics {
-  const normalized = name.trim().replace(/\s+/g, ' ');
+  const normalized = name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const codePoints = Array.from(normalized);
   const characters = codePoints.filter((character) => /\p{L}/u.test(character));
   const latinLetters = characters.filter((character) => /[a-z]/i.test(character));
@@ -109,7 +109,7 @@ export function createNameInsight(input: NameInsightInput): NameInsightResult | 
   if (!isNameInsightSupported(input.generatorId) || !input.name.trim()) return null;
 
   const category = resolveNameInsightCategory(input.generatorId);
-  const normalizedName = input.name.trim().replace(/\s+/g, ' ');
+  const normalizedName = input.name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const hash = stableHash(`${input.generatorId}|${normalizedName}|${input.style}`);
   const metrics = analyzeStructure(normalizedName);
   const palette = choosePalette(hash, category);
