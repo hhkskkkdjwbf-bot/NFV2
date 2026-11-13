@@ -41,6 +41,8 @@ assert.deepEqual(
   'Canonically equivalent Unicode spellings should produce identical insight and metrics'
 );
 assert.equal(decomposedAccent?.metrics.characterCount, 4, 'Combining marks must not distort the visible letter count');
+const paddedName = createNameInsight({ ...base, name: '  Asterion   ' });
+assert.deepEqual(paddedName, first, 'Leading, trailing, and repeated whitespace should not change the normalized insight');
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
 assert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);
 const separatedLetters = createNameInsight({ ...base, name: 'A A' });
