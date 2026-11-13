@@ -188,7 +188,7 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
   };
   const metricItems = [
     { label: labels.length, value: insight.metrics.characterCount },
-    { label: metricCopy.words, value: insight.metrics.wordCount },
+    { label: metricCopy.words, value: insight.metrics.wordCount ?? '—' },
     { label: metricCopy.digits, value: insight.metrics.digitCount },
     { label: metricCopy.symbols, value: insight.metrics.symbolCount },
     { label: metricCopy.uppercase, value: insight.metrics.uppercaseCount },
