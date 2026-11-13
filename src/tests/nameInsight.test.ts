@@ -113,6 +113,21 @@ for (const language of ['en', 'fr', 'ar'] as const) {
   assert.equal(new Set(readings).size, categoryCases.length, `Category readings must be distinct in ${language}`);
 }
 
+// Lock down intentional overlaps so category precedence cannot change accidentally.
+const categoryPrecedenceCases = [
+  ['vampire', 'character'],
+  ['space_pirate', 'character'],
+  ['enchanted_forest', 'rpg'],
+  ['floating_skyland', 'science-fiction']
+] as const;
+for (const [generatorId, expectedCategory] of categoryPrecedenceCases) {
+  assert.equal(
+    resolveNameInsightCategory(generatorId),
+    expectedCategory,
+    `Expected ${generatorId} to keep its primary ${expectedCategory} category`
+  );
+}
+
 const character = createNameInsight({ ...base, generatorId: 'anime_hero', description: 'A fictional hero concept.' });
 assert.equal(character?.category, 'character');
 const science = createNameInsight({ ...base, generatorId: 'quantum_particle', description: 'A science concept.' });
