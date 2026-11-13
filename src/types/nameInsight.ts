@@ -22,7 +22,7 @@ export interface NameInsightInput {
 
 export interface NameInsightMetrics {
   characterCount: number;
-  wordCount: number;
+  wordCount: number | null;
   repeatedCharacterCount: number;
   latinVowelShare: number | null;
   digitCount: number;
