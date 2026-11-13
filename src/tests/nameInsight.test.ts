@@ -59,6 +59,11 @@ const nonLatin = createNameInsight({ ...base, name: 'أستريون' });
 assert.equal(nonLatin?.metrics.latinVowelShare, null);
 assert.equal(nonLatin?.metrics.hasMixedScripts, false, 'Arabic-only names must be treated as one writing system');
 assert.deepEqual(nonLatin?.metrics.writingSystems, ['arabic'], 'Arabic names should expose their detected writing system');
+const devanagariConjunct = createNameInsight({ ...base, name: 'क्ष' });
+assert.equal(devanagariConjunct?.metrics.characterCount, 1, 'A Devanagari conjunct should count as one visible grapheme cluster');
+const hindiWord = createNameInsight({ ...base, name: 'नमस्ते' });
+assert.equal(hindiWord?.metrics.characterCount, 3, 'Combining marks and conjunct sequences must not inflate Indic grapheme counts');
+
 const mixedScripts = createNameInsight({ ...base, name: 'طارقNova' });
 assert.equal(mixedScripts?.metrics.hasMixedScripts, true, 'Mixed Arabic and Latin scripts must be detected');
 assert.deepEqual(mixedScripts?.metrics.writingSystems, ['arabic', 'latin'], 'Mixed names should expose each detected writing system');
