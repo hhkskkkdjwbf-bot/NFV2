@@ -63,6 +63,12 @@ const devanagariConjunct = createNameInsight({ ...base, name: 'क्ष' });
 assert.equal(devanagariConjunct?.metrics.characterCount, 1, 'A Devanagari conjunct should count as one visible grapheme cluster');
 const hindiWord = createNameInsight({ ...base, name: 'नमस्ते' });
 assert.equal(hindiWord?.metrics.characterCount, 3, 'Combining marks and conjunct sequences must not inflate Indic grapheme counts');
+const japaneseWords = createNameInsight({ ...base, language: 'ja', name: '私は学生です' });
+assert.equal(japaneseWords?.metrics.wordCount, 4, 'Japanese word count should use locale-aware segmentation without spaces');
+const chineseWords = createNameInsight({ ...base, language: 'zh', name: '我喜欢学习' });
+assert.equal(chineseWords?.metrics.wordCount, 3, 'Chinese word count should use locale-aware segmentation without spaces');
+const thaiWords = createNameInsight({ ...base, language: 'th', name: 'ฉันรักภาษาไทย' });
+assert.equal(thaiWords?.metrics.wordCount, 4, 'Thai word count should use locale-aware segmentation without spaces');
 
 const mixedScripts = createNameInsight({ ...base, name: 'طارقNova' });
 assert.equal(mixedScripts?.metrics.hasMixedScripts, true, 'Mixed Arabic and Latin scripts must be detected');
