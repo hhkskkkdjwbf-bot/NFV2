@@ -32,6 +32,15 @@ assert.equal(first?.metrics.digitCount, 0);
 assert.equal(first?.metrics.symbolCount, 0);
 assert.equal(first?.metrics.uppercaseCount, 1);
 assert.equal(first?.metrics.hasMixedScripts, false);
+
+const composedAccent = createNameInsight({ ...base, name: 'Élan' });
+const decomposedAccent = createNameInsight({ ...base, name: 'E\\u0301lan' });
+assert.deepEqual(
+  decomposedAccent,
+  composedAccent,
+  'Canonically equivalent Unicode spellings should produce identical insight and metrics'
+);
+assert.equal(decomposedAccent?.metrics.characterCount, 4, 'Combining marks must not distort the visible letter count');
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
 assert.ok((repeated?.metrics.repeatedCharacterCount ?? 0) > 0);
 const separatedLetters = createNameInsight({ ...base, name: 'A A' });
