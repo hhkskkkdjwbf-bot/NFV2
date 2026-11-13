@@ -188,7 +188,7 @@ export const App: React.FC = () => {
   }, [currentView, currentGenerator, settings.language]);
 
   return (
-    <div className="nf-app-shell min-h-screen bg-[#060611] text-slate-100 flex flex-col font-sans selection:bg-purple-500 selection:text-white transition-colors duration-200">
+    <div className="nf-app-shell min-h-screen flex flex-col font-sans transition-colors duration-200">
       {/* Accessibility Skip Link */}
       <a
         href="#main-content"
