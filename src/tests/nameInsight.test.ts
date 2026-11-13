@@ -45,6 +45,10 @@ assert.equal(composedAccent?.metrics.latinVowelShare, 50, 'Accented Latin vowels
 const nordicName = createNameInsight({ ...base, name: 'Ångström' });
 assert.equal(nordicName?.metrics.characterCount, 8);
 assert.equal(nordicName?.metrics.latinVowelShare, 25, 'Multiple accented Latin vowels must be counted without changing the letter denominator');
+const accentedVowels = createNameInsight({ ...base, name: 'ÀÉÎÕÜ' });
+assert.equal(accentedVowels?.metrics.latinVowelShare, 100, 'Accented forms of all five Latin vowels must be counted');
+const accentedConsonant = createNameInsight({ ...base, name: 'Çý' });
+assert.equal(accentedConsonant?.metrics.latinVowelShare, 50, 'Accented consonants must not be counted as vowels');
 const paddedName = createNameInsight({ ...base, name: '  Asterion   ' });
 assert.deepEqual(paddedName, first, 'Leading, trailing, and repeated whitespace should not change the normalized insight');
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
