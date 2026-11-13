@@ -17,7 +17,7 @@ const CHARACTER_IDS = new Set<GeneratorId>([
   'court_diplomat','gladiator_champion','wandering_bard','cyber_medic','smuggler_pilot',
   'mystic_oracle','cyber_hacker','cyborg_bounty_hunter','bounty_hunter_guild','nordic_valkyrie',
   'celtic_druid','vampire','vampire_coven','griffin_rider','desert_djinn','gargoyle_sentinel',
-  'undead_lich','elemental_golem','predatory_raptor','pet_name'
+  'undead_lich','elemental_golem','predatory_raptor'
 ]);
 
 const RPG_IDS = new Set<GeneratorId>([
@@ -36,7 +36,7 @@ const GAME_IDS = new Set<GeneratorId>([
 ]);
 
 const SCIFI_IDS = new Set<GeneratorId>([
-  'sci-fi','starship','mecha','cyberpunk','steampunk','alien_species','planet','starship',
+  'sci-fi','starship','mecha','cyberpunk','steampunk','alien_species','planet',
   'orbital_station','quantum_reactor','terraformed_colony','interstellar_corridor','exoplanet_biodome',
   'deep_space_probe','nanotech_swarm','neural_interface','dystopian_city_sector','space_telescope',
   'interstellar_empire','floating_skyland','sunken_atlantis','space_pirate','smuggler_pilot'
@@ -68,6 +68,7 @@ const PLACE_IDS = new Set<GeneratorId>([
   'haunted_manor','forbidden_wasteland','ancient_pyramid_tomb','culinary','carnivorous_plant'
 ]);
 
+// Some IDs intentionally appear in multiple sets; resolver order below defines their primary category.
 // Deliberately omit generators whose subject is weapons, attacks, or tactical operations.
 export const NAME_INSIGHT_EXCLUDED_GENERATORS = new Set<string>([
   'weapon',
