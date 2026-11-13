@@ -41,6 +41,10 @@ assert.deepEqual(
   'Canonically equivalent Unicode spellings should produce identical insight and metrics'
 );
 assert.equal(decomposedAccent?.metrics.characterCount, 4, 'Combining marks must not distort the visible letter count');
+assert.equal(composedAccent?.metrics.latinVowelShare, 50, 'Accented Latin vowels must count after canonical decomposition');
+const nordicName = createNameInsight({ ...base, name: 'Ångström' });
+assert.equal(nordicName?.metrics.characterCount, 8);
+assert.equal(nordicName?.metrics.latinVowelShare, 25, 'Multiple accented Latin vowels must be counted without changing the letter denominator');
 const paddedName = createNameInsight({ ...base, name: '  Asterion   ' });
 assert.deepEqual(paddedName, first, 'Leading, trailing, and repeated whitespace should not change the normalized insight');
 const repeated = createNameInsight({ ...base, name: 'Aallora' });
