@@ -34,7 +34,7 @@ assert.equal(first?.metrics.uppercaseCount, 1);
 assert.equal(first?.metrics.hasMixedScripts, false);
 
 const composedAccent = createNameInsight({ ...base, name: 'Élan' });
-const decomposedAccent = createNameInsight({ ...base, name: 'E\\u0301lan' });
+const decomposedAccent = createNameInsight({ ...base, name: 'E\u0301lan' });
 assert.deepEqual(
   decomposedAccent,
   composedAccent,
