@@ -45,7 +45,7 @@ function countWords(value: string, language: string): number | null {
     // of presenting a misleading count in older runtimes.
     const baseLanguage = language.toLowerCase().split('-')[0];
     if (['ja', 'zh', 'th'].includes(baseLanguage)) return null;
-    return value.split(/\\s+/u).filter(Boolean).length;
+    return value.split(/\s+/u).filter(Boolean).length;
   }
 
   return Array.from(
