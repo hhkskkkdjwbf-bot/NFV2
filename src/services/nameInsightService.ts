@@ -19,8 +19,19 @@ function stableHash(value: string): number {
   return hash >>> 0;
 }
 
+function getGraphemeClusters(value: string): string[] {
+  type GraphemeSegmenterConstructor = new (
+    locales?: string | string[],
+    options?: { granularity: 'grapheme' }
+  ) => { segment(input: string): Iterable<{ segment: string }> };
+
+  const Segmenter = (Intl as unknown as { Segmenter?: GraphemeSegmenterConstructor }).Segmenter;
+  if (!Segmenter) return Array.from(value);
+  return Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment);
+}
+
 function countRepeatedCharacters(name: string): number {
-  const characters = Array.from(name);
+  const characters = getGraphemeClusters(name);
   let repeated = 0;
   for (let index = 1; index < characters.length; index += 1) {
     const current = characters[index];
@@ -65,7 +76,9 @@ function getWritingSystem(character: string): string {
 function analyzeStructure(name: string): NameInsightMetrics {
   const normalized = name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const codePoints = Array.from(normalized);
-  const characters = codePoints.filter((character) => /\p{L}/u.test(character));
+  // Count user-perceived letter clusters, not individual code points. This keeps
+  // combining marks and Indic conjuncts from inflating the displayed name length.
+  const characters = getGraphemeClusters(normalized).filter((character) => /\p{L}/u.test(character));
   const latinLetters = characters.filter((character) => getWritingSystem(character) === 'latin');
   const vowels = latinLetters.filter((character) => {
     const baseLetter = character.normalize('NFD').replace(/\p{M}/gu, '');
