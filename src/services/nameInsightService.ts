@@ -46,14 +46,14 @@ function countWords(value: string, language: string): number {
   ).filter((part) => part.isWordLike).length;
 }
 
-function countRepeatedCharacters(name: string): number {
+function countRepeatedCharacters(name: string, language: string): number {
   const characters = getGraphemeClusters(name);
   let repeated = 0;
   for (let index = 1; index < characters.length; index += 1) {
     const current = characters[index];
     const previous = characters[index - 1];
     if (/\p{L}/u.test(current) && /\p{L}/u.test(previous)
-      && current.toLocaleLowerCase() === previous.toLocaleLowerCase()) {
+      && current.toLocaleLowerCase(language) === previous.toLocaleLowerCase(language)) {
       repeated += 1;
     }
   }
@@ -118,7 +118,7 @@ function analyzeStructure(name: string, language: string): NameInsightMetrics {
   return {
     characterCount: characters.length,
     wordCount: countWords(normalized, language),
-    repeatedCharacterCount: countRepeatedCharacters(normalized),
+    repeatedCharacterCount: countRepeatedCharacters(normalized, language),
     // A vowel ratio is only meaningful for names written entirely with Latin letters.
     latinVowelShare: characters.length > 0 && latinLetters.length === characters.length
       ? Math.round((vowels / characters.length) * 100)
