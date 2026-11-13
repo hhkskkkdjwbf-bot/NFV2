@@ -30,7 +30,7 @@ function getGraphemeClusters(value: string): string[] {
   return Array.from(new Segmenter(undefined, { granularity: 'grapheme' }).segment(value), (part) => part.segment);
 }
 
-function countWords(value: string, language: string): number {
+function countWords(value: string, language: string): number | null {
   if (!value) return 0;
 
   type WordSegmenterConstructor = new (
@@ -39,7 +39,14 @@ function countWords(value: string, language: string): number {
   ) => { segment(input: string): Iterable<{ segment: string; isWordLike?: boolean }> };
 
   const Segmenter = (Intl as unknown as { Segmenter?: WordSegmenterConstructor }).Segmenter;
-  if (!Segmenter) return value.split(' ').filter(Boolean).length;
+  if (!Segmenter) {
+    // Whitespace splitting is not a valid word-boundary fallback for scripts
+    // commonly written without spaces. Mark the metric unavailable instead
+    // of presenting a misleading count in older runtimes.
+    const baseLanguage = language.toLowerCase().split('-')[0];
+    if (['ja', 'zh', 'th'].includes(baseLanguage)) return null;
+    return value.split(/\\s+/u).filter(Boolean).length;
+  }
 
   return Array.from(
     new Segmenter(language, { granularity: 'word' }).segment(value)
