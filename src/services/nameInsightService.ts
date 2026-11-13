@@ -66,8 +66,11 @@ function analyzeStructure(name: string): NameInsightMetrics {
   const normalized = name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const codePoints = Array.from(normalized);
   const characters = codePoints.filter((character) => /\p{L}/u.test(character));
-  const latinLetters = characters.filter((character) => /[a-z]/i.test(character));
-  const vowels = latinLetters.filter((character) => /[aeiouy]/i.test(character)).length;
+  const latinLetters = characters.filter((character) => getWritingSystem(character) === 'latin');
+  const vowels = latinLetters.filter((character) => {
+    const baseLetter = character.normalize('NFD').replace(/\p{M}/gu, '');
+    return /^[aeiouy]$/i.test(baseLetter);
+  }).length;
   const writingSystems = Array.from(new Set(characters.map(getWritingSystem)));
   return {
     characterCount: characters.length,
