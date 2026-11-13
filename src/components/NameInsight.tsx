@@ -7,6 +7,37 @@ import { getLocalizedGeneratorDescription } from '../i18n/generatorContent';
 import { createNameInsight } from '../services/nameInsightService';
 import './name-insight.css';
 
+const REVIEW_GUIDANCE: Record<string, string> = {
+  en: 'Before using a name publicly, test its pronunciation and clarity with people in your target audience. For commercial use, check domain and trademark availability separately; NameForge does not perform those checks.',
+  fr: 'Avant d’utiliser un nom publiquement, testez sa prononciation et sa clarté auprès du public visé. Pour un usage commercial, vérifiez séparément la disponibilité du domaine et des marques : NameForge n’effectue pas ces contrôles.',
+  es: 'Antes de usar un nombre públicamente, prueba su pronunciación y claridad con personas de tu público objetivo. Para uso comercial, comprueba por separado la disponibilidad del dominio y de la marca; NameForge no realiza esas verificaciones.',
+  de: 'Bevor du einen Namen öffentlich verwendest, teste Aussprache und Verständlichkeit mit Personen aus deiner Zielgruppe. Prüfe bei kommerzieller Nutzung die Domain- und Markenverfügbarkeit separat; NameForge führt diese Prüfungen nicht durch.',
+  it: 'Prima di usare pubblicamente un nome, verifica pronuncia e chiarezza con persone del pubblico a cui ti rivolgi. Per un uso commerciale, controlla separatamente la disponibilità del dominio e del marchio: NameForge non effettua queste verifiche.',
+  pt: 'Antes de usar um nome publicamente, teste a pronúncia e a clareza com pessoas do público-alvo. Para uso comercial, verifique separadamente a disponibilidade do domínio e da marca; o NameForge não realiza essas verificações.',
+  ar: 'قبل استخدام الاسم علنًا، اختبر سهولة نطقه ووضوحه مع أشخاص من الجمهور المستهدف. وللاستخدام التجاري، تحقّق بشكل مستقل من توفر النطاق والعلامة التجارية؛ فـ NameForge لا يجري هذه الفحوصات.',
+  tr: 'Bir adı herkese açık şekilde kullanmadan önce telaffuzunu ve anlaşılırlığını hedef kitlenizden kişilerle test edin. Ticari kullanım için alan adı ve marka uygunluğunu ayrıca kontrol edin; NameForge bu kontrolleri yapmaz.',
+  ja: '名前を公開して使う前に、対象となる人々に発音や分かりやすさを確認してもらいましょう。商用利用では、ドメインと商標の利用可能性を別途確認してください。NameForgeはこれらを確認しません。',
+  ko: '이름을 공개적으로 사용하기 전에 대상 사용자에게 발음과 명확성을 확인하세요. 상업적으로 사용하려면 도메인과 상표 사용 가능 여부를 별도로 확인해야 합니다. NameForge는 이러한 확인을 수행하지 않습니다.',
+  zh: '公开使用名称前，请向目标受众测试其发音和清晰度。若用于商业用途，请另行核查域名和商标是否可用；NameForge 不执行这些核查。',
+  ru: 'Перед публичным использованием имени проверьте его произношение и понятность на представителях целевой аудитории. Для коммерческого применения отдельно проверьте доступность домена и товарного знака: NameForge этого не делает.',
+  hi: 'किसी नाम का सार्वजनिक उपयोग करने से पहले लक्षित दर्शकों के साथ उसके उच्चारण और स्पष्टता की जाँच करें। व्यावसायिक उपयोग के लिए डोमेन और ट्रेडमार्क की उपलब्धता अलग से जाँचें; NameForge ये जाँच नहीं करता।',
+  nl: 'Test voordat je een naam openbaar gebruikt de uitspraak en duidelijkheid bij mensen uit je doelgroep. Controleer voor commercieel gebruik afzonderlijk de beschikbaarheid van de domeinnaam en het handelsmerk; NameForge voert deze controles niet uit.',
+  pl: 'Przed publicznym użyciem nazwy sprawdź jej wymowę i czytelność wśród osób z grupy docelowej. W przypadku zastosowań komercyjnych osobno zweryfikuj dostępność domeny i znaku towarowego; NameForge tego nie sprawdza.',
+  sv: 'Testa uttal och tydlighet med personer i målgruppen innan du använder ett namn offentligt. Vid kommersiell användning bör du separat kontrollera domän- och varumärkestillgänglighet; NameForge gör inte dessa kontroller.',
+  vi: 'Trước khi sử dụng tên công khai, hãy thử kiểm tra cách phát âm và độ rõ ràng với những người thuộc nhóm đối tượng mục tiêu. Nếu dùng cho mục đích thương mại, hãy tự kiểm tra riêng tính khả dụng của tên miền và nhãn hiệu; NameForge không thực hiện các kiểm tra này.',
+  id: 'Sebelum menggunakan nama secara publik, uji pelafalan dan kejelasannya kepada orang-orang dalam audiens sasaran. Untuk penggunaan komersial, periksa ketersediaan domain dan merek dagang secara terpisah; NameForge tidak melakukan pemeriksaan tersebut.',
+  th: 'ก่อนนำชื่อไปใช้公开 โปรดลองตรวจสอบการออกเสียงและความชัดเจนกับกลุ่มเป้าหมายก่อน หากใช้ในเชิงพาณิชย์ ควรตรวจสอบโดเมนและเครื่องหมายการค้าแยกต่างหาก เนื่องจาก NameForge ไม่ได้ดำเนินการตรวจสอบเหล่านี้',
+  el: 'Πριν χρησιμοποιήσετε δημόσια ένα όνομα, δοκιμάστε την προφορά και τη σαφήνειά του με άτομα από το κοινό-στόχο σας. Για εμπορική χρήση, ελέγξτε ξεχωριστά τη διαθεσιμότητα domain και εμπορικού σήματος· το NameForge δεν πραγματοποιεί αυτούς τους ελέγχους.',
+  he: 'לפני שימוש פומבי בשם, בדקו את ההגייה והבהירות שלו עם אנשים מקהל היעד. לשימוש מסחרי, בדקו בנפרד זמינות של דומיין וסימן מסחר; NameForge אינו מבצע בדיקות אלה.',
+  cs: 'Před veřejným použitím názvu ověřte jeho výslovnost a srozumitelnost u lidí z cílové skupiny. Pro komerční použití samostatně zkontrolujte dostupnost domény a ochranné známky; NameForge tyto kontroly neprovádí.',
+  ro: 'Înainte de a folosi public un nume, testați pronunția și claritatea acestuia cu persoane din publicul țintă. Pentru uz comercial, verificați separat disponibilitatea domeniului și a mărcii; NameForge nu efectuează aceste verificări.',
+  da: 'Før du bruger et navn offentligt, bør du teste udtale og tydelighed med personer fra målgruppen. Ved kommerciel brug skal du separat kontrollere, om domænet og varemærket er tilgængeligt; NameForge udfører ikke disse kontroller.',
+  fi: 'Testaa nimen ääntämistä ja selkeyttä kohderyhmään kuuluvilla ihmisillä ennen julkista käyttöä. Tarkista kaupallisessa käytössä verkkotunnuksen ja tavaramerkin saatavuus erikseen; NameForge ei tee näitä tarkistuksia.',
+  uk: 'Перш ніж використовувати назву публічно, перевірте її вимову та зрозумілість на представниках цільової аудиторії. Для комерційного використання окремо перевірте доступність домену й торговельної марки; NameForge цього не робить.',
+  bn: 'কোনো নাম প্রকাশ্যে ব্যবহারের আগে লক্ষ্য শ্রোতার মানুষের সঙ্গে এর উচ্চারণ ও স্পষ্টতা পরীক্ষা করুন। বাণিজ্যিক ব্যবহারের জন্য ডোমেইন ও ট্রেডমার্কের প্রাপ্যতা আলাদাভাবে যাচাই করুন; NameForge এই যাচাই করে না।',
+  nb: 'Test uttale og tydelighet med personer i målgruppen før du bruker et navn offentlig. Ved kommersiell bruk bør du kontrollere tilgjengeligheten til domenet og varemerket separat; NameForge utfører ikke disse kontrollene.'
+};
+
 interface NameInsightProps {
   item: GeneratedName;
   meta: GeneratorMeta;
@@ -262,6 +293,11 @@ export const NameInsight: React.FC<NameInsightProps> = ({ item, meta, onClose })
               ))}
             </ul>
           </details>
+
+          <section className="name-insight-card rounded-2xl border border-slate-200 bg-slate-50 p-4" data-testid="name-insight-review-guidance">
+            <h3 className="font-bold text-slate-900">{labels.chooseTip}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700">{REVIEW_GUIDANCE[language] ?? REVIEW_GUIDANCE.en}</p>
+          </section>
 
           <div className="name-insight-transparency rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-xs leading-5 text-sky-950">
             <p>{labels.transparency}</p>
