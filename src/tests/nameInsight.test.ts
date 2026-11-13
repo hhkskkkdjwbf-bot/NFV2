@@ -65,6 +65,8 @@ const hindiWord = createNameInsight({ ...base, name: 'नमस्ते' });
 assert.equal(hindiWord?.metrics.characterCount, 3, 'Combining marks and conjunct sequences must not inflate Indic grapheme counts');
 const japaneseWords = createNameInsight({ ...base, language: 'ja', name: '私は学生です' });
 assert.equal(japaneseWords?.metrics.wordCount, 4, 'Japanese word count should use locale-aware segmentation without spaces');
+assert.equal(japaneseWords?.metrics.hasMixedScripts, false, 'The conventional Han and Hiragana combination in Japanese should not be flagged as unusual mixed scripts');
+assert.deepEqual(japaneseWords?.metrics.writingSystems, ['han', 'hiragana'], 'Japanese script inventory should still expose its component writing systems');
 const chineseWords = createNameInsight({ ...base, language: 'zh', name: '我喜欢学习' });
 assert.equal(chineseWords?.metrics.wordCount, 3, 'Chinese word count should use locale-aware segmentation without spaces');
 const thaiWords = createNameInsight({ ...base, language: 'th', name: 'ฉันรักภาษาไทย' });
