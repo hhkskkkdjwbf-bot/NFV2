@@ -89,6 +89,20 @@ function getWritingSystem(character: string): string {
   return 'other';
 }
 
+function hasMixedWritingSystems(writingSystems: string[], language: string): boolean {
+  if (writingSystems.length <= 1) return false;
+
+  // Japanese conventionally combines kanji (Han), hiragana, and katakana.
+  // Treat that expected combination as one language writing system rather
+  // than flagging an ordinary Japanese name as an unusual script mixture.
+  if (language.toLowerCase().startsWith('ja')) {
+    const japaneseScripts = new Set(['han', 'hiragana', 'katakana']);
+    return writingSystems.some((script) => !japaneseScripts.has(script));
+  }
+
+  return true;
+}
+
 function analyzeStructure(name: string, language: string): NameInsightMetrics {
   const normalized = name.normalize('NFC').trim().replace(/\s+/g, ' ');
   const codePoints = Array.from(normalized);
@@ -112,7 +126,7 @@ function analyzeStructure(name: string, language: string): NameInsightMetrics {
     digitCount: codePoints.filter((character) => /\p{N}/u.test(character)).length,
     symbolCount: codePoints.filter((character) => !/[\p{L}\p{N}\s]/u.test(character)).length,
     uppercaseCount: characters.filter((character) => /\p{Lu}/u.test(character)).length,
-    hasMixedScripts: writingSystems.length > 1,
+    hasMixedScripts: hasMixedWritingSystems(writingSystems, language),
     writingSystems
   };
 }
