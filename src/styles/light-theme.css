@@ -2448,3 +2448,176 @@ html.light .nf-app-shell .nf-page button:not(:disabled):not([aria-disabled="true
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* THEME PARITY: shared geometry across light and dark.
+   Themes keep their own palettes and atmosphere; layout and component
+   proportions are deliberately identical in both modes. */
+:root {
+  --nf-content-width: 1440px;
+  --nf-reading-width: 960px;
+  --nf-control-height: 2.75rem;
+  --nf-radius-sm: .65rem;
+  --nf-radius-control: .8rem;
+  --nf-radius-card: 1.1rem;
+  --nf-radius-panel: 1.35rem;
+  --nf-section-gap: clamp(3rem, 6vw, 5.5rem);
+}
+
+.nf-app-shell,
+.nf-site-main,
+.nf-page,
+.nf-page-layout {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.nf-page-layout,
+.nf-container {
+  width: 100%;
+  max-width: var(--nf-content-width) !important;
+  margin-inline: auto !important;
+}
+
+.nf-page-layout {
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+.nf-home.nf-page-layout,
+.nf-generator-detail.nf-page-layout,
+.nf-creative-studio.nf-page-layout {
+  padding-inline: 0 !important;
+}
+
+.nf-reading-container {
+  width: 100%;
+  max-width: var(--nf-reading-width) !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(1rem, 3vw, 2rem) !important;
+}
+
+.nf-site-header > .nf-container {
+  min-height: 4.5rem !important;
+}
+
+.nf-site-footer {
+  margin-top: clamp(3rem, 6vw, 5rem) !important;
+}
+
+.nf-page-header {
+  width: 100%;
+  margin-inline: auto;
+  margin-bottom: clamp(2rem, 4vw, 3.25rem);
+}
+
+.nf-page-header h1,
+.nf-page h1,
+.nf-page-title {
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  line-height: 1.08;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.nf-page :is(article, [role="dialog"]),
+.nf-page .nf-surface {
+  border-radius: var(--nf-radius-card) !important;
+}
+
+.nf-page :is(.nf-generator-panel, .nf-panel, .nf-library-toolbar,
+  .nf-project-workspace, .nf-studio-tools, .nf-studio-settings,
+  .nf-studio-preview) {
+  border-radius: var(--nf-radius-panel) !important;
+}
+
+.nf-page button:not(.rounded-full) {
+  min-height: var(--nf-control-height);
+  border-radius: var(--nf-radius-control);
+  line-height: 1.25;
+}
+
+.nf-page button.rounded-full {
+  border-radius: 9999px !important;
+}
+
+.nf-page :is(input, select, textarea) {
+  box-sizing: border-box;
+  min-height: var(--nf-control-height);
+  border-radius: var(--nf-radius-control) !important;
+}
+
+.nf-generator-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+
+.nf-catalog .nf-generator-card,
+.nf-results-grid > *,
+.nf-library-card-grid > *,
+.nf-collections-grid > *,
+.nf-history-grid > * {
+  min-width: 0;
+  height: 100%;
+}
+
+.nf-catalog .nf-generator-card {
+  min-height: 19rem;
+}
+
+.nf-name-result-card {
+  min-height: 25rem;
+  height: 100%;
+  border-radius: var(--nf-radius-panel) !important;
+}
+
+.nf-featured-card,
+.nf-top-rated-card {
+  min-width: 0;
+  height: 100%;
+}
+
+@media (max-width: 1100px) {
+  .nf-generator-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .nf-generator-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .nf-page-layout {
+    padding-inline: 1rem !important;
+  }
+
+  .nf-home.nf-page-layout,
+  .nf-generator-detail.nf-page-layout,
+  .nf-creative-studio.nf-page-layout {
+    padding-inline: 0 !important;
+  }
+
+  .nf-generator-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .nf-catalog .nf-generator-card,
+  .nf-name-result-card,
+  .nf-featured-card,
+  .nf-top-rated-card {
+    min-height: 0;
+  }
+
+  .nf-site-header > .nf-container {
+    min-height: 4.1rem !important;
+  }
+
+  .nf-page h1,
+  .nf-page-title,
+  .nf-page-header h1 {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+}
